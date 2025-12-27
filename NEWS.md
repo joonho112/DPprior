@@ -1,3 +1,3 @@
-# DPprior (development version)
+# DPprior 0.1.0
 
 * Initial CRAN submission.
