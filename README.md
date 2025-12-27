@@ -1,2 +1,2 @@
-# dpprior
+# DPprior
 Dirichlet Process Prior Elicitation
