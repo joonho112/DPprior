@@ -1,0 +1,26 @@
+Package: DPprior
+Title: Dirichlet Process Prior Elicitation
+Version: 0.1.0
+Authors@R: 
+    person("JoonHo", "Lee", , "jlee296@ua.edu", role = c("aut", "cre"),
+           comment = c(ORCID = "0009-0006-4019-8703"))
+Description: Provides calibration tools for the concentration parameter of
+    Dirichlet process priors, enabling principled prior specification
+    through cluster count and weight distribution targets. Implements
+    closed-form approximations and exact numerical methods for mapping
+    user beliefs about expected cluster counts to Gamma hyperparameters.
+License: MIT + file LICENSE
+URL: https://github.com/JoonHoLee/DPprior
+BugReports: https://github.com/JoonHoLee/DPprior/issues
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Imports: 
+    stats
+Suggests: 
+    ggplot2,
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+VignetteBuilder: knitr

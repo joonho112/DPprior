@@ -1,0 +1,10 @@
+^DPprior\.Rproj$
+^\.Rproj\.user$
+^LICENSE\.md$
+^^dev$$
+^^scratch$$
+^^\\.github$$
+^^README\\.Rmd$$
+^^LICENSE\\.md$$
+^^\.*\\.Rproj$$
+^^\\.Rproj\\.user$$

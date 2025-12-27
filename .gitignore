@@ -1,0 +1,25 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+inst/doc
+
+# Added by T0 setup
+# R package build artifacts
+*.Rcheck/
+*.tar.gz
+*.Rproj.user
+.Rproj.user/
+
+# IDE
+.vscode/
+.idea/
+# OS
+.DS_Store
+Thumbs.db
+# Development files
+dev/
+scratch/
+# Documentation build
+docs/
+inst/doc/
