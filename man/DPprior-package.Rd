@@ -6,6 +6,8 @@
 \alias{DPprior-package}
 \title{DPprior: Dirichlet Process Prior Elicitation}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 Provides calibration tools for the concentration parameter of Dirichlet process priors, enabling principled prior specification through cluster count and weight distribution targets. Implements closed-form approximations and exact numerical methods for mapping user beliefs about expected cluster counts to Gamma hyperparameters.
 }
 \seealso{
