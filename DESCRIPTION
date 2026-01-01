@@ -1,27 +1,43 @@
 Package: DPprior
-Title: Dirichlet Process Prior Elicitation
-Version: 0.1.0
+Title: Principled Prior Elicitation for Dirichlet Process Mixture Models
+Version: 1.0.0
 Authors@R: 
     person("JoonHo", "Lee", , "jlee296@ua.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0009-0006-4019-8703"))
-Description: Provides calibration tools for the concentration parameter of
-    Dirichlet process priors, enabling principled prior specification
-    through cluster count and weight distribution targets. Implements
-    closed-form approximations and exact numerical methods for mapping
-    user beliefs about expected cluster counts to Gamma hyperparameters.
+Description: Tools for eliciting Gamma hyperpriors on the concentration 
+    parameter alpha in Dirichlet Process (DP) mixture models. Rather than 
+    requiring specification of the abstract parameter alpha directly, 
+    'DPprior' allows researchers to express prior beliefs through intuitive 
+    quantities: expected cluster counts and weight concentration. The package 
+    implements the DORO 2.0 methodology with closed-form approximations (A1) 
+    and exact Newton-based moment matching (A2), enabling principled prior 
+    specification in low-information settings such as multisite trials and 
+    meta-analyses. Features include dual-anchor elicitation for joint control 
+    of cluster counts and weight behavior, comprehensive diagnostics, and 
+    visualization tools. Based on methods described in Lee et al. (2025) 
+    <doi:10.3102/10769986241254286>.
 License: MIT + file LICENSE
-URL: https://github.com/JoonHoLee/DPprior
-BugReports: https://github.com/JoonHoLee/DPprior/issues
 Encoding: UTF-8
+Language: en-US
+LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
+Depends: 
+    R (>= 4.0.0)
 Imports: 
-    stats
+    stats,
+    graphics,
+    grDevices
 Suggests: 
-    ggplot2,
+    ggplot2 (>= 3.4.0),
     knitr,
     rmarkdown,
-    testthat (>= 3.0.0), 
-    gtable
+    testthat (>= 3.0.0),
+    gtable,
+    scales
 Config/testthat/edition: 3
 VignetteBuilder: knitr
+URL: https://joonho112.github.io/DPprior/, 
+    https://github.com/joonho112/DPprior
+BugReports: https://github.com/joonho112/DPprior/issues
+Keywords: Bayesian, nonparametric, Dirichlet-process, clustering, prior-elicitation

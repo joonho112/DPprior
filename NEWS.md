@@ -1,6 +1,4 @@
-# DPprior News
-
-## DPprior 1.0.0 (2025-12-31)
+# DPprior 1.0.0
 
 ### Initial CRAN Release
 
