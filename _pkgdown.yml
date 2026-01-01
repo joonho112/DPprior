@@ -1,79 +1,76 @@
 url: https://joonho112.github.io/DPprior/
-
 template:
   bootstrap: 5
   bootswatch: cosmo
   bslib:
-    primary: "#2980b9"
-
+    primary: '#2980b9'
 home:
-  title: "DPprior: Prior Elicitation for DP Models"
-  description: >
-    Principled prior elicitation on the concentration parameter α
-    in Dirichlet Process mixture models.
-
+  title: 'DPprior: Prior Elicitation for DP Models'
+  description: |
+    Principled prior elicitation on the concentration parameter α in Dirichlet Process mixture models.
 authors:
   JoonHo Lee:
     href: https://github.com/joonho112
-
 navbar:
   structure:
-    left: [intro, reference, articles, news]
-    right: [search, github]
+    left:
+    - intro
+    - reference
+    - articles
+    - news
+    right:
+    - search
+    - github
   components:
     articles:
       text: Vignettes
       menu:
-      - text: "--- Applied Track ---"
-      - text: "Introduction"
+      - text: '--- Applied Track ---'
+      - text: Introduction
         href: articles/introduction.html
-      - text: "Quick Start"
+      - text: Quick Start
         href: articles/quick-start.html
-      - text: "Applied Guide"
+      - text: Applied Guide
         href: articles/applied-guide.html
-      - text: "Dual-Anchor Framework"
+      - text: Dual-Anchor Framework
         href: articles/dual-anchor.html
-      - text: "Diagnostics"
+      - text: Diagnostics
         href: articles/diagnostics.html
-      - text: "Case Studies"
+      - text: Case Studies
         href: articles/case-studies.html
-      - text: "--- Methodological Track ---"
-      - text: "Theory Overview"
+      - text: '--- Methodological Track ---'
+      - text: Theory Overview
         href: articles/theory-overview.html
-      - text: "Stirling Numbers"
+      - text: Stirling Numbers
         href: articles/theory-stirling.html
-      - text: "Approximations (A1)"
+      - text: Approximations (A1)
         href: articles/theory-approximations.html
-      - text: "Newton Algorithm (A2)"
+      - text: Newton Algorithm (A2)
         href: articles/theory-newton.html
-      - text: "Weight Distributions"
+      - text: Weight Distributions
         href: articles/theory-weights.html
-      - text: "API Reference"
+      - text: API Reference
         href: articles/api-reference.html
-
 reference:
-- title: "Core Elicitation"
-  desc: "Main user-facing functions for prior elicitation"
+- title: Core Elicitation
+  desc: Main user-facing functions for prior elicitation
   contents:
   - DPprior_fit
   - DPprior_dual
-
-- title: "Approximation Algorithms"
-  desc: "A1 closed-form and A2 Newton-based algorithms"
+- title: Approximation Algorithms
+  desc: A1 closed-form and A2 Newton-based algorithms
   contents:
   - DPprior_a1
   - DPprior_a2_newton
   - DPprior_a2_kl
-
-- title: "Stirling Numbers"
-  desc: "Computation of unsigned Stirling numbers of the first kind"
+- title: Stirling Numbers
+  desc: Computation of unsigned Stirling numbers of the first kind
   contents:
   - compute_log_stirling
   - get_log_stirling
   - get_stirling_row
-
-- title: "K Distribution (Conditional)"
-  desc: "Antoniak distribution P(K | α)"
+- title: K Distribution (Conditional)
+  desc: Antoniak distribution P(K | α)
   contents:
   - pmf_K_given_alpha
   - log_pmf_K_given_alpha
@@ -86,9 +83,8 @@ reference:
   - summary_K_given_alpha
   - cv_K_given_alpha
   - dispersion_K_given_alpha
-
-- title: "K Distribution (Marginal)"
-  desc: "Marginal distribution of K under Gamma prior on α"
+- title: K Distribution (Marginal)
+  desc: Marginal distribution of K under Gamma prior on α
   contents:
   - pmf_K_marginal
   - log_pmf_K_marginal
@@ -98,9 +94,8 @@ reference:
   - summary_K_marginal
   - K_moments
   - exact_K_moments
-
-- title: "Weight Distribution (w₁)"
-  desc: "Distribution of the largest stick-breaking weight"
+- title: Weight Distribution (w₁)
+  desc: Distribution of the largest stick-breaking weight
   contents:
   - mean_w1
   - var_w1
@@ -111,9 +106,8 @@ reference:
   - rw1
   - summary_w1
   - w1_grid
-
-- title: "Co-clustering Probability (ρ)"
-  desc: "Pairwise co-clustering probability functions"
+- title: Co-clustering Probability (ρ)
+  desc: Pairwise co-clustering probability functions
   contents:
   - mean_rho
   - var_rho
@@ -125,9 +119,8 @@ reference:
   - rrho
   - summary_rho
   - rho_conditional_grid
-
-- title: "Diagnostics"
-  desc: "Prior validation and diagnostic tools"
+- title: Diagnostics
+  desc: Prior validation and diagnostic tools
   contents:
   - DPprior_diagnostics
   - DPprior_error_bounds
@@ -137,9 +130,8 @@ reference:
   - compare_a1_a2
   - compare_rho_w1
   - compare_to_negbin
-
-- title: "Visualization"
-  desc: "Plotting functions"
+- title: Visualization
+  desc: Plotting functions
   contents:
   - plot.DPprior_fit
   - plot_alpha_prior
@@ -152,9 +144,8 @@ reference:
   - plot_tradeoff_dashboard
   - DPprior_colors
   - theme_DPprior
-
-- title: "S3 Methods"
-  desc: "Print and summary methods"
+- title: S3 Methods
+  desc: Print and summary methods
   contents:
   - print.DPprior_fit
   - summary.DPprior_fit
@@ -166,9 +157,8 @@ reference:
   - summary.DPprior_error_bounds
   - print.w1_summary
   - print.rho_summary
-
-- title: "Utilities"
-  desc: "Helper and conversion functions"
+- title: Utilities
+  desc: Helper and conversion functions
   contents:
   - vif_to_variance
   - vif_to_variance_fit
@@ -182,9 +172,8 @@ reference:
   - logsumexp
   - logsumexp_vec
   - softmax
-
-- title: "Internal Computation"
-  desc: "Lower-level computational functions"
+- title: Internal Computation
+  desc: Lower-level computational functions
   contents:
   - compute_K_diagnostics
   - compute_weight_diagnostics
@@ -198,15 +187,13 @@ reference:
   - compute_scaling_constant
   - compute_sum_p_squared
   - expected_tv_bound
-
-- title: "Validation & Verification"
-  desc: "Internal testing and validation functions"
+- title: Validation & Verification
+  desc: Internal testing and validation functions
   contents:
   - starts_with("verify_")
   - starts_with("validate_")
-
-- title: "Other Internal"
-  desc: "Other internal helper functions"
+- title: Other Internal
+  desc: Other internal helper functions
   contents:
   - a1_moment_error
   - construct_target_pmf
@@ -215,8 +202,8 @@ reference:
   - kl_divergence_pmf
   - moments_with_jacobian
   - summary_pmf_K_given_alpha
-
 footer:
   structure:
     left: developed_by
     right: built_with
+
