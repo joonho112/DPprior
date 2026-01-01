@@ -1,0 +1,47 @@
+# Verify PMF Consistency with Moments
+
+Verifies that moments computed from the PMF match the closed-form
+digamma/trigamma formulas.
+
+## Usage
+
+``` r
+verify_pmf_moments(J, alpha, logS, tol = 1e-08, verbose = TRUE)
+```
+
+## Arguments
+
+- J:
+
+  Integer; sample size.
+
+- alpha:
+
+  Numeric; DP concentration parameter.
+
+- logS:
+
+  Matrix; pre-computed log-Stirling matrix.
+
+- tol:
+
+  Numeric; tolerance for comparison (default: 1e-8).
+
+- verbose:
+
+  Logical; if `TRUE`, print results.
+
+## Value
+
+Logical; `TRUE` if verification passes.
+
+## Examples
+
+``` r
+logS <- compute_log_stirling(50)
+verify_pmf_moments(50, 2.0, logS)
+#> PMF-Moments Verification (J=50, alpha=2.00):
+#>   Mean: PMF=7.03762636, digamma=7.03762636, error=2.04e-14 [PASS]
+#>   Var:  PMF=4.53555756, trigamma=4.53555756, error=8.88e-14 [PASS]
+#>   Overall: PASS
+```

@@ -1,0 +1,20 @@
+pandoc: 3.1.11
+pkgdown: 2.2.0
+pkgdown_sha: ~
+articles:
+  api-reference: api-reference.html
+  applied-guide: applied-guide.html
+  case-studies: case-studies.html
+  diagnostics: diagnostics.html
+  dual-anchor: dual-anchor.html
+  introduction: introduction.html
+  quick-start: quick-start.html
+  theory-approximations: theory-approximations.html
+  theory-newton: theory-newton.html
+  theory-overview: theory-overview.html
+  theory-stirling: theory-stirling.html
+  theory-weights: theory-weights.html
+last_built: 2026-01-01T06:51Z
+urls:
+  reference: https://joonho112.github.io/DPprior/reference
+  article: https://joonho112.github.io/DPprior/articles

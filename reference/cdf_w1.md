@@ -1,0 +1,68 @@
+# CDF of First Stick-Breaking Weight w₁
+
+Computes P(w₁ ≤ x \| a, b) using the closed-form expression derived by
+marginalizing over α ~ Gamma(a, b).
+
+## Usage
+
+``` r
+cdf_w1(x, a, b)
+```
+
+## Arguments
+
+- x:
+
+  Numeric vector. Values outside the unit interval are allowed but are
+  mapped to the boundary values of the CDF (0 for x ≤ 0, 1 for x ≥ 1).
+
+- a:
+
+  Numeric; shape parameter of the Gamma prior on α (a \> 0).
+
+- b:
+
+  Numeric; rate parameter of the Gamma prior on α (b \> 0).
+
+## Value
+
+Numeric vector of CDF values F(x \| a, b) with same length as x.
+
+## Details
+
+The unconditional CDF is given by: \$\$F\_{w_1}(x \| a, b) = 1 -
+\left(\frac{b}{b - \log(1-x)}\right)^a\$\$
+
+The implementation uses `log1p` and `expm1` for numerical stability,
+particularly when the CDF is close to 0 (small x).
+
+## Interpretation
+
+The weight w₁ is in **GEM (size-biased) order**, not ranked by size. It
+represents the asymptotic cluster share of a randomly chosen unit,
+**not** the largest cluster proportion. See RN-06 §1 for details.
+
+## References
+
+Lee, J. (2025). RN-06: Dual-Anchor Design II.
+
+Vicentini, C. and Jermyn, I. H. (2025). Prior selection for the
+precision parameter of Dirichlet Process Mixtures. arXiv:2502.00864.
+
+## See also
+
+[`quantile_w1`](https://joonho112.github.io/DPprior/reference/quantile_w1.md),
+[`density_w1`](https://joonho112.github.io/DPprior/reference/density_w1.md),
+[`prob_w1_exceeds`](https://joonho112.github.io/DPprior/reference/prob_w1_exceeds.md)
+
+## Examples
+
+``` r
+# P(w₁ ≤ 0.3) under standard prior
+cdf_w1(0.3, a = 2, b = 1)
+#> [1] 0.4566891
+
+# Vectorized computation
+cdf_w1(c(0.1, 0.3, 0.5, 0.7), a = 1.6, b = 1.22)
+#> [1] 0.1241267 0.3365805 0.5131689 0.6666263
+```
