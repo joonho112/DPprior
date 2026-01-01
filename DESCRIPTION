@@ -35,7 +35,8 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0),
     gtable,
-    scales
+    scales, 
+    microbenchmark
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 URL: https://joonho112.github.io/DPprior/, 
