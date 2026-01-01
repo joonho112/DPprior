@@ -30,6 +30,7 @@ Imports:
     grDevices
 Suggests: 
     ggplot2 (>= 3.4.0),
+    gridExtra,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),
