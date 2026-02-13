@@ -75,12 +75,55 @@ Dirichlet Process (DP) mixture models.
   Map confidence levels to VIF values
 - [`integrate_gamma()`](https://joonho112.github.io/DPprior/reference/integrate_gamma.md):
   High-precision Gauss-Laguerre integration
-- `moments_K_marginal()`: Marginal moments E\[K\] and Var(K) under Gamma
-  prior
+- [`exact_K_moments()`](https://joonho112.github.io/DPprior/reference/exact_K_moments.md):
+  Marginal moments E\[K\] and Var(K) under Gamma prior
 
-#### Documentation
+#### Package Infrastructure
 
-Comprehensive vignettes organized into two tracks:
+##### CRAN Compliance
+
+- Passes R CMD check with 0 errors, 0 warnings, 0 notes
+- Complete roxygen2-managed NAMESPACE with 77 exported functions and 11
+  S3 methods
+- All examples use `\dontrun{}` or `\donttest{}` as appropriate
+- No non-standard dependencies; base R + stats + graphics only in
+  Imports
+
+##### Focused Public API
+
+- 77 carefully curated exports organized across 13 functional groups:
+  core elicitation, approximation algorithms, Stirling numbers, K
+  distribution (conditional and marginal), weight distribution,
+  co-clustering probability, diagnostics, visualization, S3 methods,
+  numerical utilities, computation, and validation/verification
+
+##### Test Suite
+
+- 2,084 unit tests via testthat 3.0
+- Coverage spans all 20 source modules (R/00 through R/18 plus
+  DPprior-package)
+- Tests verify mathematical identities, numerical accuracy, edge cases,
+  S3 method contracts, and visualization output
+
+##### Documentation
+
+- 49 `@family` cross-reference tags across 7 conceptual families
+- 27 `@references` blocks citing Lee (2026) arXiv:2602.06301
+- Terminology standardized to Design-Conditional Elicitation (DCE) and
+  Two-Stage Moment Matching (TSMM)
+
+##### Numerical Robustness
+
+- 11 named constants in `R/00_constants.R` for reproducible thresholds
+- [`exp()`](https://rdrr.io/r/base/Log.html) overflow protection via
+  `.EXP_MAX` clamping in BFGS optimization
+- Singular Jacobian fallback using correct gradient direction (J^T F)
+- Division-by-near-zero guards in relative error computation
+- PMF normalization guards for zero/non-finite sums
+
+##### Comprehensive Vignettes
+
+12 vignettes organized into two tracks:
 
 **Applied Researchers Track:** - Introduction: Why prior elicitation
 matters - Quick Start: Your first prior in 5 minutes - Applied Guide:
@@ -94,10 +137,18 @@ Approximations: A1 closed-form theory - Newton Algorithm: A2 exact
 moment matching - Weight Distributions: w₁, ρ, and dual-anchor
 framework - API Reference: Complete function documentation
 
+##### pkgdown Website
+
+- Full pkgdown site at <https://joonho112.github.io/DPprior/>
+- Reference index organized into 13 sections matching the public API
+- Articles index with Applied and Methodological tracks
+- Search functionality enabled
+- Favicons and PWA manifest configured
+
 #### Methodological Foundation
 
-This package implements the DORO 2.0 methodology, extending the original
-DORO approach (Dorazio, 2009) with:
+This package implements the Design-Conditional Elicitation (DCE)
+methodology, extending the original DORO approach (Dorazio, 2009) with:
 
 1.  **A1 closed-form approximation**: Instant initial estimates using
     the asymptotic Negative Binomial distribution of K_J under a Gamma
@@ -115,6 +166,9 @@ DORO approach (Dorazio, 2009) with:
 - Dorazio, R. M. (2009). On selecting a prior for the precision
   parameter of Dirichlet process mixture models. *Journal of Statistical
   Planning and Inference*, 139(10), 3384–3390.
+
+- Lee, J. (2026). Design-conditional prior elicitation for Dirichlet
+  process mixtures. *arXiv preprint* arXiv:2602.06301.
 
 - Lee, J., Che, J., Rabe-Hesketh, S., Feller, A., & Miratrix, L. (2025).
   Improving the estimation of site-specific effects and their

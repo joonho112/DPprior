@@ -1,7 +1,7 @@
 # Dual-Anchor Prior Calibration
 
 Refines a K_J-calibrated prior to also satisfy weight constraints,
-implementing the dual-anchor framework from RN-06.
+implementing the dual-anchor framework from Lee (2026, Section 4).
 
 ## Usage
 
@@ -88,6 +88,19 @@ the weight constraint. Example improvement at lambda = 0.5:
   give significant weight reduction.
 
 - **"absolute"**: Legacy, not recommended.
+
+## References
+
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet
+Process Mixtures. *arXiv preprint* arXiv:2602.06301.
+
+## See also
+
+Other elicitation:
+[`DPprior_a1()`](https://joonho112.github.io/DPprior/reference/DPprior_a1.md),
+[`DPprior_a2_kl()`](https://joonho112.github.io/DPprior/reference/DPprior_a2_kl.md),
+[`DPprior_a2_newton()`](https://joonho112.github.io/DPprior/reference/DPprior_a2_newton.md),
+[`DPprior_fit()`](https://joonho112.github.io/DPprior/reference/DPprior_fit.md)
 
 ## Examples
 

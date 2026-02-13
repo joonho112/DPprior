@@ -32,7 +32,8 @@ Numeric; upper bound on total TV error (capped at 1).
 
 The result is capped at 1 since TV distance is bounded by 1.
 
-From RN-05, Theorem 1, the total conditional TV error decomposes as:
+From Lee (2026, Section 3.3, Theorem 1), the total conditional TV error
+decomposes as:
 
 1.  Poissonization error: \\S_J \| \alpha\\ vs
     \\\text{Poisson}(\lambda_J(\alpha))\\
@@ -49,11 +50,12 @@ From RN-05, Theorem 1, the total conditional TV error decomposes as:
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 # Total bound at alpha = E[alpha] under Gamma(2, 1)
 compute_total_tv_bound(J = 50, alpha = 2)
-#> [1] 0.5809985
 
 # Vectorized
 compute_total_tv_bound(J = 50, alpha = c(0.5, 1, 2, 5))
-#> [1] 0.1075542 0.2795305 0.5809985 1.0000000
+
+} # }
 ```

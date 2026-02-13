@@ -55,12 +55,30 @@ plot_w1_prior(
 
 A ggplot object or invisible(NULL) for base.
 
+## See also
+
+[`DPprior_fit`](https://joonho112.github.io/DPprior/reference/DPprior_fit.md)
+for fitting,
+[`plot.DPprior_fit`](https://joonho112.github.io/DPprior/reference/plot.DPprior_fit.md)
+for S3 plot method
+
+Other visualization:
+[`DPprior_colors()`](https://joonho112.github.io/DPprior/reference/DPprior_colors.md),
+[`plot_K_prior()`](https://joonho112.github.io/DPprior/reference/plot_K_prior.md),
+[`plot_alpha_prior()`](https://joonho112.github.io/DPprior/reference/plot_alpha_prior.md),
+[`plot_dual_comparison()`](https://joonho112.github.io/DPprior/reference/plot_dual_comparison.md),
+[`plot_dual_dashboard()`](https://joonho112.github.io/DPprior/reference/plot_dual_dashboard.md),
+[`plot_prior_dashboard()`](https://joonho112.github.io/DPprior/reference/plot_prior_dashboard.md),
+[`plot_tradeoff_curve()`](https://joonho112.github.io/DPprior/reference/plot_tradeoff_curve.md),
+[`plot_tradeoff_dashboard()`](https://joonho112.github.io/DPprior/reference/plot_tradeoff_dashboard.md),
+[`theme_DPprior()`](https://joonho112.github.io/DPprior/reference/theme_DPprior.md)
+
 ## Examples
 
 ``` r
 fit <- DPprior_fit(J = 50, mu_K = 5, var_K = 8)
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 48.1% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 plot_w1_prior(fit)

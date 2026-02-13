@@ -81,7 +81,7 @@
       <img src="../logo.svg" class="logo" alt=""><h1>Quick Start: Your First Prior in 5 Minutes</h1>
                         <h4 data-toc-skip class="author">JoonHo Lee</h4>
             
-            <h4 data-toc-skip class="date">2026-01-01</h4>
+            <h4 data-toc-skip class="date">2026-02-13</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/joonho112/DPprior/blob/main/vignettes/quick-start.Rmd" class="external-link"><code>vignettes/quick-start.Rmd</code></a></small>
       <div class="d-none name"><code>quick-start.Rmd</code></div>
@@ -124,7 +124,7 @@ closed-form solutions</strong> for the same elicitation task.</p>
 <span></span>
 <span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DPprior_fit.html">DPprior_fit</a></span><span class="op">(</span>J <span class="op">=</span> <span class="fl">50</span>, mu_K <span class="op">=</span> <span class="fl">5</span>, confidence <span class="op">=</span> <span class="st">"medium"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: HIGH DOMINANCE RISK: P(w1 &gt; 0.5) = 49.7% exceeds 40%.</span></span>
-<span><span class="co">#&gt;   This may indicate unintended prior behavior (RN-07).</span></span>
+<span><span class="co">#&gt;   This may indicate unintended prior behavior (Lee, 2026).</span></span>
 <span><span class="co">#&gt;   Consider using DPprior_dual() for weight-constrained elicitation.</span></span>
 <span><span class="co">#&gt;   See ?DPprior_diagnostics for interpretation.</span></span>
 <span></span>
@@ -259,21 +259,21 @@ express your prior uncertainty about the number of clusters:</p>
 <code class="sourceCode R"><span><span class="co"># Low confidence = high uncertainty (wide prior)</span></span>
 <span><span class="va">fit_low</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DPprior_fit.html">DPprior_fit</a></span><span class="op">(</span>J <span class="op">=</span> <span class="fl">50</span>, mu_K <span class="op">=</span> <span class="fl">5</span>, confidence <span class="op">=</span> <span class="st">"low"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: HIGH DOMINANCE RISK: P(w1 &gt; 0.5) = 56.3% exceeds 40%.</span></span>
-<span><span class="co">#&gt;   This may indicate unintended prior behavior (RN-07).</span></span>
+<span><span class="co">#&gt;   This may indicate unintended prior behavior (Lee, 2026).</span></span>
 <span><span class="co">#&gt;   Consider using DPprior_dual() for weight-constrained elicitation.</span></span>
 <span><span class="co">#&gt;   See ?DPprior_diagnostics for interpretation.</span></span>
 <span></span>
 <span><span class="co"># Medium confidence = moderate uncertainty (default)</span></span>
 <span><span class="va">fit_med</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DPprior_fit.html">DPprior_fit</a></span><span class="op">(</span>J <span class="op">=</span> <span class="fl">50</span>, mu_K <span class="op">=</span> <span class="fl">5</span>, confidence <span class="op">=</span> <span class="st">"medium"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: HIGH DOMINANCE RISK: P(w1 &gt; 0.5) = 49.7% exceeds 40%.</span></span>
-<span><span class="co">#&gt;   This may indicate unintended prior behavior (RN-07).</span></span>
+<span><span class="co">#&gt;   This may indicate unintended prior behavior (Lee, 2026).</span></span>
 <span><span class="co">#&gt;   Consider using DPprior_dual() for weight-constrained elicitation.</span></span>
 <span><span class="co">#&gt;   See ?DPprior_diagnostics for interpretation.</span></span>
 <span></span>
 <span><span class="co"># High confidence = low uncertainty (concentrated prior)</span></span>
 <span><span class="va">fit_high</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DPprior_fit.html">DPprior_fit</a></span><span class="op">(</span>J <span class="op">=</span> <span class="fl">50</span>, mu_K <span class="op">=</span> <span class="fl">5</span>, confidence <span class="op">=</span> <span class="st">"high"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: HIGH DOMINANCE RISK: P(w1 &gt; 0.5) = 46.5% exceeds 40%.</span></span>
-<span><span class="co">#&gt;   This may indicate unintended prior behavior (RN-07).</span></span>
+<span><span class="co">#&gt;   This may indicate unintended prior behavior (Lee, 2026).</span></span>
 <span><span class="co">#&gt;   Consider using DPprior_dual() for weight-constrained elicitation.</span></span>
 <span><span class="co">#&gt;   See ?DPprior_diagnostics for interpretation.</span></span>
 <span></span>
@@ -304,7 +304,7 @@ reflected in the lower coefficient of variation (CV).</p>
 <code class="sourceCode R"><span><span class="co"># Specify variance of K directly</span></span>
 <span><span class="va">fit_direct</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DPprior_fit.html">DPprior_fit</a></span><span class="op">(</span>J <span class="op">=</span> <span class="fl">50</span>, mu_K <span class="op">=</span> <span class="fl">5</span>, var_K <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: HIGH DOMINANCE RISK: P(w1 &gt; 0.5) = 49.7% exceeds 40%.</span></span>
-<span><span class="co">#&gt;   This may indicate unintended prior behavior (RN-07).</span></span>
+<span><span class="co">#&gt;   This may indicate unintended prior behavior (Lee, 2026).</span></span>
 <span><span class="co">#&gt;   Consider using DPprior_dual() for weight-constrained elicitation.</span></span>
 <span><span class="co">#&gt;   See ?DPprior_diagnostics for interpretation.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Direct specification: var_K = 10\n"</span><span class="op">)</span></span>
@@ -321,14 +321,14 @@ available:</p>
 <code class="sourceCode R"><span><span class="co"># A2-MN (default): Exact moment matching via Newton's method</span></span>
 <span><span class="va">fit_newton</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DPprior_fit.html">DPprior_fit</a></span><span class="op">(</span>J <span class="op">=</span> <span class="fl">50</span>, mu_K <span class="op">=</span> <span class="fl">5</span>, var_K <span class="op">=</span> <span class="fl">10</span>, method <span class="op">=</span> <span class="st">"A2-MN"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: HIGH DOMINANCE RISK: P(w1 &gt; 0.5) = 49.7% exceeds 40%.</span></span>
-<span><span class="co">#&gt;   This may indicate unintended prior behavior (RN-07).</span></span>
+<span><span class="co">#&gt;   This may indicate unintended prior behavior (Lee, 2026).</span></span>
 <span><span class="co">#&gt;   Consider using DPprior_dual() for weight-constrained elicitation.</span></span>
 <span><span class="co">#&gt;   See ?DPprior_diagnostics for interpretation.</span></span>
 <span></span>
 <span><span class="co"># A1: Fast closed-form approximation (good for large J)</span></span>
 <span><span class="va">fit_approx</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DPprior_fit.html">DPprior_fit</a></span><span class="op">(</span>J <span class="op">=</span> <span class="fl">50</span>, mu_K <span class="op">=</span> <span class="fl">5</span>, var_K <span class="op">=</span> <span class="fl">10</span>, method <span class="op">=</span> <span class="st">"A1"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: HIGH DOMINANCE RISK: P(w1 &gt; 0.5) = 53.3% exceeds 40%.</span></span>
-<span><span class="co">#&gt;   This may indicate unintended prior behavior (RN-07).</span></span>
+<span><span class="co">#&gt;   This may indicate unintended prior behavior (Lee, 2026).</span></span>
 <span><span class="co">#&gt;   Consider using DPprior_dual() for weight-constrained elicitation.</span></span>
 <span><span class="co">#&gt;   See ?DPprior_diagnostics for interpretation.</span></span>
 <span></span>

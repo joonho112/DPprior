@@ -31,5 +31,5 @@ co-clustering level).
 
 ## Details
 
-Key identity from RN-06: the expected co-clustering probability equals
-the expected first stick-breaking weight.
+Key identity from Lee (2026, Section 4): the expected co-clustering
+probability equals the expected first stick-breaking weight.

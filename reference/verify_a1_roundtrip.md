@@ -35,11 +35,9 @@ p)\$\$ where \\p = b/(b + c_J)\\.
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 fit <- DPprior_a1(J = 50, mu_K = 5, var_K = 8)
 verify_a1_roundtrip(fit)
-#> A1 Round-Trip Verification
-#> ---------------------------------------- 
-#> mu_K: target = 5.000000, recovered = 5.000000, rel_err = 0.00e+00
-#> var_K: target = 8.000000, recovered = 8.000000, rel_err = 0.00e+00
-#> Result: PASS
+
+} # }
 ```

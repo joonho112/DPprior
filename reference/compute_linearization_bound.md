@@ -46,7 +46,8 @@ zero.
 
 ## References
 
-RN-05, Lemma 1: Poisson-Poisson TV bound via KL + Pinsker
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet
+Process Mixtures. *arXiv preprint* arXiv:2602.06301.
 
 ## See also
 
@@ -56,12 +57,13 @@ RN-05, Lemma 1: Poisson-Poisson TV bound via KL + Pinsker
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 # Linearization bound for J=50, alpha=1
 compute_linearization_bound(J = 50, alpha = 1)
-#> [1] 0.1062796
 
 # Effect of J on linearization bound (should decrease)
 sapply(c(25, 50, 100, 200), function(J)
   compute_linearization_bound(J, alpha = 2))
-#> [1] 0.3579663 0.3328078 0.3098929 0.2899216
+
+} # }
 ```

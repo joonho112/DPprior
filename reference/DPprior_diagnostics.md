@@ -1,7 +1,7 @@
 # Comprehensive Prior Diagnostics
 
 Computes a full diagnostic report for a fitted DPprior object,
-implementing the "unintended prior" checks from RN-07.
+implementing the "unintended prior" checks from Lee (2026, Section 4).
 
 ## Usage
 
@@ -40,7 +40,16 @@ Warnings are issued if:
 
 ## References
 
-Lee, J. (2025). RN-07: Unintended Prior Diagnostic.
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet
+Process Mixtures. *arXiv preprint* arXiv:2602.06301.
+
+## See also
+
+Other diagnostics:
+[`DPprior_error_bounds()`](https://joonho112.github.io/DPprior/reference/DPprior_error_bounds.md),
+[`compute_error_landscape()`](https://joonho112.github.io/DPprior/reference/compute_error_landscape.md),
+[`compute_weight_diagnostics()`](https://joonho112.github.io/DPprior/reference/compute_weight_diagnostics.md),
+[`dual_anchor_diagnostics()`](https://joonho112.github.io/DPprior/reference/dual_anchor_diagnostics.md)
 
 ## Examples
 

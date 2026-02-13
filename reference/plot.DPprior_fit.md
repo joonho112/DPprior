@@ -14,34 +14,71 @@ plot(
   engine = c("ggplot2", "base"),
   ...
 )
-
-# S3 method for class 'DPprior_fit'
-plot(
-  x,
-  type = c("auto", "dashboard", "alpha", "K", "w1", "dual", "comparison"),
-  engine = c("ggplot2", "base"),
-  ...
-)
 ```
 
 ## Arguments
 
 - x:
 
-  A DPprior_fit object.
+  A `DPprior_fit` object.
 
 - type:
 
-  Plot type: "dashboard" (default), "alpha", "K", "w1", "dual" (for
-  dual-anchor comparison), or "auto" (auto-detect).
+  Character; the type of plot to create:
+
+  "auto"
+
+  :   (Default) Automatically selects the appropriate plot type. Uses
+      `"dual"` for dual-anchor fits, `"dashboard"` otherwise.
+
+  "dashboard"
+
+  :   4-panel dashboard showing alpha, K, w1, and summary.
+
+  "alpha"
+
+  :   Prior density of the concentration parameter alpha.
+
+  "K"
+
+  :   Prior PMF of the number of clusters \\K_J\\.
+
+  "w1"
+
+  :   Prior density of the first stick-breaking weight w1.
+
+  "dual"
+
+  :   Dual-anchor comparison dashboard (for dual-anchor fits).
+
+  "comparison"
+
+  :   Same as "dual".
 
 - engine:
 
-  Character; plotting engine, either "ggplot2" (default) or "base".
+  Character; graphics engine to use: `"ggplot2"` (default) or `"base"`.
 
 - ...:
 
-  Additional arguments passed to plotting functions.
+  Additional arguments passed to the underlying plot functions. Common
+  options include:
+
+  base_size
+
+  :   Base font size (default: 11)
+
+  ci_level
+
+  :   Credible interval level for alpha plot (default: 0.95)
+
+  title
+
+  :   Optional title for the dashboard
+
+  show
+
+  :   If TRUE, display the plot; if FALSE, return silently
 
 ## Value
 
@@ -66,15 +103,6 @@ For dual-anchor fits, the comparison dashboard shows:
 - w1 distribution comparison with dominance threshold
 
 - Summary comparison table
-
-If `type = "auto"` (default for dual fits), the function automatically
-chooses the appropriate dashboard:
-
-- For K-only fits:
-  [`plot_prior_dashboard()`](https://joonho112.github.io/DPprior/reference/plot_prior_dashboard.md)
-
-- For dual-anchor fits:
-  [`plot_dual_comparison()`](https://joonho112.github.io/DPprior/reference/plot_dual_comparison.md)
 
 ## Plot Type Details
 
@@ -113,7 +141,7 @@ chooses the appropriate dashboard:
 # Create a fit object
 fit <- DPprior_fit(J = 50, mu_K = 5, var_K = 8)
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 48.1% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 

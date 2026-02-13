@@ -37,7 +37,9 @@ Numeric; marginal mean.
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 logS <- compute_log_stirling(50)
 mean_K_from_marginal_pmf(50, 1.5, 0.5, logS)
-#> [1] 8.355487
+
+} # }
 ```

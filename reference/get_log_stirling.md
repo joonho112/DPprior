@@ -36,15 +36,15 @@ for matrix computation
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 logS <- compute_log_stirling(10)
 
 # Valid access
 get_log_stirling(4, 2, logS)
-#> [1] 2.397895
 
 # Invalid access returns -Inf
 get_log_stirling(4, 5, logS)
-#> [1] -Inf
 get_log_stirling(4, 0, logS)
-#> [1] -Inf
+
+} # }
 ```

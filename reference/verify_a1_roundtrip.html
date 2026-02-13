@@ -90,14 +90,11 @@ where \(p = b/(b + c_J)\).</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="DPprior_a1.html">DPprior_a1</a></span><span class="op">(</span>J <span class="op">=</span> <span class="fl">50</span>, mu_K <span class="op">=</span> <span class="fl">5</span>, var_K <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="DPprior_a1.html">DPprior_a1</a></span><span class="op">(</span>J <span class="op">=</span> <span class="fl">50</span>, mu_K <span class="op">=</span> <span class="fl">5</span>, var_K <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">verify_a1_roundtrip</span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> A1 Round-Trip Verification</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ---------------------------------------- </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> mu_K: target = 5.000000, recovered = 5.000000, rel_err = 0.00e+00</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> var_K: target = 8.000000, recovered = 8.000000, rel_err = 0.00e+00</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Result: PASS</span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

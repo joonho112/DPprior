@@ -36,12 +36,19 @@ where V ~ Beta(1, alpha) and rho' is an independent copy of rho.
 
 ## References
 
-Lee, J. (2025). RN-06: Dual-Anchor Design II, Appendix A.2.
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet
+Process Mixtures. *arXiv preprint* arXiv:2602.06301.
 
 ## See also
 
 [`mean_rho_given_alpha`](https://joonho112.github.io/DPprior/reference/mean_rho_given_alpha.md),
 [`var_rho`](https://joonho112.github.io/DPprior/reference/var_rho.md)
+
+Other co_clustering:
+[`cv_rho()`](https://joonho112.github.io/DPprior/reference/cv_rho.md),
+[`mean_rho()`](https://joonho112.github.io/DPprior/reference/mean_rho.md),
+[`mean_rho_given_alpha()`](https://joonho112.github.io/DPprior/reference/mean_rho_given_alpha.md),
+[`var_rho()`](https://joonho112.github.io/DPprior/reference/var_rho.md)
 
 ## Examples
 

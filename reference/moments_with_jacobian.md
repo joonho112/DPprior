@@ -48,8 +48,8 @@ A named list with components:
 
 ## Details
 
-This function uses the score identity (RN-04 Corollary 1) to compute
-exact derivatives without finite differences:
+This function uses the score identity (Lee, 2026, Section 3.2,
+Corollary 1) to compute exact derivatives without finite differences:
 \$\$\frac{\partial}{\partial\theta} E\[f(\alpha)\] = E\[f(\alpha) \cdot
 s\_\theta(\alpha)\]\$\$
 
@@ -73,7 +73,8 @@ The Jacobian components are computed as:
 
 ## References
 
-RN-04, Corollary 1: Closed Jacobian formula via score identities
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet
+Process Mixtures. *arXiv preprint* arXiv:2602.06301.
 
 ## See also
 

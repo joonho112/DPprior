@@ -44,5 +44,5 @@ compare_a1_a2(J = 50, mu_K = 5, var_K = 8)
 #> Var achieved             4.783136 8.0000000076
 #> Residual                 3.261649     7.60e-09
 #> ------------------------------------------------------------ 
-#> Improvement ratio: 429143508x
+#> Improvement ratio: 429143906x
 ```

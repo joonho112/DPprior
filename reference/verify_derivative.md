@@ -38,9 +38,8 @@ Logical; TRUE if derivative matches finite difference.
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 verify_derivative(50, 2.0)
-#> Derivative verification (J=50, alpha=2.00):
-#>   Analytic:    2.2677787792
-#>   Finite diff: 2.2677787790
-#>   Error:       2.13e-10 [PASS]
+
+} # }
 ```

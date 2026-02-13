@@ -31,7 +31,15 @@ pois_raw, pois_bound, lin_bound, total_tv.
 ## Details
 
 This function is useful for creating error landscape visualizations as
-shown in RN-05, Figures 1-3.
+shown in Lee (2026, Section 3.3).
+
+## See also
+
+Other diagnostics:
+[`DPprior_diagnostics()`](https://joonho112.github.io/DPprior/reference/DPprior_diagnostics.md),
+[`DPprior_error_bounds()`](https://joonho112.github.io/DPprior/reference/DPprior_error_bounds.md),
+[`compute_weight_diagnostics()`](https://joonho112.github.io/DPprior/reference/compute_weight_diagnostics.md),
+[`dual_anchor_diagnostics()`](https://joonho112.github.io/DPprior/reference/dual_anchor_diagnostics.md)
 
 ## Examples
 

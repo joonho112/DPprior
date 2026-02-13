@@ -38,10 +38,9 @@ Logical; `TRUE` if verification passes.
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 logS <- compute_log_stirling(50)
 verify_pmf_moments(50, 2.0, logS)
-#> PMF-Moments Verification (J=50, alpha=2.00):
-#>   Mean: PMF=7.03762636, digamma=7.03762636, error=2.04e-14 [PASS]
-#>   Var:  PMF=4.53555756, trigamma=4.53555756, error=8.88e-14 [PASS]
-#>   Overall: PASS
+
+} # }
 ```

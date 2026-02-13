@@ -54,26 +54,8 @@ A list with components:
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 summary_quadrature(2.5, 1.5, M = 80)
-#> $n_nodes
-#> [1] 80
-#> 
-#> $alpha_range
-#>          min          max 
-#>   0.04141985 199.91970270 
-#> 
-#> $weight_range
-#>       min       max 
-#> 0.0000000 0.1413702 
-#> 
-#> $gamma_mean
-#> [1] 1.666667
-#> 
-#> $gamma_sd
-#> [1] 1.054093
-#> 
-#> $coverage
-#>   lower_sd   upper_sd 
-#>   1.541845 188.079344 
-#> 
+
+} # }
 ```

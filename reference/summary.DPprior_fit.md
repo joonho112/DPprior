@@ -9,9 +9,6 @@ and full diagnostic statistics.
 ``` r
 # S3 method for class 'DPprior_fit'
 summary(object, print_output = TRUE, ...)
-
-# S3 method for class 'DPprior_fit'
-summary(object, print_output = TRUE, ...)
 ```
 
 ## Arguments
@@ -30,8 +27,6 @@ summary(object, print_output = TRUE, ...)
   Additional arguments (currently unused).
 
 ## Value
-
-A list with summary statistics.
 
 An object of class `"summary.DPprior_fit"` containing:
 
@@ -80,32 +75,10 @@ The printed summary includes:
 ## Examples
 
 ``` r
-fit <- DPprior_a1(J = 50, mu_K = 5, var_K = 8)
-summary(fit)
-#> DPprior Prior Elicitation Summary
-#> ============================================================ 
-#> 
-#> Sample size: J = 50
-#> Method: A1
-#> Status: success
-#> 
-#> Gamma Hyperprior:
-#> ---------------------------------------- 
-#>   Shape (a) = 4.000000
-#>   Rate (b)  = 3.912023
-#>   E[α] = 1.0225, SD[α] = 0.5112, CV[α] = 0.5000
-#> 
-#> Target vs Achieved:
-#> ---------------------------------------- 
-#>                         Target     Achieved        Error
-#>   E[K_J]                5.0000           NA           NA
-#>   Var(K_J)              8.0000           NA           NA
-#> 
-
 # Create a fit object
 fit <- DPprior_fit(J = 50, mu_K = 5, var_K = 8, check_diagnostics = TRUE)
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 48.1% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 summary(fit)
@@ -149,7 +122,7 @@ summary(fit)
 #> 3    3 1.844384 1.4552538 4.974913  8.399473 4.002603e-01    1 -15.313512
 #> 4    4 2.029223 1.5996801 4.999187  8.013243 1.326844e-02    1 -14.298307
 #> 5    5 2.036082 1.6050455 4.999999  8.000021 2.078492e-05    1 -14.263052
-#> 6    6 2.036093 1.6050541 5.000000  8.000000 7.600370e-09   NA -14.262997
+#> 6    6 2.036093 1.6050541 5.000000  8.000000 7.600363e-09   NA -14.262997
 #> 
 #> Diagnostics: dominance risk = HIGH (use diagnostics=TRUE for full report)
 #> 

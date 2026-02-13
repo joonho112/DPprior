@@ -39,12 +39,21 @@ where w₁ \| α ~ Beta(1, α), so:
 
 ## References
 
-Lee, J. (2025). RN-06: Dual-Anchor Design II.
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet
+Process Mixtures. *arXiv preprint* arXiv:2602.06301.
 
 ## See also
 
 [`mean_w1`](https://joonho112.github.io/DPprior/reference/mean_w1.md),
 [`summary_w1`](https://joonho112.github.io/DPprior/reference/summary_w1.md)
+
+Other weights_w1:
+[`cdf_w1()`](https://joonho112.github.io/DPprior/reference/cdf_w1.md),
+[`density_w1()`](https://joonho112.github.io/DPprior/reference/density_w1.md),
+[`mean_w1()`](https://joonho112.github.io/DPprior/reference/mean_w1.md),
+[`prob_w1_exceeds()`](https://joonho112.github.io/DPprior/reference/prob_w1_exceeds.md),
+[`quantile_w1()`](https://joonho112.github.io/DPprior/reference/quantile_w1.md),
+[`summary_w1()`](https://joonho112.github.io/DPprior/reference/summary_w1.md)
 
 ## Examples
 

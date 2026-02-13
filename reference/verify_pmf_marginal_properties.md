@@ -53,13 +53,9 @@ Logical; TRUE if all verifications pass.
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 logS <- compute_log_stirling(50)
 verify_pmf_marginal_properties(50, 1.5, 0.5, logS)
-#> Marginal PMF Properties (J=50, a=1.50, b=0.50):
-#>   Sum = 1:          PASS (sum = 1.000000000000)
-#>   P(K=0) = 0:       PASS (P(K=0) = 0.00e+00)
-#>   Non-negative:     PASS (min = 0.00e+00)
-#>   CDF monotonic:    PASS
-#>   CDF[J] = 1:       PASS (CDF[J] = 1.000000000000)
-#>   Overall: PASS
+
+} # }
 ```

@@ -58,8 +58,8 @@ with scipy.integrate.quad) which provides independent ground truth.
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 verify_score_expectation(a = 2.0, b = 1.0, verbose = TRUE)
-#> Score Expectation Verification (a=2.00, b=1.00, M=200)
-#>   E[s_a(alpha)] = 1.448463e-05 (should be ~= 0)
-#>   E[s_b(alpha)] = -1.197109e-15 (should be ~= 0)
+
+} # }
 ```

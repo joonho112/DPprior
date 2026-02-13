@@ -94,7 +94,17 @@ direct computation would overflow.</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="pmf_K_given_alpha.html">pmf_K_given_alpha</a></code> for normalized PMF,
-<code><a href="compute_log_stirling.html">compute_log_stirling</a></code> for Stirling computation</p></div>
+<code><a href="compute_log_stirling.html">compute_log_stirling</a></code> for Stirling computation</p>
+<p>Other conditional_K:
+<code><a href="cdf_K_given_alpha.html">cdf_K_given_alpha()</a></code>,
+<code><a href="cv_K_given_alpha.html">cv_K_given_alpha()</a></code>,
+<code><a href="dispersion_K_given_alpha.html">dispersion_K_given_alpha()</a></code>,
+<code><a href="mean_K_given_alpha.html">mean_K_given_alpha()</a></code>,
+<code><a href="mode_K_given_alpha.html">mode_K_given_alpha()</a></code>,
+<code><a href="moments_K_given_alpha.html">moments_K_given_alpha()</a></code>,
+<code><a href="pmf_K_given_alpha.html">pmf_K_given_alpha()</a></code>,
+<code><a href="quantile_K_given_alpha.html">quantile_K_given_alpha()</a></code>,
+<code><a href="var_K_given_alpha.html">var_K_given_alpha()</a></code></p></div>
     </div>
 
     <div class="section level2">
@@ -102,9 +112,15 @@ direct computation would overflow.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">logS</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_log_stirling.html">compute_log_stirling</a></span><span class="op">(</span><span class="fl">50</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">log_pmf</span> <span class="op">&lt;-</span> <span class="fu">log_pmf_K_given_alpha</span><span class="op">(</span><span class="fl">50</span>, <span class="fl">2.0</span>, <span class="va">logS</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Convert to probabilities</span></span></span>
-<span class="r-in"><span><span class="va">pmf</span> <span class="op">&lt;-</span> <span class="fu"><a href="softmax.html">softmax</a></span><span class="op">(</span><span class="va">log_pmf</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Convert to probabilities (numerically stable softmax)</span></span></span>
+<span class="r-in"><span><span class="va">pmf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">log_pmf</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">log_pmf</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">pmf</span> <span class="op">&lt;-</span> <span class="va">pmf</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pmf</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pmf</span><span class="op">)</span>  <span class="co"># Should be 1</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Or use pmf_K_given_alpha() directly</span></span></span>
+<span class="r-in"><span><span class="va">pmf2</span> <span class="op">&lt;-</span> <span class="fu"><a href="pmf_K_given_alpha.html">pmf_K_given_alpha</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">2.0</span>, <span class="va">logS</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pmf2</span><span class="op">)</span>  <span class="co"># Should be 1</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

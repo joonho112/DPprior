@@ -54,14 +54,9 @@ Logical; TRUE if moments match within tolerance.
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 logS <- compute_log_stirling(50)
 verify_pmf_marginal_moments(50, 1.5, 0.5, logS)
-#> Moments Consistency (J=50, a=1.50, b=0.50):
-#>   Mean (PMF):       8.35548676
-#>   Mean (quadrature):8.35548676
-#>   Mean error:       7.11e-15 [PASS]
-#>   Var (PMF):        22.76895012
-#>   Var (quadrature): 22.76895012
-#>   Var error:        4.26e-14 [PASS]
-#>   Overall: PASS
+
+} # }
 ```

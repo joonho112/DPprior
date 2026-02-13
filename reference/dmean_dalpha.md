@@ -35,13 +35,14 @@ This derivative is always positive for \\\alpha \> 0\\, confirming that
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 dmean_dalpha(50, 2.0)
-#> [1] 2.267779
 
 # Verify with finite difference
 J <- 50; alpha <- 2.0; eps <- 1e-6
 fd <- (mean_K_given_alpha(J, alpha + eps) -
        mean_K_given_alpha(J, alpha - eps)) / (2 * eps)
 abs(fd - dmean_dalpha(J, alpha)) < 1e-5  # TRUE
-#> [1] TRUE
+
+} # }
 ```

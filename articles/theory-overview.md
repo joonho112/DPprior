@@ -695,8 +695,9 @@ The A1 closed-form approximation introduces two sources of error:
     $\mu_{J}(\alpha) = \alpha\left( \psi(\alpha + J) - \psi(\alpha) \right)$
     is only approximately linear in $\alpha$.
 
-**Novel Contribution.** Analysis in our research notes (RN-02) shows
-that the Poisson proxy with $c_{J} = \log J$ provides:
+**Novel Contribution.** Analysis in [Lee (2026,
+arXiv:2602.06301)](https://arxiv.org/abs/2602.06301) shows that the
+Poisson proxy with $c_{J} = \log J$ provides:
 
 - Mean approximation error
   $\left| \mu_{J}(\alpha) - \alpha\log J \right| = O(\alpha)$ for fixed
@@ -725,15 +726,15 @@ error_data <- do.call(rbind, lapply(J_values, function(J) {
   )
 }))
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 42.6% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 45.1% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 41.6% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 

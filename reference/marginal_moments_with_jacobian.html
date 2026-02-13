@@ -114,12 +114,11 @@ $$\frac{\partial}{\partial \theta} E[f(\alpha)] = E[f(\alpha) \cdot s_\theta(\al
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">marginal_moments_with_jacobian</span><span class="op">(</span><span class="fl">50</span>, <span class="fl">2.0</span>, <span class="fl">1.0</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">marginal_moments_with_jacobian</span><span class="op">(</span><span class="fl">50</span>, <span class="fl">2.0</span>, <span class="fl">1.0</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">result</span><span class="op">$</span><span class="va">jacobian</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             a          b</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> mean 2.245605  -4.135585</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> var  2.943578 -13.038228</span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -73,101 +73,10 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">verify_moments_marginal_all</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ======================================================================</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Module 05: Marginal Moments - Full Verification Suite</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ======================================================================</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Marginal Moments Verification (J=50, a=1.50, b=0.50):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   E[K_J] = 8.355487</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Var(K_J) = 22.768950</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   SD(K_J) = 4.771682</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   CV(K_J) = 0.571084</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Test 1 (Mean bounds): E[K] in [1, 50]? PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Test 2 (Var non-negative): Var(K) &gt;= 0? PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Test 3 (Var inflation): Var(K)=22.7690 &gt; Var(K|E[alpha])=5.7311? PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Test 4 (CV positive): CV &gt; 0? PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Overall: PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Marginal Moments Verification (J=50, a=2.00, b=1.00):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   E[K_J] = 6.639693</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Var(K_J) = 12.954502</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   SD(K_J) = 3.599236</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   CV(K_J) = 0.542079</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Test 1 (Mean bounds): E[K] in [1, 50]? PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Test 2 (Var non-negative): Var(K) &gt;= 0? PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Test 3 (Var inflation): Var(K)=12.9545 &gt; Var(K|E[alpha])=4.5356? PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Test 4 (CV positive): CV &gt; 0? PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Overall: PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Marginal Moments Verification (J=100, a=2.00, b=1.00):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   E[K_J] = 7.978551</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Var(K_J) = 20.406843</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   SD(K_J) = 4.517393</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   CV(K_J) = 0.566192</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Test 1 (Mean bounds): E[K] in [1, 100]? PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Test 2 (Var non-negative): Var(K) &gt;= 0? PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Test 3 (Var inflation): Var(K)=20.4068 &gt; Var(K|E[alpha])=5.8542? PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Test 4 (CV positive): CV &gt; 0? PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Overall: PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Marginal Moments Verification (J=10, a=0.50, b=0.50):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   E[K_J] = 2.471937</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Var(K_J) = 2.905109</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   SD(K_J) = 1.704438</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   CV(K_J) = 0.689515</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Test 1 (Mean bounds): E[K] in [1, 10]? PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Test 2 (Var non-negative): Var(K) &gt;= 0? PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Test 3 (Var inflation): Var(K)=2.9051 &gt; Var(K|E[alpha])=1.3792? PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Test 4 (CV positive): CV &gt; 0? PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Overall: PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Marginal Moments Verification (J=10, a=5.00, b=2.00):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   E[K_J] = 4.310963</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Var(K_J) = 2.512577</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   SD(K_J) = 1.585111</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   CV(K_J) = 0.367693</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Test 1 (Mean bounds): E[K] in [1, 10]? PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Test 2 (Var non-negative): Var(K) &gt;= 0? PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Test 3 (Var inflation): Var(K)=2.5126 &gt; Var(K|E[alpha])=1.9109? PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Test 4 (CV positive): CV &gt; 0? PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Overall: PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ----------------------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> NegBin Approximation Error Analysis:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ----------------------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   J= 50: E[K] exact=8.36, NegBin=12.74, rel_err=52.4%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   J=100: E[K] exact=10.31, NegBin=14.82, rel_err=43.7%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   J=300: E[K] exact=13.52, NegBin=18.11, rel_err=33.9%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ----------------------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Quadrature Convergence Test:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ----------------------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Quadrature Convergence (J=50, a=1.50, b=0.50):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    M     mean      var  mean_change   var_change</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   20 8.355497 22.76871           NA           NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   40 8.355487 22.76895 1.052945e-05 2.394687e-04</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   60 8.355487 22.76895 5.804876e-08 1.314309e-06</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   80 8.355487 22.76895 1.056184e-09 2.390260e-08</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  100 8.355487 22.76895 3.567457e-11 8.072334e-10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  120 8.355487 22.76895 1.790568e-12 4.058620e-11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Mean: CONVERGED to machine precision</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ======================================================================</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Overall Result: ALL TESTS PASSED</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ======================================================================</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="fu">verify_moments_marginal_all</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

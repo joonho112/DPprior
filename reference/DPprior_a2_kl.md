@@ -152,6 +152,11 @@ The A2-KL algorithm finds \\(a^\*, b^\*)\\ by solving: \$\$(a^\*, b^\*)
 - **A2-KL**: Full target distribution shape (multi-modal, skewed,
   expert-elicited)
 
+## References
+
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet
+Process Mixtures. *arXiv preprint* arXiv:2602.06301.
+
 ## See also
 
 [`DPprior_a2_newton`](https://joonho112.github.io/DPprior/reference/DPprior_a2_newton.md)
@@ -162,6 +167,12 @@ for closed-form initialization,
 for KL divergence computation,
 [`discretize_chisq`](https://joonho112.github.io/DPprior/reference/discretize_chisq.md)
 for chi-square discretization
+
+Other elicitation:
+[`DPprior_a1()`](https://joonho112.github.io/DPprior/reference/DPprior_a1.md),
+[`DPprior_a2_newton()`](https://joonho112.github.io/DPprior/reference/DPprior_a2_newton.md),
+[`DPprior_dual()`](https://joonho112.github.io/DPprior/reference/DPprior_dual.md),
+[`DPprior_fit()`](https://joonho112.github.io/DPprior/reference/DPprior_fit.md)
 
 ## Examples
 

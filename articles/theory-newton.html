@@ -81,7 +81,7 @@
       <img src="../logo.svg" class="logo" alt=""><h1>Exact Moment Matching: The A2 Newton Algorithm</h1>
                         <h4 data-toc-skip class="author">JoonHo Lee</h4>
             
-            <h4 data-toc-skip class="date">2026-01-01</h4>
+            <h4 data-toc-skip class="date">2026-02-13</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/joonho112/DPprior/blob/main/vignettes/theory-newton.Rmd" class="external-link"><code>vignettes/theory-newton.Rmd</code></a></small>
       <div class="d-none name"><code>theory-newton.Rmd</code></div>
@@ -266,7 +266,8 @@ Score functions for the Gamma distribution with a = 2, b = 1.
 </h3>
 <p>Using the score identities, we derive closed-form expressions for the
 Jacobian entries.</p>
-<p><strong>Corollary 1</strong> (Closed Jacobian formulas; RN-04).</p>
+<p><strong>Corollary 1</strong> (Closed Jacobian formulas; Lee, 2026,
+Section 3.2).</p>
 <p><em>Define the auxiliary expectations:</em>
 <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>m</mi><mi>r</mi></msub><mo>:=</mo><mi>𝔼</mi><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>κ</mi><mi>J</mi></msub><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>α</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>r</mi></msup><mo stretchy="true" form="postfix">]</mo></mrow><mo>,</mo><mspace width="1.0em"></mspace><mi>r</mi><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo stretchy="false" form="postfix">}</mo><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>v</mi><mn>1</mn></msub><mo>:=</mo><mi>𝔼</mi><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>v</mi><mi>J</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>α</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
 m_r := \mathbb{E}[\kappa_J(\alpha)^r], \quad r \in \{1, 2\}, \qquad
@@ -758,7 +759,7 @@ the A2 refinement corrects:</p>
 <td align="right">-14.6</td>
 <td align="right">-46.3</td>
 <td align="right">0</td>
-<td align="right">9.661998e+08</td>
+<td align="right">9.662020e+08</td>
 </tr>
 <tr class="even">
 <td align="right">50</td>
@@ -785,7 +786,7 @@ the A2 refinement corrects:</p>
 <td align="right">-31.6</td>
 <td align="right">-66.0</td>
 <td align="right">0</td>
-<td align="right">1.007363e+13</td>
+<td align="right">9.778035e+12</td>
 </tr>
 <tr class="odd">
 <td align="right">50</td>
@@ -812,7 +813,7 @@ the A2 refinement corrects:</p>
 <td align="right">-16.9</td>
 <td align="right">-55.5</td>
 <td align="right">0</td>
-<td align="right">2.181637e+09</td>
+<td align="right">2.181640e+09</td>
 </tr>
 <tr class="even">
 <td align="right">50</td>
@@ -821,7 +822,7 @@ the A2 refinement corrects:</p>
 <td align="right">-11.7</td>
 <td align="right">-43.8</td>
 <td align="right">0</td>
-<td align="right">1.121414e+10</td>
+<td align="right">1.121455e+10</td>
 </tr>
 <tr class="odd">
 <td align="right">100</td>
@@ -830,7 +831,7 @@ the A2 refinement corrects:</p>
 <td align="right">-8.3</td>
 <td align="right">-34.7</td>
 <td align="right">0</td>
-<td align="right">1.722195e+09</td>
+<td align="right">1.722180e+09</td>
 </tr>
 <tr class="even">
 <td align="right">25</td>
@@ -857,7 +858,7 @@ the A2 refinement corrects:</p>
 <td align="right">-18.8</td>
 <td align="right">-51.6</td>
 <td align="right">0</td>
-<td align="right">5.514427e+09</td>
+<td align="right">5.514431e+09</td>
 </tr>
 </tbody>
 </table>
@@ -909,7 +910,7 @@ the A2 refinement corrects:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"  A2: %.2e\n"</span>, <span class="va">a2</span><span class="op">$</span><span class="va">fit</span><span class="op">$</span><span class="va">residual</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   A2: 7.60e-09</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"  Improvement: %.0fx more accurate\n"</span>, <span class="va">a1_residual</span> <span class="op">/</span> <span class="va">a2</span><span class="op">$</span><span class="va">fit</span><span class="op">$</span><span class="va">residual</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   Improvement: 429143508x more accurate</span></span></code></pre></div>
+<span><span class="co">#&gt;   Improvement: 429143906x more accurate</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="visualizing-the-improvement">5.3 Visualizing the Improvement<a class="anchor" aria-label="anchor" href="#visualizing-the-improvement"></a>
@@ -987,9 +988,9 @@ Comparison of K_J distributions under A1 and A2 hyperpriors.
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strrep.html" class="external-link">strrep</a></span><span class="op">(</span><span class="st">"-"</span>, <span class="fl">50</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; --------------------------------------------------</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">bench</span><span class="op">)</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"expr"</span>, <span class="st">"mean"</span>, <span class="st">"median"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   expr       mean     median</span></span>
-<span><span class="co">#&gt; 1   A1    43.3934    38.3315</span></span>
-<span><span class="co">#&gt; 2   A2 17926.8428 17321.7620</span></span>
+<span><span class="co">#&gt;   expr        mean     median</span></span>
+<span><span class="co">#&gt; 1   A1    34.50895    28.1765</span></span>
+<span><span class="co">#&gt; 2   A2 17928.18665 17482.7510</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\nNote: A2 takes ~10x longer than A1 but achieves ~10⁶x better accuracy.\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>

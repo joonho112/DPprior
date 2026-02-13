@@ -79,7 +79,7 @@ DPprior_fit(
 # Basic usage with confidence level
 fit1 <- DPprior_fit(J = 50, mu_K = 5, confidence = "medium")
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 49.7% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 print(fit1)
@@ -105,7 +105,7 @@ print(fit1)
 # Direct variance specification
 fit2 <- DPprior_fit(J = 50, mu_K = 5, var_K = 10)
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 49.7% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 cat("Gamma(", round(fit2$a, 4), ", ", round(fit2$b, 4), ")\n", sep = "")
@@ -117,7 +117,7 @@ fit3 <- DPprior_fit(J = 200, mu_K = 15, var_K = 30, method = "A1")
 # With diagnostics
 fit4 <- DPprior_fit(J = 50, mu_K = 5, var_K = 8, check_diagnostics = TRUE)
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 48.1% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 ```
@@ -128,7 +128,7 @@ fit4 <- DPprior_fit(J = 50, mu_K = 5, var_K = 8, check_diagnostics = TRUE)
 
 Extends moment-based elicitation to incorporate constraints on the
 stick-breaking weight distribution, addressing the “unintended prior”
-problem identified in RN-07.
+problem identified in Lee (2026, Section 4).
 
 ``` r
 DPprior_dual(
@@ -173,7 +173,7 @@ component containing:
 # Step 1: Fit K-only prior
 fit_K <- DPprior_fit(J = 50, mu_K = 5, var_K = 8)
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 48.1% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 cat("K-only: P(w1 > 0.5) =", 
@@ -810,7 +810,7 @@ var_rho_given_alpha(alpha)    # Returns 2*alpha / ((1+alpha)^2 * (2+alpha) * (3+
 **Comprehensive Prior Diagnostics**
 
 Computes a full diagnostic report implementing the “unintended prior”
-checks from RN-07.
+checks from Lee (2026, Section 4).
 
 ``` r
 DPprior_diagnostics(fit, thresholds = c(0.5, 0.9))
@@ -843,7 +843,7 @@ DPprior_diagnostics(fit, thresholds = c(0.5, 0.9))
 ``` r
 fit <- DPprior_fit(J = 50, mu_K = 5, var_K = 8)
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 48.1% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 diag <- DPprior_diagnostics(fit)
@@ -1295,8 +1295,8 @@ Statistics*, 2(6), 1152-1174.
 Golub, G. H., & Welsch, J. H. (1969). Calculation of Gauss quadrature
 rules. *Mathematics of Computation*, 23(106), 221-230.
 
-Lee, J. (2025). RN-01 through RN-07: Research Notes for DPprior Package
-Development.
+Lee, J. (2026). Design-conditional prior elicitation for Dirichlet
+process mixtures. *arXiv preprint* arXiv:2602.06301.
 
 Lee, J., Che, J., Rabe-Hesketh, S., Feller, A., & Miratrix, L. (2025).
 Improving the estimation of site-specific effects and their distribution

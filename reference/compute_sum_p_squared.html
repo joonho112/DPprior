@@ -92,7 +92,8 @@ using the identity for sums of squared reciprocals.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
-    <p>RN-05: Error Quantification &amp; Guarantees for the A1 Large-J Approximation</p>
+    <p>Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+<em>arXiv preprint</em> arXiv:2602.06301.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -101,14 +102,14 @@ using the identity for sums of squared reciprocals.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Compute raw sum for J=50, alpha=1</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="co"># Compute raw sum for J=50, alpha=1</span></span></span>
 <span class="r-in"><span><span class="fu">compute_sum_p_squared</span><span class="op">(</span>J <span class="op">=</span> <span class="fl">50</span>, alpha <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.6251327</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Vectorized over alpha</span></span></span>
 <span class="r-in"><span><span class="fu">compute_sum_p_squared</span><span class="op">(</span>J <span class="op">=</span> <span class="fl">50</span>, alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2287007 0.6251327 1.5020688</span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -147,7 +147,7 @@ Score functions for the Gamma distribution with a = 2, b = 1.
 Using the score identities, we derive closed-form expressions for the
 Jacobian entries.
 
-**Corollary 1** (Closed Jacobian formulas; RN-04).
+**Corollary 1** (Closed Jacobian formulas; Lee, 2026, Section 3.2).
 
 *Define the auxiliary expectations:*
 $$m_{r}:={\mathbb{E}}\left\lbrack \kappa_{J}(\alpha)^{r} \right\rbrack,\quad r \in \{ 1,2\},\qquad v_{1}:={\mathbb{E}}\left\lbrack v_{J}(\alpha) \right\rbrack,$$*where
@@ -540,18 +540,18 @@ knitr::kable(
 
 |   J | μ_K | σ²_K | A1 Mean Err % | A1 Var Err % | A2 Residual |  Improvement |
 |----:|----:|-----:|--------------:|-------------:|------------:|-------------:|
-|  25 |   5 |  6.0 |         -14.6 |        -46.3 |           0 | 9.661998e+08 |
+|  25 |   5 |  6.0 |         -14.6 |        -46.3 |           0 | 9.662020e+08 |
 |  50 |   5 |  6.0 |          -9.8 |        -35.2 |           0 | 6.043385e+08 |
 | 100 |   5 |  6.0 |          -6.6 |        -27.2 |           0 | 1.170285e+12 |
-|  25 |  10 | 13.5 |         -31.6 |        -66.0 |           0 | 1.007363e+13 |
+|  25 |  10 | 13.5 |         -31.6 |        -66.0 |           0 | 9.778035e+12 |
 |  50 |  10 | 13.5 |         -23.6 |        -54.0 |           0 | 2.208491e+12 |
 | 100 |  10 | 13.5 |         -17.9 |        -44.2 |           0 | 2.361792e+10 |
-|  25 |   5 | 10.0 |         -16.9 |        -55.5 |           0 | 2.181637e+09 |
-|  50 |   5 | 10.0 |         -11.7 |        -43.8 |           0 | 1.121414e+10 |
-| 100 |   5 | 10.0 |          -8.3 |        -34.7 |           0 | 1.722195e+09 |
+|  25 |   5 | 10.0 |         -16.9 |        -55.5 |           0 | 2.181640e+09 |
+|  50 |   5 | 10.0 |         -11.7 |        -43.8 |           0 | 1.121455e+10 |
+| 100 |   5 | 10.0 |          -8.3 |        -34.7 |           0 | 1.722180e+09 |
 |  25 |  10 | 22.5 |         -32.8 |        -73.3 |           0 | 4.426826e+11 |
 |  50 |  10 | 22.5 |         -24.6 |        -61.7 |           0 | 1.342414e+12 |
-| 100 |  10 | 22.5 |         -18.8 |        -51.6 |           0 | 5.514427e+09 |
+| 100 |  10 | 22.5 |         -18.8 |        -51.6 |           0 | 5.514431e+09 |
 
 A1 errors and A2 correction across scenarios
 
@@ -601,7 +601,7 @@ cat(sprintf("  A1: %.6f\n", a1_residual))
 cat(sprintf("  A2: %.2e\n", a2$fit$residual))
 #>   A2: 7.60e-09
 cat(sprintf("  Improvement: %.0fx more accurate\n", a1_residual / a2$fit$residual))
-#>   Improvement: 429143508x more accurate
+#>   Improvement: 429143906x more accurate
 ```
 
 ### 5.3 Visualizing the Improvement
@@ -680,9 +680,9 @@ cat("Computational Cost Comparison\n")
 cat(strrep("-", 50), "\n")
 #> --------------------------------------------------
 print(summary(bench)[, c("expr", "mean", "median")])
-#>   expr       mean     median
-#> 1   A1    43.3934    38.3315
-#> 2   A2 17926.8428 17321.7620
+#>   expr        mean     median
+#> 1   A1    34.50895    28.1765
+#> 2   A2 17928.18665 17482.7510
 
 cat("\nNote: A2 takes ~10x longer than A1 but achieves ~10⁶x better accuracy.\n")
 #> 

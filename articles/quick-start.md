@@ -33,7 +33,7 @@ library(DPprior)
 
 fit <- DPprior_fit(J = 50, mu_K = 5, confidence = "medium")
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 49.7% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 
@@ -171,21 +171,21 @@ The simplest approach uses qualitative confidence levels:
 # Low confidence = high uncertainty (wide prior)
 fit_low <- DPprior_fit(J = 50, mu_K = 5, confidence = "low")
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 56.3% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 
 # Medium confidence = moderate uncertainty (default)
 fit_med <- DPprior_fit(J = 50, mu_K = 5, confidence = "medium")
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 49.7% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 
 # High confidence = low uncertainty (concentrated prior)
 fit_high <- DPprior_fit(J = 50, mu_K = 5, confidence = "high")
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 46.5% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 
@@ -217,7 +217,7 @@ For users who want precise control:
 # Specify variance of K directly
 fit_direct <- DPprior_fit(J = 50, mu_K = 5, var_K = 10)
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 49.7% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 cat("Direct specification: var_K = 10\n")
@@ -234,14 +234,14 @@ For advanced users, different calibration algorithms are available:
 # A2-MN (default): Exact moment matching via Newton's method
 fit_newton <- DPprior_fit(J = 50, mu_K = 5, var_K = 10, method = "A2-MN")
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 49.7% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 
 # A1: Fast closed-form approximation (good for large J)
 fit_approx <- DPprior_fit(J = 50, mu_K = 5, var_K = 10, method = "A1")
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 53.3% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 

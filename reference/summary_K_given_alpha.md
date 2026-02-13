@@ -27,29 +27,8 @@ dmean_dalpha.
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 summary_K_given_alpha(50, 2.0)
-#> $J
-#> [1] 50
-#> 
-#> $alpha
-#> [1] 2
-#> 
-#> $mean
-#> [1] 7.037626
-#> 
-#> $var
-#> [1] 4.535558
-#> 
-#> $sd
-#> [1] 2.129685
-#> 
-#> $cv
-#> [1] 0.3026141
-#> 
-#> $dispersion
-#> [1] 0.6444726
-#> 
-#> $dmean_dalpha
-#> [1] 2.267779
-#> 
+
+} # }
 ```

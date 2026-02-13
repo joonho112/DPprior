@@ -1,7 +1,7 @@
 # Dual-Anchor Loss Function
 
 Computes the combined loss for K_J and first-weight targets used in the
-dual-anchor calibration framework (RN-06, Algorithm 2).
+dual-anchor calibration framework.
 
 ## Usage
 

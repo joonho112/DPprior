@@ -1,7 +1,7 @@
-# Get K_J PMF with Fallback
+# Get K_J PMF via pmf_K_marginal
 
-Internal helper that tries exact_K_pmf() first, then falls back to
-pmf_K_marginal() if needed.
+Internal helper that computes the marginal PMF of K_J using
+pmf_K_marginal() and Stirling numbers.
 
 ## Usage
 

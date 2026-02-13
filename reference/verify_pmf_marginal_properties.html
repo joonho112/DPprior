@@ -105,16 +105,11 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">logS</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_log_stirling.html">compute_log_stirling</a></span><span class="op">(</span><span class="fl">50</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="va">logS</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_log_stirling.html">compute_log_stirling</a></span><span class="op">(</span><span class="fl">50</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">verify_pmf_marginal_properties</span><span class="op">(</span><span class="fl">50</span>, <span class="fl">1.5</span>, <span class="fl">0.5</span>, <span class="va">logS</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Marginal PMF Properties (J=50, a=1.50, b=0.50):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Sum = 1:          PASS (sum = 1.000000000000)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   P(K=0) = 0:       PASS (P(K=0) = 0.00e+00)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Non-negative:     PASS (min = 0.00e+00)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   CDF monotonic:    PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   CDF[J] = 1:       PASS (CDF[J] = 1.000000000000)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Overall: PASS</span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

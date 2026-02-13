@@ -37,16 +37,15 @@ Special cases:
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 softmax(c(1, 2, 3))
-#> [1] 0.09003057 0.24472847 0.66524096
 sum(softmax(c(1, 2, 3)))
-#> [1] 1
 
 # Works with extreme values
 softmax(c(1000, 1001, 1002))
-#> [1] 0.09003057 0.24472847 0.66524096
 
 # Inf handling
 softmax(c(1, Inf, Inf))
-#> [1] 0.0 0.5 0.5
+
+} # }
 ```

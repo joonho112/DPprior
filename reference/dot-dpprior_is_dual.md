@@ -8,8 +8,6 @@ structure.
 
 ``` r
 .dpprior_is_dual(fit)
-
-.dpprior_is_dual(fit)
 ```
 
 ## Arguments

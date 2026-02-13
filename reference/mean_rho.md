@@ -42,13 +42,20 @@ equals `E(w1 | a, b)` (but the full distributions differ).
 
 ## References
 
-Lee, J. (2025). RN-06: Dual-Anchor Design II, Section 3.3.
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet
+Process Mixtures. *arXiv preprint* arXiv:2602.06301.
 
 ## See also
 
 [`var_rho`](https://joonho112.github.io/DPprior/reference/var_rho.md),
 [`cv_rho`](https://joonho112.github.io/DPprior/reference/cv_rho.md),
 [`mean_w1`](https://joonho112.github.io/DPprior/reference/mean_w1.md)
+
+Other co_clustering:
+[`cv_rho()`](https://joonho112.github.io/DPprior/reference/cv_rho.md),
+[`mean_rho_given_alpha()`](https://joonho112.github.io/DPprior/reference/mean_rho_given_alpha.md),
+[`var_rho()`](https://joonho112.github.io/DPprior/reference/var_rho.md),
+[`var_rho_given_alpha()`](https://joonho112.github.io/DPprior/reference/var_rho_given_alpha.md)
 
 ## Examples
 

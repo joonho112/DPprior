@@ -501,7 +501,7 @@ mu_K_target <- 5
 # Fit using K-only calibration
 fit_K <- DPprior_fit(J = J, mu_K = mu_K_target, confidence = "medium")
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 49.7% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 
@@ -568,11 +568,11 @@ anchors.*
 
 **Boundary cases:**
 
-| $\lambda$         | Behavior                                 |
-|-------------------|------------------------------------------|
-| $\lambda = 1$     | K-only calibration (RN-01 through RN-05) |
-| $\lambda = 0$     | Weight-only calibration (SSI-style)      |
-| $0 < \lambda < 1$ | Compromise between both anchors          |
+| $\lambda$         | Behavior                                     |
+|-------------------|----------------------------------------------|
+| $\lambda = 1$     | K-only calibration (Lee, 2026, Sections 2–3) |
+| $\lambda = 0$     | Weight-only calibration (SSI-style)          |
+| $0 < \lambda < 1$ | Compromise between both anchors              |
 
 ### 5.3 Implementation Variants
 

@@ -124,18 +124,62 @@
 <li>
 <code><a href="../reference/integrate_gamma.html">integrate_gamma()</a></code>: High-precision Gauss-Laguerre integration</li>
 <li>
-<code>moments_K_marginal()</code>: Marginal moments E[K] and Var(K) under Gamma prior</li>
+<code><a href="../reference/exact_K_moments.html">exact_K_moments()</a></code>: Marginal moments E[K] and Var(K) under Gamma prior</li>
 </ul></div>
 </div>
 <div class="section level4">
-<h4 id="documentation-1-0-0">Documentation<a class="anchor" aria-label="anchor" href="#documentation-1-0-0"></a></h4>
-<p>Comprehensive vignettes organized into two tracks:</p>
+<h4 id="package-infrastructure-1-0-0">Package Infrastructure<a class="anchor" aria-label="anchor" href="#package-infrastructure-1-0-0"></a></h4>
+<div class="section level5">
+<h5 id="cran-compliance-1-0-0">CRAN Compliance<a class="anchor" aria-label="anchor" href="#cran-compliance-1-0-0"></a></h5>
+<ul><li>Passes R CMD check with 0 errors, 0 warnings, 0 notes</li>
+<li>Complete roxygen2-managed NAMESPACE with 77 exported functions and 11 S3 methods</li>
+<li>All examples use <code>\dontrun{}</code> or <code>\donttest{}</code> as appropriate</li>
+<li>No non-standard dependencies; base R + stats + graphics only in Imports</li>
+</ul></div>
+<div class="section level5">
+<h5 id="focused-public-api-1-0-0">Focused Public API<a class="anchor" aria-label="anchor" href="#focused-public-api-1-0-0"></a></h5>
+<ul><li>77 carefully curated exports organized across 13 functional groups: core elicitation, approximation algorithms, Stirling numbers, K distribution (conditional and marginal), weight distribution, co-clustering probability, diagnostics, visualization, S3 methods, numerical utilities, computation, and validation/verification</li>
+</ul></div>
+<div class="section level5">
+<h5 id="test-suite-1-0-0">Test Suite<a class="anchor" aria-label="anchor" href="#test-suite-1-0-0"></a></h5>
+<ul><li>2,084 unit tests via testthat 3.0</li>
+<li>Coverage spans all 20 source modules (R/00 through R/18 plus DPprior-package)</li>
+<li>Tests verify mathematical identities, numerical accuracy, edge cases, S3 method contracts, and visualization output</li>
+</ul></div>
+<div class="section level5">
+<h5 id="documentation-1-0-0">Documentation<a class="anchor" aria-label="anchor" href="#documentation-1-0-0"></a></h5>
+<ul><li>49 <code>@family</code> cross-reference tags across 7 conceptual families</li>
+<li>27 <code>@references</code> blocks citing Lee (2026) arXiv:2602.06301</li>
+<li>Terminology standardized to Design-Conditional Elicitation (DCE) and Two-Stage Moment Matching (TSMM)</li>
+</ul></div>
+<div class="section level5">
+<h5 id="numerical-robustness-1-0-0">Numerical Robustness<a class="anchor" aria-label="anchor" href="#numerical-robustness-1-0-0"></a></h5>
+<ul><li>11 named constants in <code>R/00_constants.R</code> for reproducible thresholds</li>
+<li>
+<code><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp()</a></code> overflow protection via <code>.EXP_MAX</code> clamping in BFGS optimization</li>
+<li>Singular Jacobian fallback using correct gradient direction (J^T F)</li>
+<li>Division-by-near-zero guards in relative error computation</li>
+<li>PMF normalization guards for zero/non-finite sums</li>
+</ul></div>
+<div class="section level5">
+<h5 id="comprehensive-vignettes-1-0-0">Comprehensive Vignettes<a class="anchor" aria-label="anchor" href="#comprehensive-vignettes-1-0-0"></a></h5>
+<p>12 vignettes organized into two tracks:</p>
 <p><strong>Applied Researchers Track:</strong> - Introduction: Why prior elicitation matters - Quick Start: Your first prior in 5 minutes - Applied Guide: Complete elicitation workflow - Dual-Anchor: Control counts AND weights - Diagnostics: Verify prior behavior - Case Studies: Multisite trials and meta-analysis</p>
 <p><strong>Methodological Researchers Track:</strong> - Theory Overview: Mathematical foundations - Stirling Numbers: Antoniak distribution details - Approximations: A1 closed-form theory - Newton Algorithm: A2 exact moment matching - Weight Distributions: w₁, ρ, and dual-anchor framework - API Reference: Complete function documentation</p>
 </div>
+<div class="section level5">
+<h5 id="pkgdown-website-1-0-0">pkgdown Website<a class="anchor" aria-label="anchor" href="#pkgdown-website-1-0-0"></a></h5>
+<ul><li>Full pkgdown site at <a href="https://joonho112.github.io/DPprior/" class="uri">https://joonho112.github.io/DPprior/</a>
+</li>
+<li>Reference index organized into 13 sections matching the public API</li>
+<li>Articles index with Applied and Methodological tracks</li>
+<li>Search functionality enabled</li>
+<li>Favicons and PWA manifest configured</li>
+</ul></div>
+</div>
 <div class="section level4">
 <h4 id="methodological-foundation-1-0-0">Methodological Foundation<a class="anchor" aria-label="anchor" href="#methodological-foundation-1-0-0"></a></h4>
-<p>This package implements the DORO 2.0 methodology, extending the original DORO approach (Dorazio, 2009) with:</p>
+<p>This package implements the Design-Conditional Elicitation (DCE) methodology, extending the original DORO approach (Dorazio, 2009) with:</p>
 <ol style="list-style-type: decimal"><li><p><strong>A1 closed-form approximation</strong>: Instant initial estimates using the asymptotic Negative Binomial distribution of K_J under a Gamma prior on α (Zito et al., 2024)</p></li>
 <li><p><strong>A2 Newton refinement</strong>: Exact moment matching using numerically stable computation of Stirling numbers and Gauss-Laguerre quadrature</p></li>
 <li><p><strong>Dual-anchor extension</strong>: Joint control of K and w₁ distributions, addressing the sample-size-independent concerns raised by Vicentini &amp; Jermyn (2025)</p></li>
@@ -143,6 +187,7 @@
 <div class="section level4">
 <h4 id="references-1-0-0">References<a class="anchor" aria-label="anchor" href="#references-1-0-0"></a></h4>
 <ul><li><p>Dorazio, R. M. (2009). On selecting a prior for the precision parameter of Dirichlet process mixture models. <em>Journal of Statistical Planning and Inference</em>, 139(10), 3384–3390.</p></li>
+<li><p>Lee, J. (2026). Design-conditional prior elicitation for Dirichlet process mixtures. <em>arXiv preprint</em> arXiv:2602.06301.</p></li>
 <li><p>Lee, J., Che, J., Rabe-Hesketh, S., Feller, A., &amp; Miratrix, L. (2025). Improving the estimation of site-specific effects and their distribution in multisite trials. <em>Journal of Educational and Behavioral Statistics</em>, 50(5), 731–764.</p></li>
 <li><p>Vicentini, C., &amp; Jermyn, I. H. (2025). Prior selection for the precision parameter of Dirichlet process mixtures. <em>arXiv:2502.00864</em>.</p></li>
 <li><p>Zito, A., Rigon, T., &amp; Dunson, D. B. (2024). Bayesian nonparametric modeling of latent partitions via Stirling-gamma priors. <em>arXiv:2306.02360</em>.</p></li>

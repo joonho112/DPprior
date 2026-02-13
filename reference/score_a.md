@@ -44,7 +44,8 @@ themselves. Use higher M (e.g., 120-200) for verification purposes.
 
 ## References
 
-RN-04, Section 4.2: Jacobian via score identities
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet
+Process Mixtures. *arXiv preprint* arXiv:2602.06301.
 
 ## See also
 

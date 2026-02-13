@@ -73,66 +73,10 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">verify_DPprior_fit</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ============================================================ </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Module 16: DPprior_fit() - Verification Suite</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ============================================================ </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [Test 1] Confidence to Variance Conversion (GPT VIF values)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------- </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   confidence='low': VIF=5.0, var_K=20.00 [PASS]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   confidence='medium': VIF=2.5, var_K=10.00 [PASS]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   confidence='high': VIF=1.5, var_K=6.00 [PASS]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [Test 2] var_K Upper Bound Check (GPT improvement)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------- </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Max variance for J=50: 600.25</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Error on var_K=700: TRUE [PASS]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [Test 3] A1-only Feasibility Projection (GPT insight)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------- </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   A1 with var_K=3: projected to 4.000001 [PASS]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   A2-MN with var_K=5: var_K_used=5.000000 [PASS]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [Test 4] mu_K Boundary Check (GPT improvement)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------- </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   mu_K=1 rejected: TRUE [PASS]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   mu_K&gt;J rejected: TRUE [PASS]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [Test 5] Method Dispatch</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------- </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   method='A1': a=4.000000, b=3.912023 [PASS]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   method='A2-MN': a=2.036093, b=1.605054 [PASS]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [Test 6] A2 Improves A1 Accuracy</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------- </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   A1 residual: 3.261649e+00</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   A2 residual: 7.600370e-09</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Improvement: 429143508x [PASS]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [Test 7] Diagnostics Structure (GPT: solver_diagnostics)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------- </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   diagnostics present: TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   weights diagnostics: TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   dominance_risk: high</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [PASS]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [Test 8] Output Structure</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------- </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   $a: present</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   $b: present</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   $J: present</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   $target: present</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   $method: present</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   $converged: present</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   $fit: present</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   $target structure (incl. var_K_used): OK</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   $fit structure: OK</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ============================================================ </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Overall Result: ALL TESTS PASSED</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ============================================================ </span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="fu">verify_DPprior_fit</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

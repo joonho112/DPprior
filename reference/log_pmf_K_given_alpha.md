@@ -47,14 +47,31 @@ for normalized PMF,
 [`compute_log_stirling`](https://joonho112.github.io/DPprior/reference/compute_log_stirling.md)
 for Stirling computation
 
+Other conditional_K:
+[`cdf_K_given_alpha()`](https://joonho112.github.io/DPprior/reference/cdf_K_given_alpha.md),
+[`cv_K_given_alpha()`](https://joonho112.github.io/DPprior/reference/cv_K_given_alpha.md),
+[`dispersion_K_given_alpha()`](https://joonho112.github.io/DPprior/reference/dispersion_K_given_alpha.md),
+[`mean_K_given_alpha()`](https://joonho112.github.io/DPprior/reference/mean_K_given_alpha.md),
+[`mode_K_given_alpha()`](https://joonho112.github.io/DPprior/reference/mode_K_given_alpha.md),
+[`moments_K_given_alpha()`](https://joonho112.github.io/DPprior/reference/moments_K_given_alpha.md),
+[`pmf_K_given_alpha()`](https://joonho112.github.io/DPprior/reference/pmf_K_given_alpha.md),
+[`quantile_K_given_alpha()`](https://joonho112.github.io/DPprior/reference/quantile_K_given_alpha.md),
+[`var_K_given_alpha()`](https://joonho112.github.io/DPprior/reference/var_K_given_alpha.md)
+
 ## Examples
 
 ``` r
 logS <- compute_log_stirling(50)
 log_pmf <- log_pmf_K_given_alpha(50, 2.0, logS)
 
-# Convert to probabilities
-pmf <- softmax(log_pmf)
+# Convert to probabilities (numerically stable softmax)
+pmf <- exp(log_pmf - max(log_pmf))
+pmf <- pmf / sum(pmf)
 sum(pmf)  # Should be 1
+#> [1] 1
+
+# Or use pmf_K_given_alpha() directly
+pmf2 <- pmf_K_given_alpha(50, 2.0, logS)
+sum(pmf2)  # Should be 1
 #> [1] 1
 ```

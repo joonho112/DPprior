@@ -105,7 +105,8 @@ summary(fit)  # Detailed numerical diagnostics
 
 ### 4. Fast Computation
 
-The package implements the DORO 2.0 methodology:
+The package implements the Design-Conditional Elicitation (DCE)
+methodology via Two-Stage Moment Matching (TSMM):
 
 - **A1 (Closed-form)**: Instant initial estimates using Negative
   Binomial approximation
@@ -163,10 +164,10 @@ The package includes comprehensive documentation:
 If you use DPprior in your research, please cite:
 
 ``` bibtex
-@Manual{DPprior2025,
+@Manual{DPprior2026,
   title = {{DPprior}: Principled Prior Elicitation for {Dirichlet} Process Mixture Models},
   author = {JoonHo Lee},
-  year = {2025},
+  year = {2026},
   note = {R package version 1.0.0},
   url = {https://github.com/joonho112/DPprior},
 }
@@ -181,13 +182,23 @@ If you use DPprior in your research, please cite:
   pages = {731--764},
   doi = {10.3102/10769986241254286},
 }
+
+@Article{Lee2026dce,
+  title = {Design-Conditional Prior Elicitation for {Dirichlet} Process Mixtures},
+  author = {JoonHo Lee},
+  journal = {arXiv preprint},
+  year = {2026},
+  eprint = {2602.06301},
+  archiveprefix = {arXiv},
+  url = {https://arxiv.org/abs/2602.06301},
+}
 ```
 
 ## Related Work
 
 This package builds on methodological foundations from:
 
-- **Dorazio (2009)**: Original DORO approach for K-based elicitation
+- **Dorazio (2009)**: Original approach for K-based elicitation
 - **Lee et al. (2025)**: Informative priors via χ² distribution on K
 - **Vicentini & Jermyn (2025)**: Sample-size-independent approaches and
   weight-based elicitation

@@ -81,7 +81,7 @@
       <img src="../logo.svg" class="logo" alt=""><h1>Technical Deep Dive: Stirling Numbers and the Antoniak Distribution</h1>
                         <h4 data-toc-skip class="author">JoonHo Lee</h4>
             
-            <h4 data-toc-skip class="date">2026-01-01</h4>
+            <h4 data-toc-skip class="date">2026-02-13</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/joonho112/DPprior/blob/main/vignettes/theory-stirling.Rmd" class="external-link"><code>vignettes/theory-stirling.Rmd</code></a></small>
       <div class="d-none name"><code>theory-stirling.Rmd</code></div>
@@ -840,9 +840,9 @@ computed once and cached:</p>
 <span><span class="op">}</span></span>
 <span><span class="co">#&gt;       50            9.00            20.5</span></span>
 <span><span class="co">#&gt;      100           39.00            79.9</span></span>
-<span><span class="co">#&gt;      200          165.00           315.8</span></span>
-<span><span class="co">#&gt;      300          363.00           708.0</span></span>
-<span><span class="co">#&gt;      500         1000.00          1961.2</span></span></code></pre></div>
+<span><span class="co">#&gt;      200          163.00           315.8</span></span>
+<span><span class="co">#&gt;      300          375.00           708.0</span></span>
+<span><span class="co">#&gt;      500         1044.00          1961.2</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="pmf-computation-timing">7.2 PMF Computation Timing<a class="anchor" aria-label="anchor" href="#pmf-computation-timing"></a>
@@ -871,14 +871,14 @@ fast:</p>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%8d %8.1f %15.1f\n"</span>, <span class="va">J</span>, <span class="va">alpha</span>, <span class="va">time_us</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
 <span><span class="op">}</span></span>
-<span><span class="co">#&gt;       50      1.0            80.0</span></span>
-<span><span class="co">#&gt;       50      5.0            30.0</span></span>
-<span><span class="co">#&gt;      100      1.0            40.0</span></span>
-<span><span class="co">#&gt;      100      5.0           160.0</span></span>
-<span><span class="co">#&gt;      200      1.0           140.0</span></span>
-<span><span class="co">#&gt;      200      5.0           130.0</span></span>
-<span><span class="co">#&gt;      300      1.0           130.0</span></span>
-<span><span class="co">#&gt;      300      5.0           110.0</span></span></code></pre></div>
+<span><span class="co">#&gt;       50      1.0           120.0</span></span>
+<span><span class="co">#&gt;       50      5.0            80.0</span></span>
+<span><span class="co">#&gt;      100      1.0            90.0</span></span>
+<span><span class="co">#&gt;      100      5.0            70.0</span></span>
+<span><span class="co">#&gt;      200      1.0           130.0</span></span>
+<span><span class="co">#&gt;      200      5.0           140.0</span></span>
+<span><span class="co">#&gt;      300      1.0           220.0</span></span>
+<span><span class="co">#&gt;      300      5.0           170.0</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">

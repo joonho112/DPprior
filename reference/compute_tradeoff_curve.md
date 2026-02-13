@@ -57,6 +57,11 @@ compute_tradeoff_curve(
 Data frame with columns: lambda, a, b, mu_K, var_K, K_loss, w_loss,
 w1_prob_gt_50, E_w1.
 
+## References
+
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet
+Process Mixtures. *arXiv preprint* arXiv:2602.06301.
+
 ## Examples
 
 ``` r

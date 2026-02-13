@@ -33,10 +33,10 @@ Numeric; \\E\[d\_{TV} \text{ bound} \| a, b\]\\.
 
 ## Details
 
-From Corollary 1 of RN-05, the TV error between the exact prior
-predictive \\p(S_J \| a, b)\\ and the A1 shifted NegBin proxy is bounded
-by: \$\$d\_{TV}(P^{\text{exact}}, Q^{A1}) \le E\_{\alpha \sim
-\Gamma(a,b)}\[B\_{\text{Pois}} + B\_{\text{lin}}\]\$\$
+From Lee (2026, Section 3.3, Corollary 1), the TV error between the
+exact prior predictive \\p(S_J \| a, b)\\ and the A1 shifted NegBin
+proxy is bounded by: \$\$d\_{TV}(P^{\text{exact}}, Q^{A1}) \le
+E\_{\alpha \sim \Gamma(a,b)}\[B\_{\text{Pois}} + B\_{\text{lin}}\]\$\$
 
 This follows from the mixture contraction property of TV distance.
 
@@ -48,7 +48,9 @@ This follows from the mixture contraction property of TV distance.
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 # Marginal TV bound for J=100, Gamma(1, 1)
 expected_tv_bound(J = 100, a = 1, b = 1)
-#> [1] 0.2465068
+
+} # }
 ```

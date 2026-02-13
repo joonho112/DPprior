@@ -101,19 +101,11 @@ is J!.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">logS</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_log_stirling.html">compute_log_stirling</a></span><span class="op">(</span><span class="fl">15</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="va">logS</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_log_stirling.html">compute_log_stirling</a></span><span class="op">(</span><span class="fl">15</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">verify_stirling_row_sum</span><span class="op">(</span><span class="va">logS</span>, J_values <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> PASS: sum_k |s(2,k)| = 2! [error = 0.00e+00]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> PASS: sum_k |s(3,k)| = 3! [error = 0.00e+00]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> PASS: sum_k |s(4,k)| = 4! [error = 4.44e-16]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> PASS: sum_k |s(5,k)| = 5! [error = 0.00e+00]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> PASS: sum_k |s(6,k)| = 6! [error = 8.88e-16]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> PASS: sum_k |s(7,k)| = 7! [error = 0.00e+00]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> PASS: sum_k |s(8,k)| = 8! [error = 0.00e+00]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> PASS: sum_k |s(9,k)| = 9! [error = 0.00e+00]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> PASS: sum_k |s(10,k)| = 10! [error = 0.00e+00]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

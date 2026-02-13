@@ -55,7 +55,8 @@ distribution. *Pacific Journal of Mathematics*, 10(4), 1181-1197.
 Chen, L. H. Y. (1975). Poisson approximation for dependent trials. *The
 Annals of Probability*, 3(3), 534-545.
 
-RN-05 (Theorem 1) and references therein.
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet
+Process Mixtures. *arXiv preprint* arXiv:2602.06301.
 
 ## See also
 
@@ -65,15 +66,15 @@ RN-05 (Theorem 1) and references therein.
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 # Full Chen-Stein bound
 compute_poissonization_bound(J = 50, alpha = 1)
-#> [1] 0.1732509
 
 # Raw bound (sum of p_i^2)
 compute_poissonization_bound(J = 50, alpha = 1, raw = TRUE)
-#> [1] 0.6251327
 
 # Vectorized
 compute_poissonization_bound(J = 50, alpha = c(0.5, 1, 2, 5))
-#> [1] 0.1010243 0.1732509 0.2481908 0.3555110
+
+} # }
 ```

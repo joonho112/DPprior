@@ -49,7 +49,7 @@ diagnostic statistics."><meta property="og:image" content="https://joonho112.git
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Summary Method for DPprior_fit Objects</h1>
-      <small class="dont-index">Source: <a href="https://github.com/joonho112/DPprior/blob/main/R/10_a1_mapping.R" class="external-link"><code>R/10_a1_mapping.R</code></a>, <a href="https://github.com/joonho112/DPprior/blob/main/R/17_s3_methods.R" class="external-link"><code>R/17_s3_methods.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/joonho112/DPprior/blob/main/R/17_s3_methods.R" class="external-link"><code>R/17_s3_methods.R</code></a></small>
       <div class="d-none name"><code>summary.DPprior_fit.Rd</code></div>
     </div>
 
@@ -62,9 +62,6 @@ diagnostic statistics.</p>
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for class 'DPprior_fit'</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">object</span>, print_output <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for class 'DPprior_fit'</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">object</span>, print_output <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -87,8 +84,7 @@ to the console. If <code>FALSE</code>, returns the summary list silently.</p></d
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list with summary statistics.</p>
-<p>An object of class <code>"summary.DPprior_fit"</code> containing:</p><ul><li><p><code>method</code>: Calibration method used</p></li>
+    <p>An object of class <code>"summary.DPprior_fit"</code> containing:</p><ul><li><p><code>method</code>: Calibration method used</p></li>
 <li><p><code>status</code>: Convergence status</p></li>
 <li><p><code>gamma_prior</code>: List with (a, b) parameters</p></li>
 <li><p><code>alpha_summary</code>: List with E<a href="https://scales.r-lib.org/reference/alpha.html" class="external-link">scales::alpha</a>, Var<a href="https://scales.r-lib.org/reference/alpha.html" class="external-link">scales::alpha</a>, CV<a href="https://scales.r-lib.org/reference/alpha.html" class="external-link">scales::alpha</a></p></li>
@@ -114,32 +110,10 @@ to the console. If <code>FALSE</code>, returns the summary list silently.</p></d
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="DPprior_a1.html">DPprior_a1</a></span><span class="op">(</span>J <span class="op">=</span> <span class="fl">50</span>, mu_K <span class="op">=</span> <span class="fl">5</span>, var_K <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> DPprior Prior Elicitation Summary</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ============================================================ </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Sample size: J = 50</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Method: A1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Status: success</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Gamma Hyperprior:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ---------------------------------------- </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Shape (a) = 4.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Rate (b)  = 3.912023</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   E[α] = 1.0225, SD[α] = 0.5112, CV[α] = 0.5000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Target vs Achieved:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ---------------------------------------- </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                         Target     Achieved        Error</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   E[K_J]                5.0000           NA           NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Var(K_J)              8.0000           NA           NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Create a fit object</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Create a fit object</span></span></span>
 <span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="DPprior_fit.html">DPprior_fit</a></span><span class="op">(</span>J <span class="op">=</span> <span class="fl">50</span>, mu_K <span class="op">=</span> <span class="fl">5</span>, var_K <span class="op">=</span> <span class="fl">8</span>, check_diagnostics <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>HIGH DOMINANCE RISK: P(w1 &gt; 0.5) = 48.1% exceeds 40%.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   This may indicate unintended prior behavior (RN-07).</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   This may indicate unintended prior behavior (Lee, 2026).</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span>   Consider using DPprior_dual() for weight-constrained elicitation.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span>   See ?DPprior_diagnostics for interpretation.</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
@@ -183,7 +157,7 @@ to the console. If <code>FALSE</code>, returns the summary list silently.</p></d
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3    3 1.844384 1.4552538 4.974913  8.399473 4.002603e-01    1 -15.313512</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4    4 2.029223 1.5996801 4.999187  8.013243 1.326844e-02    1 -14.298307</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5    5 2.036082 1.6050455 4.999999  8.000021 2.078492e-05    1 -14.263052</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6    6 2.036093 1.6050541 5.000000  8.000000 7.600370e-09   NA -14.262997</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6    6 2.036093 1.6050541 5.000000  8.000000 7.600363e-09   NA -14.262997</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Diagnostics: dominance risk = HIGH (use diagnostics=TRUE for full report)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>

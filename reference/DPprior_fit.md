@@ -134,7 +134,7 @@ An S3 object of class "DPprior_fit" containing:
 
 - diagnostics:
 
-  List; comprehensive RN-07 diagnostics (if requested).
+  List; comprehensive diagnostics (if requested).
 
 - solver_diagnostics:
 
@@ -149,6 +149,12 @@ An S3 object of class "DPprior_fit" containing:
 This function provides a convenient interface for specifying beliefs
 about the number of clusters and uncertainty, then calibrates a Gamma
 hyperprior for the Dirichlet Process concentration parameter alpha.
+
+This function is the primary interface for Design-Conditional
+Elicitation (DCE) as described in Lee (2026). The underlying engine is
+Two-Stage Moment Matching (TSMM): Stage 1 (A1) provides a closed-form
+initialization, and Stage 2 (A2-MN) refines to exact moments via Newton
+iteration.
 
 ### Variance Constraints
 
@@ -177,11 +183,8 @@ Backend solver details are preserved in `solver_diagnostics`.
 
 ## References
 
-Lee, J. (2025). Prior Elicitation for the Dirichlet Process
-Concentration Parameter in Low-Information Settings. *Working Paper*.
-
-RN-03: Closed-Form Mapping for the Gamma Hyperprior. RN-04: Small-J
-Correction via Newton Refinement. RN-07: Unintended Prior Diagnostic.
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet
+Process Mixtures. *arXiv preprint* arXiv:2602.06301.
 
 ## See also
 
@@ -196,13 +199,19 @@ for detailed diagnostics,
 [`DPprior_dual`](https://joonho112.github.io/DPprior/reference/DPprior_dual.md)
 for dual-anchor calibration with weight constraints.
 
+Other elicitation:
+[`DPprior_a1()`](https://joonho112.github.io/DPprior/reference/DPprior_a1.md),
+[`DPprior_a2_kl()`](https://joonho112.github.io/DPprior/reference/DPprior_a2_kl.md),
+[`DPprior_a2_newton()`](https://joonho112.github.io/DPprior/reference/DPprior_a2_newton.md),
+[`DPprior_dual()`](https://joonho112.github.io/DPprior/reference/DPprior_dual.md)
+
 ## Examples
 
 ``` r
 # Basic usage with target moments
 fit <- DPprior_fit(J = 50, mu_K = 5, var_K = 8)
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 48.1% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 print(fit)
@@ -227,19 +236,19 @@ print(fit)
 # Using confidence level instead of explicit variance
 fit_medium <- DPprior_fit(J = 50, mu_K = 5, confidence = "medium")
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 49.7% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 fit_low <- DPprior_fit(J = 50, mu_K = 5, confidence = "low")
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 56.3% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 
 # Quick approximation for exploration
 fit_quick <- DPprior_fit(J = 50, mu_K = 5, var_K = 8, method = "A1")
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 52.1% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 
@@ -261,7 +270,7 @@ fit_verbose <- DPprior_fit(J = 50, mu_K = 5, var_K = 8, verbose = TRUE)
 #> 
 #> Converged: ||F|| = 7.60e-09 < 1.00e-08
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 48.1% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 

@@ -39,8 +39,8 @@ of squared reciprocals.
 
 ## References
 
-RN-05: Error Quantification & Guarantees for the A1 Large-J
-Approximation
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet
+Process Mixtures. *arXiv preprint* arXiv:2602.06301.
 
 ## See also
 
@@ -50,11 +50,12 @@ for the full Chen-Stein bound
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 # Compute raw sum for J=50, alpha=1
 compute_sum_p_squared(J = 50, alpha = 1)
-#> [1] 0.6251327
 
 # Vectorized over alpha
 compute_sum_p_squared(J = 50, alpha = c(0.5, 1, 2))
-#> [1] 0.2287007 0.6251327 1.5020688
+
+} # }
 ```

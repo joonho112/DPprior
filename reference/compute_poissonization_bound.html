@@ -106,7 +106,8 @@ simply using \(\sum p_i^2\) alone.</p>
 distribution. <em>Pacific Journal of Mathematics</em>, 10(4), 1181-1197.</p>
 <p>Chen, L. H. Y. (1975). Poisson approximation for dependent trials.
 <em>The Annals of Probability</em>, 3(3), 534-545.</p>
-<p>RN-05 (Theorem 1) and references therein.</p>
+<p>Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+<em>arXiv preprint</em> arXiv:2602.06301.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -115,18 +116,17 @@ distribution. <em>Pacific Journal of Mathematics</em>, 10(4), 1181-1197.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Full Chen-Stein bound</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="co"># Full Chen-Stein bound</span></span></span>
 <span class="r-in"><span><span class="fu">compute_poissonization_bound</span><span class="op">(</span>J <span class="op">=</span> <span class="fl">50</span>, alpha <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.1732509</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Raw bound (sum of p_i^2)</span></span></span>
 <span class="r-in"><span><span class="fu">compute_poissonization_bound</span><span class="op">(</span>J <span class="op">=</span> <span class="fl">50</span>, alpha <span class="op">=</span> <span class="fl">1</span>, raw <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.6251327</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Vectorized</span></span></span>
 <span class="r-in"><span><span class="fu">compute_poissonization_bound</span><span class="op">(</span>J <span class="op">=</span> <span class="fl">50</span>, alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.1010243 0.1732509 0.2481908 0.3555110</span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

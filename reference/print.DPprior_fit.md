@@ -9,9 +9,6 @@ and dominance risk assessment.
 ``` r
 # S3 method for class 'DPprior_fit'
 print(x, digits = 4, ...)
-
-# S3 method for class 'DPprior_fit'
-print(x, digits = 4, ...)
 ```
 
 ## Arguments
@@ -29,8 +26,6 @@ print(x, digits = 4, ...)
   Additional arguments (currently unused).
 
 ## Value
-
-Invisibly returns the input object.
 
 Invisibly returns `x`.
 
@@ -69,24 +64,10 @@ If diagnostics are computed, the dominance risk is displayed as:
 ## Examples
 
 ``` r
-fit <- DPprior_a1(J = 50, mu_K = 5, var_K = 8)
-print(fit)
-#> DPprior Prior Elicitation Result
-#> ============================================= 
-#> 
-#> Gamma Hyperprior: α ~ Gamma(a = 4.0000, b = 3.9120)
-#>   E[α] = 1.022, SD[α] = 0.511
-#> 
-#> Target (J = 50):
-#>   E[K_J]   = 5.00
-#>   Var(K_J) = 8.00
-#> 
-#> Method: A1 (0 iterations)
-
 # Create a fit object
 fit <- DPprior_fit(J = 50, mu_K = 5, var_K = 8)
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 48.1% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 print(fit)

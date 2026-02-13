@@ -35,6 +35,14 @@ Named numeric vector `c(mean = ..., var = ...)`.
 [`exact_K_moments`](https://joonho112.github.io/DPprior/reference/exact_K_moments.md)
 for full output
 
+Other marginal_K:
+[`cdf_K_marginal()`](https://joonho112.github.io/DPprior/reference/cdf_K_marginal.md),
+[`exact_K_moments()`](https://joonho112.github.io/DPprior/reference/exact_K_moments.md),
+[`mode_K_marginal()`](https://joonho112.github.io/DPprior/reference/mode_K_marginal.md),
+[`pmf_K_marginal()`](https://joonho112.github.io/DPprior/reference/pmf_K_marginal.md),
+[`quantile_K_marginal()`](https://joonho112.github.io/DPprior/reference/quantile_K_marginal.md),
+[`summary_K_marginal()`](https://joonho112.github.io/DPprior/reference/summary_K_marginal.md)
+
 ## Examples
 
 ``` r

@@ -31,6 +31,12 @@ Numeric; coefficient of variation.
 [`mean_rho`](https://joonho112.github.io/DPprior/reference/mean_rho.md),
 [`var_rho`](https://joonho112.github.io/DPprior/reference/var_rho.md)
 
+Other co_clustering:
+[`mean_rho()`](https://joonho112.github.io/DPprior/reference/mean_rho.md),
+[`mean_rho_given_alpha()`](https://joonho112.github.io/DPprior/reference/mean_rho_given_alpha.md),
+[`var_rho()`](https://joonho112.github.io/DPprior/reference/var_rho.md),
+[`var_rho_given_alpha()`](https://joonho112.github.io/DPprior/reference/var_rho_given_alpha.md)
+
 ## Examples
 
 ``` r

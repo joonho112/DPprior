@@ -37,13 +37,8 @@ Logical; TRUE if verification passes.
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 verify_a2_moment_matching(J = 50, mu_K = 5, var_K = 8)
-#> A2-MN Moment Matching Verification
-#> -------------------------------------------------- 
-#> Target: E[K]=5.0000, Var(K)=8.0000
-#> Achieved: E[K]=4.9999999992, Var(K)=8.0000000076
-#> Mean error: 8.31e-10
-#> Var error: 7.55e-09
-#> Termination: residual
-#> Status: PASS
+
+} # }
 ```

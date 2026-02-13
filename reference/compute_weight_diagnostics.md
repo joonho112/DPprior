@@ -1,8 +1,8 @@
 # Weight Distribution Diagnostics (w1)
 
 Computes comprehensive diagnostics for the first stick-breaking weight.
-This is the KEY diagnostic for RN-07 concerns about unintended prior
-behavior.
+This is the KEY diagnostic for concerns about unintended prior behavior
+(Lee, 2026, Section 4).
 
 ## Usage
 
@@ -58,7 +58,16 @@ Dominance risk classification:
 
 ## References
 
-Lee, J. (2025). RN-07: Unintended Prior Diagnostic.
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet
+Process Mixtures. *arXiv preprint* arXiv:2602.06301.
+
+## See also
+
+Other diagnostics:
+[`DPprior_diagnostics()`](https://joonho112.github.io/DPprior/reference/DPprior_diagnostics.md),
+[`DPprior_error_bounds()`](https://joonho112.github.io/DPprior/reference/DPprior_error_bounds.md),
+[`compute_error_landscape()`](https://joonho112.github.io/DPprior/reference/compute_error_landscape.md),
+[`dual_anchor_diagnostics()`](https://joonho112.github.io/DPprior/reference/dual_anchor_diagnostics.md)
 
 ## Examples
 

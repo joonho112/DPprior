@@ -81,7 +81,7 @@
       <img src="../logo.svg" class="logo" alt=""><h1>From Poisson Proxy to NegBin: The A1 Approximation Theory</h1>
                         <h4 data-toc-skip class="author">JoonHo Lee</h4>
             
-            <h4 data-toc-skip class="date">2026-01-01</h4>
+            <h4 data-toc-skip class="date">2026-02-13</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/joonho112/DPprior/blob/main/vignettes/theory-approximations.Rmd" class="external-link"><code>vignettes/theory-approximations.Rmd</code></a></small>
       <div class="d-none name"><code>theory-approximations.Rmd</code></div>
@@ -1205,7 +1205,7 @@ application requiring accurate moment matching.</p>
 <span><span class="co"># A2 refinement (full DPprior_fit)</span></span>
 <span><span class="va">fit_a2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DPprior_fit.html">DPprior_fit</a></span><span class="op">(</span>J <span class="op">=</span> <span class="va">J</span>, mu_K <span class="op">=</span> <span class="va">mu_K</span>, var_K <span class="op">=</span> <span class="va">var_K</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: HIGH DOMINANCE RISK: P(w1 &gt; 0.5) = 48.1% exceeds 40%.</span></span>
-<span><span class="co">#&gt;   This may indicate unintended prior behavior (RN-07).</span></span>
+<span><span class="co">#&gt;   This may indicate unintended prior behavior (Lee, 2026).</span></span>
 <span><span class="co">#&gt;   Consider using DPprior_dual() for weight-constrained elicitation.</span></span>
 <span><span class="co">#&gt;   See ?DPprior_diagnostics for interpretation.</span></span>
 <span><span class="va">exact_a2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/exact_K_moments.html">exact_K_moments</a></span><span class="op">(</span><span class="va">J</span>, <span class="va">fit_a2</span><span class="op">$</span><span class="va">a</span>, <span class="va">fit_a2</span><span class="op">$</span><span class="va">b</span><span class="op">)</span></span>

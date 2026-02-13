@@ -106,7 +106,7 @@ fit_cct <- DPprior_fit(
   confidence = "low"
 )
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 54.5% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 
@@ -464,11 +464,11 @@ sensitivity_results <- lapply(mu_K_grid, function(mu) {
   )
 })
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 74.3% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 54.5% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 
@@ -635,7 +635,7 @@ print(fit_bai)
 #> 
 #> Achieved:
 #>   E[K_J] = 18.000000, Var(K_J) = 85.000000
-#>   Residual = 2.16e-12
+#>   Residual = 2.33e-12
 #> 
 #> Method: A2-MN (6 iterations)
 #> 
@@ -870,7 +870,7 @@ print(fit_alabama)
 #> 
 #> Achieved:
 #>   E[K_J] = 50.000000, Var(K_J) = 245.000000
-#>   Residual = 2.84e-14
+#>   Residual = 4.56e-13
 #> 
 #> Method: A2-MN (6 iterations)
 #> 

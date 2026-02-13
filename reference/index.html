@@ -116,24 +116,10 @@
 
         </dt>
         <dd>Compute Log Stirling Numbers (First Kind, Unsigned)</dd>
-
-        <dt>
-
-          <code><a href="get_log_stirling.html">get_log_stirling()</a></code>
-
-        </dt>
-        <dd>Get Single Log-Stirling Value with Bounds Checking</dd>
-
-        <dt>
-
-          <code><a href="get_stirling_row.html">get_stirling_row()</a></code>
-
-        </dt>
-        <dd>Get Stirling Numbers for a Fixed J</dd>
       </dl></div><div class="section level2">
       <h2 id="k-distribution-conditional-">K Distribution (Conditional)<a class="anchor" aria-label="anchor" href="#k-distribution-conditional-"></a></h2>
 
-      <div class="section-desc"><p>Antoniak distribution P(K | α)</p></div>
+      <div class="section-desc"><p>Antoniak distribution P(K | alpha)</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -198,13 +184,6 @@
 
         <dt>
 
-          <code><a href="summary_K_given_alpha.html">summary_K_given_alpha()</a></code>
-
-        </dt>
-        <dd>Summary of Conditional Moments</dd>
-
-        <dt>
-
           <code><a href="cv_K_given_alpha.html">cv_K_given_alpha()</a></code>
 
         </dt>
@@ -219,7 +198,7 @@
       </dl></div><div class="section level2">
       <h2 id="k-distribution-marginal-">K Distribution (Marginal)<a class="anchor" aria-label="anchor" href="#k-distribution-marginal-"></a></h2>
 
-      <div class="section-desc"><p>Marginal distribution of K under Gamma prior on α</p></div>
+      <div class="section-desc"><p>Marginal distribution of K under Gamma prior on alpha</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -232,13 +211,6 @@
 
         </dt>
         <dd>Marginal PMF of K_J under Gamma Hyperprior</dd>
-
-        <dt>
-
-          <code><a href="log_pmf_K_marginal.html">log_pmf_K_marginal()</a></code>
-
-        </dt>
-        <dd>Log Marginal PMF of K_J under Gamma Hyperprior</dd>
 
         <dt>
 
@@ -282,7 +254,7 @@
         </dt>
         <dd>Exact Marginal Moments of K_J under Gamma Prior</dd>
       </dl></div><div class="section level2">
-      <h2 id="weight-distribution-w-">Weight Distribution (w₁)<a class="anchor" aria-label="anchor" href="#weight-distribution-w-"></a></h2>
+      <h2 id="weight-distribution-w-">Weight Distribution (w1)<a class="anchor" aria-label="anchor" href="#weight-distribution-w-"></a></h2>
 
       <div class="section-desc"><p>Distribution of the largest stick-breaking weight</p></div>
 
@@ -354,7 +326,7 @@
         </dt>
         <dd>Compute w₁ Distribution on Grid</dd>
       </dl></div><div class="section level2">
-      <h2 id="co-clustering-probability-">Co-clustering Probability (ρ)<a class="anchor" aria-label="anchor" href="#co-clustering-probability-"></a></h2>
+      <h2 id="co-clustering-probability-rho-">Co-clustering Probability (rho)<a class="anchor" aria-label="anchor" href="#co-clustering-probability-rho-"></a></h2>
 
       <div class="section-desc"><p>Pairwise co-clustering probability functions</p></div>
 
@@ -390,20 +362,6 @@
 
         </dt>
         <dd>Conditional Variance of rho Given Alpha</dd>
-
-        <dt>
-
-          <code><a href="mean_rho_sq.html">mean_rho_sq()</a></code>
-
-        </dt>
-        <dd>Marginal Second Moment of rho</dd>
-
-        <dt>
-
-          <code><a href="mean_rho_sq_given_alpha.html">mean_rho_sq_given_alpha()</a></code>
-
-        </dt>
-        <dd>Conditional Second Moment of rho Given Alpha</dd>
 
         <dt>
 
@@ -472,31 +430,10 @@
 
         <dt>
 
-          <code><a href="compare_diagnostics.html">compare_diagnostics()</a></code>
-
-        </dt>
-        <dd>Compare Diagnostics Across Multiple Fits</dd>
-
-        <dt>
-
           <code><a href="compare_a1_a2.html">compare_a1_a2()</a></code>
 
         </dt>
         <dd>Compare A1 vs A2 Accuracy</dd>
-
-        <dt>
-
-          <code><a href="compare_rho_w1.html">compare_rho_w1()</a></code>
-
-        </dt>
-        <dd>Compare rho and w1 Distributions</dd>
-
-        <dt>
-
-          <code><a href="compare_to_negbin.html">compare_to_negbin()</a></code>
-
-        </dt>
-        <dd>Compare Exact Moments to NegBin Approximation</dd>
       </dl></div><div class="section level2">
       <h2 id="visualization">Visualization<a class="anchor" aria-label="anchor" href="#visualization"></a></h2>
 
@@ -586,7 +523,7 @@
       </dl></div><div class="section level2">
       <h2 id="s-methods">S3 Methods<a class="anchor" aria-label="anchor" href="#s-methods"></a></h2>
 
-      <div class="section-desc"><p>Print and summary methods</p></div>
+      <div class="section-desc"><p>Print, summary, and coercion methods</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -663,9 +600,9 @@
         </dt>
         <dd>Print Method for rho_summary Objects</dd>
       </dl></div><div class="section level2">
-      <h2 id="utilities">Utilities<a class="anchor" aria-label="anchor" href="#utilities"></a></h2>
+      <h2 id="numerical-utilities">Numerical Utilities<a class="anchor" aria-label="anchor" href="#numerical-utilities"></a></h2>
 
-      <div class="section-desc"><p>Helper and conversion functions</p></div>
+      <div class="section-desc"><p>Conversion, quadrature, and numerical helper functions</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -681,24 +618,10 @@
 
         <dt>
 
-          <code><a href="vif_to_variance_fit.html">vif_to_variance_fit()</a></code>
-
-        </dt>
-        <dd>Convert VIF to Target Variance</dd>
-
-        <dt>
-
           <code><a href="confidence_to_vif.html">confidence_to_vif()</a></code>
 
         </dt>
         <dd>Map a Qualitative Confidence Level to a Variance Inflation Factor (VIF)</dd>
-
-        <dt>
-
-          <code><a href="confidence_to_vif_fit.html">confidence_to_vif_fit()</a></code>
-
-        </dt>
-        <dd>Convert Confidence Level to Variance Inflation Factor</dd>
 
         <dt>
 
@@ -730,13 +653,6 @@
 
         <dt>
 
-          <code><a href="log_rising_factorial.html">log_rising_factorial()</a></code>
-
-        </dt>
-        <dd>Log Rising Factorial (Pochhammer Symbol)</dd>
-
-        <dt>
-
           <code><a href="logsumexp.html">logsumexp()</a></code>
 
         </dt>
@@ -751,12 +667,19 @@
 
         <dt>
 
-          <code><a href="softmax.html">softmax()</a></code>
+          <code><a href="score_a.html">score_a()</a></code>
 
         </dt>
-        <dd>Numerically Stable Softmax</dd>
+        <dd>Score Function with Respect to Shape Parameter a</dd>
+
+        <dt>
+
+          <code><a href="score_b.html">score_b()</a></code>
+
+        </dt>
+        <dd>Score Function with Respect to Rate Parameter b</dd>
       </dl></div><div class="section level2">
-      <h2 id="internal-computation">Internal Computation<a class="anchor" aria-label="anchor" href="#internal-computation"></a></h2>
+      <h2 id="computation">Computation<a class="anchor" aria-label="anchor" href="#computation"></a></h2>
 
       <div class="section-desc"><p>Lower-level computational functions</p></div>
 
@@ -767,31 +690,10 @@
 
       <dl><dt>
 
-          <code><a href="compute_K_diagnostics.html">compute_K_diagnostics()</a></code>
-
-        </dt>
-        <dd>K Distribution Diagnostics</dd>
-
-        <dt>
-
           <code><a href="compute_weight_diagnostics.html">compute_weight_diagnostics()</a></code>
 
         </dt>
         <dd>Weight Distribution Diagnostics (w1)</dd>
-
-        <dt>
-
-          <code><a href="compute_alpha_diagnostics.html">compute_alpha_diagnostics()</a></code>
-
-        </dt>
-        <dd>Alpha Distribution Diagnostics</dd>
-
-        <dt>
-
-          <code><a href="compute_coclustering_diagnostics.html">compute_coclustering_diagnostics()</a></code>
-
-        </dt>
-        <dd>Co-Clustering Diagnostics (rho)</dd>
 
         <dt>
 
@@ -809,27 +711,6 @@
 
         <dt>
 
-          <code><a href="compute_linearization_bound.html">compute_linearization_bound()</a></code>
-
-        </dt>
-        <dd>Mean-Linearization Error Bound</dd>
-
-        <dt>
-
-          <code><a href="compute_poissonization_bound.html">compute_poissonization_bound()</a></code>
-
-        </dt>
-        <dd>Poissonization Error Bound (Chen-Stein / Le Cam Bound)</dd>
-
-        <dt>
-
-          <code><a href="compute_total_tv_bound.html">compute_total_tv_bound()</a></code>
-
-        </dt>
-        <dd>Total TV Error Bound (Conditional)</dd>
-
-        <dt>
-
           <code><a href="compute_scaling_constant.html">compute_scaling_constant()</a></code>
 
         </dt>
@@ -837,245 +718,10 @@
 
         <dt>
 
-          <code><a href="compute_sum_p_squared.html">compute_sum_p_squared()</a></code>
-
-        </dt>
-        <dd>Poissonization Error Bound (Raw Sum of Squared Probabilities)</dd>
-
-        <dt>
-
-          <code><a href="expected_tv_bound.html">expected_tv_bound()</a></code>
-
-        </dt>
-        <dd>Expected TV Bound Under Gamma Prior</dd>
-      </dl></div><div class="section level2">
-      <h2 id="validation-verification">Validation &amp; Verification<a class="anchor" aria-label="anchor" href="#validation-verification"></a></h2>
-
-      <div class="section-desc"><p>Internal testing and validation functions</p></div>
-
-      <dl></dl></div><div class="section level2">
-
-
-
-
-      <dl><dt>
-
-          <code><a href="verify_DPprior_fit.html">verify_DPprior_fit()</a></code>
-
-        </dt>
-        <dd>Verify DPprior_fit Module</dd>
-
-        <dt>
-
-          <code><a href="verify_a1_mapping_all.html">verify_a1_mapping_all()</a></code>
-
-        </dt>
-        <dd>Run All Module 10 Verification Tests</dd>
-
-        <dt>
-
-          <code><a href="verify_a2_all.html">verify_a2_all()</a></code>
-
-        </dt>
-        <dd>Run All A2-MN Verification Tests</dd>
-
-        <dt>
-
-          <code><a href="verify_a2_kl.html">verify_a2_kl()</a></code>
-
-        </dt>
-        <dd>Verify A2-KL Optimization</dd>
-
-        <dt>
-
-          <code><a href="verify_a2_kl_all.html">verify_a2_kl_all()</a></code>
-
-        </dt>
-        <dd>Run All Module 12 Verification Tests</dd>
-
-        <dt>
-
-          <code><a href="verify_cdf_properties.html">verify_cdf_properties()</a></code>
-
-        </dt>
-        <dd>Verify CDF Properties</dd>
-
-        <dt>
-
-          <code><a href="verify_derivative.html">verify_derivative()</a></code>
-
-        </dt>
-        <dd>Verify Derivative via Finite Difference</dd>
-
-        <dt>
-
-          <code><a href="verify_diagnostics.html">verify_diagnostics()</a></code>
-
-        </dt>
-        <dd>Verify Diagnostics Module</dd>
-
-        <dt>
-
-          <code><a href="verify_dual_anchor.html">verify_dual_anchor()</a></code>
-
-        </dt>
-        <dd>Verify Dual-Anchor Module</dd>
-
-        <dt>
-
-          <code><a href="verify_jacobian_all.html">verify_jacobian_all()</a></code>
-
-        </dt>
-        <dd>Run All Module 07 Verification Tests</dd>
-
-        <dt>
-
-          <code><a href="verify_kl_divergence.html">verify_kl_divergence()</a></code>
-
-        </dt>
-        <dd>Verify KL Divergence Properties</dd>
-
-        <dt>
-
-          <code><a href="verify_marginal_moments.html">verify_marginal_moments()</a></code>
-
-        </dt>
-        <dd>Verify Marginal Moments Properties</dd>
-
-        <dt>
-
-          <code><a href="verify_moments_marginal_all.html">verify_moments_marginal_all()</a></code>
-
-        </dt>
-        <dd>Run All Module 05 Verification Tests</dd>
-
-        <dt>
-
-          <code><a href="verify_pmf_all.html">verify_pmf_all()</a></code>
-
-        </dt>
-        <dd>Run All PMF Verifications</dd>
-
-        <dt>
-
-          <code><a href="verify_pmf_marginal_all.html">verify_pmf_marginal_all()</a></code>
-
-        </dt>
-        <dd>Run All Module 06 Verification Tests</dd>
-
-        <dt>
-
-          <code><a href="verify_pmf_marginal_convergence.html">verify_pmf_marginal_convergence()</a></code>
-
-        </dt>
-        <dd>Verify Quadrature Convergence</dd>
-
-        <dt>
-
-          <code><a href="verify_pmf_marginal_moments.html">verify_pmf_marginal_moments()</a></code>
-
-        </dt>
-        <dd>Verify Moments Consistency</dd>
-
-        <dt>
-
-          <code><a href="verify_pmf_marginal_properties.html">verify_pmf_marginal_properties()</a></code>
-
-        </dt>
-        <dd>Verify Marginal PMF Properties</dd>
-
-        <dt>
-
-          <code><a href="verify_pmf_moments.html">verify_pmf_moments()</a></code>
-
-        </dt>
-        <dd>Verify PMF Consistency with Moments</dd>
-
-        <dt>
-
-          <code><a href="verify_pmf_normalization.html">verify_pmf_normalization()</a></code>
-
-        </dt>
-        <dd>Verify PMF Normalization</dd>
-
-        <dt>
-
-          <code><a href="verify_quadrature.html">verify_quadrature()</a></code>
-
-        </dt>
-        <dd>Verify Quadrature Accuracy Against Known Gamma Moments</dd>
-
-        <dt>
-
-          <code><a href="verify_s3_methods.html">verify_s3_methods()</a></code>
-
-        </dt>
-        <dd>Verify S3 Methods Module</dd>
-
-        <dt>
-
-          <code><a href="verify_stirling_row_sum.html">verify_stirling_row_sum()</a></code>
-
-        </dt>
-        <dd>Verify Row Sum Identity for Stirling Numbers</dd>
-
-        <dt>
-
-          <code><a href="verify_underdispersion.html">verify_underdispersion()</a></code>
-
-        </dt>
-        <dd>Verify Underdispersion Inequality</dd>
-
-        <dt>
-
-          <code><a href="verify_visualization.html">verify_visualization()</a></code>
-
-        </dt>
-        <dd>Verify Visualization Module</dd>
-
-        <dt>
-
-          <code><a href="verify_zero_probability.html">verify_zero_probability()</a></code>
-
-        </dt>
-        <dd>Verify Zero Probability at K=0</dd>
-
-        <dt>
-
-          <code><a href="validate_moments_conditional.html">validate_moments_conditional()</a></code>
-
-        </dt>
-        <dd>Validate Conditional Moments Computation</dd>
-
-        <dt>
-
-          <code><a href="validate_stirling.html">validate_stirling()</a></code>
-
-        </dt>
-        <dd>Validate Stirling Number Computation</dd>
-      </dl></div><div class="section level2">
-      <h2 id="other-internal">Other Internal<a class="anchor" aria-label="anchor" href="#other-internal"></a></h2>
-
-      <div class="section-desc"><p>Other internal helper functions</p></div>
-
-      <dl></dl></div><div class="section level2">
-
-
-
-
-      <dl><dt>
-
           <code><a href="a1_moment_error.html">a1_moment_error()</a></code>
 
         </dt>
         <dd>A1 Approximation Moment Errors</dd>
-
-        <dt>
-
-          <code><a href="construct_target_pmf.html">construct_target_pmf()</a></code>
-
-        </dt>
-        <dd>Construct Target PMF from User Specification</dd>
 
         <dt>
 
@@ -1104,13 +750,36 @@
 
         </dt>
         <dd>Compute Marginal Moments and Jacobian Simultaneously</dd>
+      </dl></div><div class="section level2">
+      <h2 id="validation-verification">Validation &amp; Verification<a class="anchor" aria-label="anchor" href="#validation-verification"></a></h2>
+
+      <div class="section-desc"><p>Functions for verifying mathematical properties</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="validate_stirling.html">validate_stirling()</a></code>
+
+        </dt>
+        <dd>Validate Stirling Number Computation</dd>
 
         <dt>
 
-          <code><a href="summary_pmf_K_given_alpha.html">summary_pmf_K_given_alpha()</a></code>
+          <code><a href="verify_jacobian.html">verify_jacobian()</a></code>
 
         </dt>
-        <dd>Summary of Conditional PMF</dd>
+        <dd>Verify Jacobian Against Finite Differences</dd>
+
+        <dt>
+
+          <code><a href="verify_underdispersion.html">verify_underdispersion()</a></code>
+
+        </dt>
+        <dd>Verify Underdispersion Inequality</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

@@ -81,7 +81,7 @@
       <img src="../logo.svg" class="logo" alt=""><h1>DPprior: Why Prior Elicitation Matters</h1>
                         <h4 data-toc-skip class="author">JoonHo Lee</h4>
             
-            <h4 data-toc-skip class="date">2026-01-01</h4>
+            <h4 data-toc-skip class="date">2026-02-13</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/joonho112/DPprior/blob/main/vignettes/introduction.Rmd" class="external-link"><code>vignettes/introduction.Rmd</code></a></small>
       <div class="d-none name"><code>introduction.Rmd</code></div>
@@ -597,13 +597,13 @@ computed via the Antoniak distribution, we refine
 to precisely match the target
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>μ</mi><mi>K</mi></msub><mo>,</mo><msubsup><mi>σ</mi><mi>K</mi><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(\mu_K, \sigma_K^2)</annotation></semantics></math>.</p></li>
 </ol>
-<p>This approach—which we call <em>DORO 2.0</em>—extends the original
-DORO method (Dorazio, 2009; Lee et al., 2025) by replacing
-computationally expensive grid search with near-instantaneous
-closed-form solutions backed by Newton iteration for guaranteed
-accuracy. The optional dual-anchor extension further incorporates weight
-constraints, addressing the “unintended prior” problem identified by
-Vicentini &amp; Jermyn (2025).</p>
+<p>This approach—which we call <em>Design-Conditional Elicitation
+(DCE)</em>—extends the original DORO method (Dorazio, 2009; Lee et al.,
+2025) by replacing computationally expensive grid search with
+near-instantaneous closed-form solutions backed by Newton iteration for
+guaranteed accuracy. The optional dual-anchor extension further
+incorporates weight constraints, addressing the “unintended prior”
+problem identified by Vicentini &amp; Jermyn (2025).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Demonstrate the elicitation workflow</span></span>
 <span><span class="va">J</span> <span class="op">&lt;-</span> <span class="fl">50</span></span>
@@ -612,17 +612,17 @@ Vicentini &amp; Jermyn (2025).</p>
 <span><span class="co"># Method 1: Using confidence levels</span></span>
 <span><span class="va">fit_low</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DPprior_fit.html">DPprior_fit</a></span><span class="op">(</span>J <span class="op">=</span> <span class="va">J</span>, mu_K <span class="op">=</span> <span class="va">mu_K</span>, confidence <span class="op">=</span> <span class="st">"low"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: HIGH DOMINANCE RISK: P(w1 &gt; 0.5) = 56.3% exceeds 40%.</span></span>
-<span><span class="co">#&gt;   This may indicate unintended prior behavior (RN-07).</span></span>
+<span><span class="co">#&gt;   This may indicate unintended prior behavior (Lee, 2026).</span></span>
 <span><span class="co">#&gt;   Consider using DPprior_dual() for weight-constrained elicitation.</span></span>
 <span><span class="co">#&gt;   See ?DPprior_diagnostics for interpretation.</span></span>
 <span><span class="va">fit_med</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DPprior_fit.html">DPprior_fit</a></span><span class="op">(</span>J <span class="op">=</span> <span class="va">J</span>, mu_K <span class="op">=</span> <span class="va">mu_K</span>, confidence <span class="op">=</span> <span class="st">"medium"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: HIGH DOMINANCE RISK: P(w1 &gt; 0.5) = 49.7% exceeds 40%.</span></span>
-<span><span class="co">#&gt;   This may indicate unintended prior behavior (RN-07).</span></span>
+<span><span class="co">#&gt;   This may indicate unintended prior behavior (Lee, 2026).</span></span>
 <span><span class="co">#&gt;   Consider using DPprior_dual() for weight-constrained elicitation.</span></span>
 <span><span class="co">#&gt;   See ?DPprior_diagnostics for interpretation.</span></span>
 <span><span class="va">fit_high</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DPprior_fit.html">DPprior_fit</a></span><span class="op">(</span>J <span class="op">=</span> <span class="va">J</span>, mu_K <span class="op">=</span> <span class="va">mu_K</span>, confidence <span class="op">=</span> <span class="st">"high"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: HIGH DOMINANCE RISK: P(w1 &gt; 0.5) = 46.5% exceeds 40%.</span></span>
-<span><span class="co">#&gt;   This may indicate unintended prior behavior (RN-07).</span></span>
+<span><span class="co">#&gt;   This may indicate unintended prior behavior (Lee, 2026).</span></span>
 <span><span class="co">#&gt;   Consider using DPprior_dual() for weight-constrained elicitation.</span></span>
 <span><span class="co">#&gt;   See ?DPprior_diagnostics for interpretation.</span></span>
 <span></span>
@@ -698,7 +698,7 @@ hyperpriors:</p>
 <span>  confidence <span class="op">=</span> <span class="st">"medium"</span> <span class="co"># Uncertainty about that expectation</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: HIGH DOMINANCE RISK: P(w1 &gt; 0.5) = 49.7% exceeds 40%.</span></span>
-<span><span class="co">#&gt;   This may indicate unintended prior behavior (RN-07).</span></span>
+<span><span class="co">#&gt;   This may indicate unintended prior behavior (Lee, 2026).</span></span>
 <span><span class="co">#&gt;   Consider using DPprior_dual() for weight-constrained elicitation.</span></span>
 <span><span class="co">#&gt;   See ?DPprior_diagnostics for interpretation.</span></span>
 <span></span>
@@ -716,7 +716,7 @@ the “unintended prior” problem identified by <a href="https://doi.org/10.485
 <code class="sourceCode R"><span><span class="co"># First, fit K-only prior</span></span>
 <span><span class="va">fit_K</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DPprior_fit.html">DPprior_fit</a></span><span class="op">(</span>J <span class="op">=</span> <span class="fl">50</span>, mu_K <span class="op">=</span> <span class="fl">5</span>, var_K <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: HIGH DOMINANCE RISK: P(w1 &gt; 0.5) = 48.1% exceeds 40%.</span></span>
-<span><span class="co">#&gt;   This may indicate unintended prior behavior (RN-07).</span></span>
+<span><span class="co">#&gt;   This may indicate unintended prior behavior (Lee, 2026).</span></span>
 <span><span class="co">#&gt;   Consider using DPprior_dual() for weight-constrained elicitation.</span></span>
 <span><span class="co">#&gt;   See ?DPprior_diagnostics for interpretation.</span></span>
 <span></span>
@@ -743,7 +743,7 @@ relevant dimensions:</p>
 <code class="sourceCode R"><span><span class="co"># Run diagnostics</span></span>
 <span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DPprior_fit.html">DPprior_fit</a></span><span class="op">(</span>J <span class="op">=</span> <span class="fl">50</span>, mu_K <span class="op">=</span> <span class="fl">5</span>, var_K <span class="op">=</span> <span class="fl">8</span>, check_diagnostics <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: HIGH DOMINANCE RISK: P(w1 &gt; 0.5) = 48.1% exceeds 40%.</span></span>
-<span><span class="co">#&gt;   This may indicate unintended prior behavior (RN-07).</span></span>
+<span><span class="co">#&gt;   This may indicate unintended prior behavior (Lee, 2026).</span></span>
 <span><span class="co">#&gt;   Consider using DPprior_dual() for weight-constrained elicitation.</span></span>
 <span><span class="co">#&gt;   See ?DPprior_diagnostics for interpretation.</span></span>
 <span></span>
@@ -988,8 +988,8 @@ Key features include:</p>
 expected cluster counts and weight concentration, rather than abstract
 parameters</p></li>
 <li><p><strong>Fast computation</strong>: Closed-form approximations
-with Newton refinement, eliminating the need for grid search (DORO
-2.0)</p></li>
+with Newton refinement, eliminating the need for grid search (DCE via
+TSMM)</p></li>
 <li><p><strong>Comprehensive control</strong>: Dual-anchor framework for
 joint control of cluster counts and weight behavior, addressing the
 “unintended prior” problem identified by Vicentini &amp; Jermyn

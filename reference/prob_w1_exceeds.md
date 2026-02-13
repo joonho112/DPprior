@@ -34,9 +34,9 @@ Numeric vector of survival probabilities.
 The survival function has the closed form: \$\$P(w_1 \> t \| a, b) =
 \left(\frac{b}{b - \log(1-t)}\right)^a\$\$
 
-This is a **key quantity for dominance risk assessment** (RN-07). A
-large P(w₁ \> 0.5) indicates high prior probability that a single
-cluster dominates the mixture.
+This is a **key quantity for dominance risk assessment** (Lee, 2026,
+Section 4). A large P(w₁ \> 0.5) indicates high prior probability that a
+single cluster dominates the mixture.
 
 ## Dominance Risk Interpretation
 
@@ -46,13 +46,21 @@ cluster dominates the mixture.
 
 ## References
 
-Lee, J. (2025). RN-06: Dual-Anchor Design II, Corollary 1. Lee, J.
-(2025). RN-07: Unintended Prior Consequences.
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet
+Process Mixtures. *arXiv preprint* arXiv:2602.06301.
 
 ## See also
 
 [`cdf_w1`](https://joonho112.github.io/DPprior/reference/cdf_w1.md),
 [`summary_w1`](https://joonho112.github.io/DPprior/reference/summary_w1.md)
+
+Other weights_w1:
+[`cdf_w1()`](https://joonho112.github.io/DPprior/reference/cdf_w1.md),
+[`density_w1()`](https://joonho112.github.io/DPprior/reference/density_w1.md),
+[`mean_w1()`](https://joonho112.github.io/DPprior/reference/mean_w1.md),
+[`quantile_w1()`](https://joonho112.github.io/DPprior/reference/quantile_w1.md),
+[`summary_w1()`](https://joonho112.github.io/DPprior/reference/summary_w1.md),
+[`var_w1()`](https://joonho112.github.io/DPprior/reference/var_w1.md)
 
 ## Examples
 

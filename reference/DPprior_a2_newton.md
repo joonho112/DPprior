@@ -135,9 +135,10 @@ A `DPprior_fit` object (S3 class) with components:
 
 ## Details
 
-The A2-MN algorithm uses Newton's method in log-scale to ensure
-positivity of the Gamma parameters. The Jacobian is computed exactly
-using score function identities (RN-04 Corollary 1), avoiding finite
+This implements TSMM Stage 2 (A2-MN) from Lee (2026). The A2-MN
+algorithm uses Newton's method in log-scale to ensure positivity of the
+Gamma parameters. The Jacobian is computed exactly using score function
+identities (Lee, 2026, Section 3.2, Corollary 1), avoiding finite
 difference approximations.
 
 **Algorithm Steps:**
@@ -194,8 +195,8 @@ difference approximations.
 
 ## References
 
-Lee, J. (2025). RN-04: A2 Small-J Correction Note. *Research Notes for
-DPprior Package Development*.
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet
+Process Mixtures. *arXiv preprint* arXiv:2602.06301.
 
 ## See also
 
@@ -205,6 +206,12 @@ for closed-form initialization,
 for Jacobian computation,
 [`exact_K_moments`](https://joonho112.github.io/DPprior/reference/exact_K_moments.md)
 for moment verification
+
+Other elicitation:
+[`DPprior_a1()`](https://joonho112.github.io/DPprior/reference/DPprior_a1.md),
+[`DPprior_a2_kl()`](https://joonho112.github.io/DPprior/reference/DPprior_a2_kl.md),
+[`DPprior_dual()`](https://joonho112.github.io/DPprior/reference/DPprior_dual.md),
+[`DPprior_fit()`](https://joonho112.github.io/DPprior/reference/DPprior_fit.md)
 
 ## Examples
 
@@ -252,5 +259,5 @@ head(fit$trace)
 #> 3    3 1.844384 1.4552538 4.974913  8.399473 4.002603e-01    1 -15.313512
 #> 4    4 2.029223 1.5996801 4.999187  8.013243 1.326844e-02    1 -14.298307
 #> 5    5 2.036082 1.6050455 4.999999  8.000021 2.078492e-05    1 -14.263052
-#> 6    6 2.036093 1.6050541 5.000000  8.000000 7.600370e-09   NA -14.262997
+#> 6    6 2.036093 1.6050541 5.000000  8.000000 7.600363e-09   NA -14.262997
 ```

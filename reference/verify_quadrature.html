@@ -98,22 +98,14 @@ against known closed-form Gamma distribution moments.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Should return TRUE</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="co"># Should return TRUE</span></span></span>
 <span class="r-in"><span><span class="fu">verify_quadrature</span><span class="op">(</span><span class="fl">2.5</span>, <span class="fl">1.5</span>, M <span class="op">=</span> <span class="fl">80</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Quadrature verification (a=2.50, b=1.50, M=80):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   E[alpha]:   true=1.666667, quad=1.6666666667, error=4.44e-16 [PASS]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   E[alpha^2]:  true=3.888889, quad=3.8888888889, error=0.00e+00 [PASS]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Var(alpha): true=1.111111, quad=1.1111111111, error=1.33e-15 [PASS]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Overall: PASS</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># More challenging case</span></span></span>
 <span class="r-in"><span><span class="fu">verify_quadrature</span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">2.0</span>, M <span class="op">=</span> <span class="fl">100</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Quadrature verification (a=0.50, b=2.00, M=100):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   E[alpha]:   true=0.250000, quad=0.2500000000, error=1.94e-16 [PASS]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   E[alpha^2]:  true=0.187500, quad=0.1875000000, error=6.11e-16 [PASS]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Var(alpha): true=0.125000, quad=0.1250000000, error=5.13e-16 [PASS]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Overall: PASS</span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

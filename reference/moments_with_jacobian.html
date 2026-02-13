@@ -101,7 +101,7 @@ $$J_F = \begin{bmatrix} \partial M_1/\partial a &amp; \partial M_1/\partial b \\
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>This function uses the score identity (RN-04 Corollary 1) to compute exact
+    <p>This function uses the score identity (Lee, 2026, Section 3.2, Corollary 1) to compute exact
 derivatives without finite differences:
 $$\frac{\partial}{\partial\theta} E[f(\alpha)] = E[f(\alpha) \cdot s_\theta(\alpha)]$$</p>
 <p>The Jacobian components are computed as:</p><ul><li><p>\(\partial M_1/\partial \theta = E[\mu_J(\alpha) \cdot s_\theta(\alpha)]\)</p></li>
@@ -114,7 +114,8 @@ slower quadrature convergence compared to moment computation.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
-    <p>RN-04, Corollary 1: Closed Jacobian formula via score identities</p>
+    <p>Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+<em>arXiv preprint</em> arXiv:2602.06301.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

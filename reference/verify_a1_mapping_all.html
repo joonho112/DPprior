@@ -73,52 +73,10 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">verify_a1_mapping_all</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ======================================================================</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Module 10: A1 Closed-Form Mapping - Full Verification Suite</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ======================================================================</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [Test 1] A1 produces positive parameters</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   J=50, mu_K=5, var_K=8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   a = 4.000000, b = 3.912023</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   PASS: TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [Test 2] A1 handles infeasible variance via projection</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   J=50, mu_K=5, var_K=3 (infeasible: var &lt; mu-1=4)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   var_K_used = 4.000017</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   status = projected</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   PASS: TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [Test 3] VIF conversion is correct</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   vif_to_variance(5, 2) = 8.0 (expected 8)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   confidence_to_vif('medium') = 2.5 (expected 2.5)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   PASS: TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [Test 4] Round-trip verification</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   J=50, mu_K=5.0, var_K=8.0: PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   J=100, mu_K=10.0, var_K=20.0: PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   J=25, mu_K=4.0, var_K=30.0: PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   J=50, mu_K=5.0, var_K=6.0: PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [Test 5] Scaling method comparison</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   scaling='log': cJ=3.9120, a=4.0000, b=3.9120</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   scaling='harmonic': cJ=4.4792, a=4.0000, b=4.4792</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   scaling='digamma': cJ=4.4633, a=4.0000, b=4.4633</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [Test 6] CV(alpha) to variance conversion</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Target CV=0.5 -&gt; var_K=8.00 -&gt; Recovered CV=0.5000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Target CV=1.0 -&gt; var_K=20.00 -&gt; Recovered CV=1.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Target CV=2.0 -&gt; var_K=68.00 -&gt; Recovered CV=2.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [Test 7] A2 compatibility fields</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   converged = TRUE (expected TRUE)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   iterations = 0 (expected 0)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   PASS: TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ======================================================================</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Overall Result: ALL TESTS PASSED</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ======================================================================</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="fu">verify_a1_mapping_all</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

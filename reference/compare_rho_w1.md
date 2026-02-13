@@ -65,42 +65,9 @@ weights.
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 compare_rho_w1(a = 2, b = 1)
-#> $mean_rho
-#> [1] 0.4036526
-#> 
-#> $mean_w1
-#> [1] 0.4036526
-#> 
-#> $mean_equal
-#> [1] TRUE
-#> 
-#> $var_rho
-#> [1] 0.05744825
-#> 
-#> $var_w1
-#> [1] 0.08968429
-#> 
-#> $var_ratio
-#> [1] 0.6405609
-#> 
 compare_rho_w1(a = 1.6, b = 1.22)
-#> $mean_rho
-#> [1] 0.508368
-#> 
-#> $mean_w1
-#> [1] 0.508368
-#> 
-#> $mean_equal
-#> [1] TRUE
-#> 
-#> $var_rho
-#> [1] 0.07096137
-#> 
-#> $var_w1
-#> [1] 0.1052062
-#> 
-#> $var_ratio
-#> [1] 0.6744981
-#> 
+
+} # }
 ```

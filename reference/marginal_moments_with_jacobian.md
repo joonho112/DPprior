@@ -70,9 +70,9 @@ Module 07 (Jacobian)
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 result <- marginal_moments_with_jacobian(50, 2.0, 1.0)
 result$jacobian
-#>             a          b
-#> mean 2.245605  -4.135585
-#> var  2.943578 -13.038228
+
+} # }
 ```

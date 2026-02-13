@@ -84,10 +84,18 @@ for convenience wrapper,
 [`mean_K_given_alpha`](https://joonho112.github.io/DPprior/reference/mean_K_given_alpha.md),
 [`var_K_given_alpha`](https://joonho112.github.io/DPprior/reference/var_K_given_alpha.md)
 
+Other marginal_K:
+[`K_moments()`](https://joonho112.github.io/DPprior/reference/K_moments.md),
+[`cdf_K_marginal()`](https://joonho112.github.io/DPprior/reference/cdf_K_marginal.md),
+[`mode_K_marginal()`](https://joonho112.github.io/DPprior/reference/mode_K_marginal.md),
+[`pmf_K_marginal()`](https://joonho112.github.io/DPprior/reference/pmf_K_marginal.md),
+[`quantile_K_marginal()`](https://joonho112.github.io/DPprior/reference/quantile_K_marginal.md),
+[`summary_K_marginal()`](https://joonho112.github.io/DPprior/reference/summary_K_marginal.md)
+
 ## Examples
 
 ``` r
-# Example from RN-01: J=50, Gamma(1.5, 0.5) prior
+# Example: J=50, Gamma(1.5, 0.5) prior
 result <- exact_K_moments(50, 1.5, 0.5)
 print(result)
 #> $mean

@@ -81,7 +81,7 @@
       <img src="../logo.svg" class="logo" alt=""><h1>Weight Distributions: w₁, ρ, and the Dual-Anchor Framework</h1>
                         <h4 data-toc-skip class="author">JoonHo Lee</h4>
             
-            <h4 data-toc-skip class="date">2026-01-01</h4>
+            <h4 data-toc-skip class="date">2026-02-13</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/joonho112/DPprior/blob/main/vignettes/theory-weights.Rmd" class="external-link"><code>vignettes/theory-weights.Rmd</code></a></small>
       <div class="d-none name"><code>theory-weights.Rmd</code></div>
@@ -763,7 +763,7 @@ can correspond to high dominance risk in
 <span><span class="co"># Fit using K-only calibration</span></span>
 <span><span class="va">fit_K</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DPprior_fit.html">DPprior_fit</a></span><span class="op">(</span>J <span class="op">=</span> <span class="va">J</span>, mu_K <span class="op">=</span> <span class="va">mu_K_target</span>, confidence <span class="op">=</span> <span class="st">"medium"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: HIGH DOMINANCE RISK: P(w1 &gt; 0.5) = 49.7% exceeds 40%.</span></span>
-<span><span class="co">#&gt;   This may indicate unintended prior behavior (RN-07).</span></span>
+<span><span class="co">#&gt;   This may indicate unintended prior behavior (Lee, 2026).</span></span>
 <span><span class="co">#&gt;   Consider using DPprior_dual() for weight-constrained elicitation.</span></span>
 <span><span class="co">#&gt;   See ?DPprior_diagnostics for interpretation.</span></span>
 <span></span>
@@ -844,7 +844,7 @@ controls the trade-off between the two anchors.</em></p>
 <tbody>
 <tr class="odd">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\lambda = 1</annotation></semantics></math></td>
-<td>K-only calibration (RN-01 through RN-05)</td>
+<td>K-only calibration (Lee, 2026, Sections 2–3)</td>
 </tr>
 <tr class="even">
 <td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\lambda = 0</annotation></semantics></math></td>

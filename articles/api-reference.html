@@ -81,7 +81,7 @@
       <img src="../logo.svg" class="logo" alt=""><h1>Complete API Reference with Examples</h1>
                         <h4 data-toc-skip class="author">JoonHo Lee</h4>
             
-            <h4 data-toc-skip class="date">2026-01-01</h4>
+            <h4 data-toc-skip class="date">2026-02-13</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/joonho112/DPprior/blob/main/vignettes/api-reference.Rmd" class="external-link"><code>vignettes/api-reference.Rmd</code></a></small>
       <div class="d-none name"><code>api-reference.Rmd</code></div>
@@ -308,7 +308,7 @@ If <code>NULL</code>, computed from <code>confidence</code>.</td>
 <code class="sourceCode R"><span><span class="co"># Basic usage with confidence level</span></span>
 <span><span class="va">fit1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DPprior_fit.html">DPprior_fit</a></span><span class="op">(</span>J <span class="op">=</span> <span class="fl">50</span>, mu_K <span class="op">=</span> <span class="fl">5</span>, confidence <span class="op">=</span> <span class="st">"medium"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: HIGH DOMINANCE RISK: P(w1 &gt; 0.5) = 49.7% exceeds 40%.</span></span>
-<span><span class="co">#&gt;   This may indicate unintended prior behavior (RN-07).</span></span>
+<span><span class="co">#&gt;   This may indicate unintended prior behavior (Lee, 2026).</span></span>
 <span><span class="co">#&gt;   Consider using DPprior_dual() for weight-constrained elicitation.</span></span>
 <span><span class="co">#&gt;   See ?DPprior_diagnostics for interpretation.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">fit1</span><span class="op">)</span></span>
@@ -334,7 +334,7 @@ If <code>NULL</code>, computed from <code>confidence</code>.</td>
 <span><span class="co"># Direct variance specification</span></span>
 <span><span class="va">fit2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DPprior_fit.html">DPprior_fit</a></span><span class="op">(</span>J <span class="op">=</span> <span class="fl">50</span>, mu_K <span class="op">=</span> <span class="fl">5</span>, var_K <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: HIGH DOMINANCE RISK: P(w1 &gt; 0.5) = 49.7% exceeds 40%.</span></span>
-<span><span class="co">#&gt;   This may indicate unintended prior behavior (RN-07).</span></span>
+<span><span class="co">#&gt;   This may indicate unintended prior behavior (Lee, 2026).</span></span>
 <span><span class="co">#&gt;   Consider using DPprior_dual() for weight-constrained elicitation.</span></span>
 <span><span class="co">#&gt;   See ?DPprior_diagnostics for interpretation.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Gamma("</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">fit2</span><span class="op">$</span><span class="va">a</span>, <span class="fl">4</span><span class="op">)</span>, <span class="st">", "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">fit2</span><span class="op">$</span><span class="va">b</span>, <span class="fl">4</span><span class="op">)</span>, <span class="st">")\n"</span>, sep <span class="op">=</span> <span class="st">""</span><span class="op">)</span></span>
@@ -346,7 +346,7 @@ If <code>NULL</code>, computed from <code>confidence</code>.</td>
 <span><span class="co"># With diagnostics</span></span>
 <span><span class="va">fit4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DPprior_fit.html">DPprior_fit</a></span><span class="op">(</span>J <span class="op">=</span> <span class="fl">50</span>, mu_K <span class="op">=</span> <span class="fl">5</span>, var_K <span class="op">=</span> <span class="fl">8</span>, check_diagnostics <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: HIGH DOMINANCE RISK: P(w1 &gt; 0.5) = 48.1% exceeds 40%.</span></span>
-<span><span class="co">#&gt;   This may indicate unintended prior behavior (RN-07).</span></span>
+<span><span class="co">#&gt;   This may indicate unintended prior behavior (Lee, 2026).</span></span>
 <span><span class="co">#&gt;   Consider using DPprior_dual() for weight-constrained elicitation.</span></span>
 <span><span class="co">#&gt;   See ?DPprior_diagnostics for interpretation.</span></span></code></pre></div>
 </div>
@@ -356,7 +356,7 @@ If <code>NULL</code>, computed from <code>confidence</code>.</td>
 <p><strong>Dual-Anchor Elicitation with Weight Control</strong></p>
 <p>Extends moment-based elicitation to incorporate constraints on the
 stick-breaking weight distribution, addressing the “unintended prior”
-problem identified in RN-07.</p>
+problem identified in Lee (2026, Section 4).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/DPprior_dual.html">DPprior_dual</a></span><span class="op">(</span></span>
 <span>  <span class="va">fit_K</span>,                  <span class="co"># K-only DPprior_fit object (required)</span></span>
@@ -456,7 +456,7 @@ additional <code>dual_anchor</code> component containing:</p>
 <code class="sourceCode R"><span><span class="co"># Step 1: Fit K-only prior</span></span>
 <span><span class="va">fit_K</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DPprior_fit.html">DPprior_fit</a></span><span class="op">(</span>J <span class="op">=</span> <span class="fl">50</span>, mu_K <span class="op">=</span> <span class="fl">5</span>, var_K <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: HIGH DOMINANCE RISK: P(w1 &gt; 0.5) = 48.1% exceeds 40%.</span></span>
-<span><span class="co">#&gt;   This may indicate unintended prior behavior (RN-07).</span></span>
+<span><span class="co">#&gt;   This may indicate unintended prior behavior (Lee, 2026).</span></span>
 <span><span class="co">#&gt;   Consider using DPprior_dual() for weight-constrained elicitation.</span></span>
 <span><span class="co">#&gt;   See ?DPprior_diagnostics for interpretation.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"K-only: P(w1 &gt; 0.5) ="</span>, </span>
@@ -1212,7 +1212,7 @@ so
 </h3>
 <p><strong>Comprehensive Prior Diagnostics</strong></p>
 <p>Computes a full diagnostic report implementing the “unintended prior”
-checks from RN-07.</p>
+checks from Lee (2026, Section 4).</p>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/DPprior_diagnostics.html">DPprior_diagnostics</a></span><span class="op">(</span><span class="va">fit</span>, thresholds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.9</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Parameters:</strong></p>
@@ -1291,7 +1291,7 @@ summary with interpretation</td>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DPprior_fit.html">DPprior_fit</a></span><span class="op">(</span>J <span class="op">=</span> <span class="fl">50</span>, mu_K <span class="op">=</span> <span class="fl">5</span>, var_K <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: HIGH DOMINANCE RISK: P(w1 &gt; 0.5) = 48.1% exceeds 40%.</span></span>
-<span><span class="co">#&gt;   This may indicate unintended prior behavior (RN-07).</span></span>
+<span><span class="co">#&gt;   This may indicate unintended prior behavior (Lee, 2026).</span></span>
 <span><span class="co">#&gt;   Consider using DPprior_dual() for weight-constrained elicitation.</span></span>
 <span><span class="co">#&gt;   See ?DPprior_diagnostics for interpretation.</span></span>
 <span><span class="va">diag</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DPprior_diagnostics.html">DPprior_diagnostics</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
@@ -2081,8 +2081,8 @@ Statistics</em>, 2(6), 1152-1174.</p>
 <p>Golub, G. H., &amp; Welsch, J. H. (1969). Calculation of Gauss
 quadrature rules. <em>Mathematics of Computation</em>, 23(106),
 221-230.</p>
-<p>Lee, J. (2025). RN-01 through RN-07: Research Notes for DPprior
-Package Development.</p>
+<p>Lee, J. (2026). Design-conditional prior elicitation for Dirichlet
+process mixtures. <em>arXiv preprint</em> arXiv:2602.06301.</p>
 <p>Lee, J., Che, J., Rabe-Hesketh, S., Feller, A., &amp; Miratrix, L.
 (2025). Improving the estimation of site-specific effects and their
 distribution in multisite trials. <em>Journal of Educational and

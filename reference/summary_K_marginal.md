@@ -111,6 +111,14 @@ making it flexible for different reporting needs.
 [`pmf_K_marginal`](https://joonho112.github.io/DPprior/reference/pmf_K_marginal.md),
 [`exact_K_moments`](https://joonho112.github.io/DPprior/reference/exact_K_moments.md)
 
+Other marginal_K:
+[`K_moments()`](https://joonho112.github.io/DPprior/reference/K_moments.md),
+[`cdf_K_marginal()`](https://joonho112.github.io/DPprior/reference/cdf_K_marginal.md),
+[`exact_K_moments()`](https://joonho112.github.io/DPprior/reference/exact_K_moments.md),
+[`mode_K_marginal()`](https://joonho112.github.io/DPprior/reference/mode_K_marginal.md),
+[`pmf_K_marginal()`](https://joonho112.github.io/DPprior/reference/pmf_K_marginal.md),
+[`quantile_K_marginal()`](https://joonho112.github.io/DPprior/reference/quantile_K_marginal.md)
+
 ## Examples
 
 ``` r

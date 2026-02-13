@@ -86,7 +86,7 @@ allowed but are mapped to the boundary values (1 for t ≤ 0, 0 for t ≥ 1).</p
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The survival function has the closed form:
 $$P(w_1 &gt; t | a, b) = \left(\frac{b}{b - \log(1-t)}\right)^a$$</p>
-<p>This is a <strong>key quantity for dominance risk assessment</strong> (RN-07).
+<p>This is a <strong>key quantity for dominance risk assessment</strong> (Lee, 2026, Section 4).
 A large P(w₁ &gt; 0.5) indicates high prior probability that a single
 cluster dominates the mixture.</p>
     </div>
@@ -99,12 +99,19 @@ cluster dominates the mixture.</p>
 </ul></div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
-    <p>Lee, J. (2025). RN-06: Dual-Anchor Design II, Corollary 1.
-Lee, J. (2025). RN-07: Unintended Prior Consequences.</p>
+    <p>Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+<em>arXiv preprint</em> arXiv:2602.06301.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="cdf_w1.html">cdf_w1</a></code>, <code><a href="summary_w1.html">summary_w1</a></code></p></div>
+    <div class="dont-index"><p><code><a href="cdf_w1.html">cdf_w1</a></code>, <code><a href="summary_w1.html">summary_w1</a></code></p>
+<p>Other weights_w1:
+<code><a href="cdf_w1.html">cdf_w1()</a></code>,
+<code><a href="density_w1.html">density_w1()</a></code>,
+<code><a href="mean_w1.html">mean_w1()</a></code>,
+<code><a href="quantile_w1.html">quantile_w1()</a></code>,
+<code><a href="summary_w1.html">summary_w1()</a></code>,
+<code><a href="var_w1.html">var_w1()</a></code></p></div>
     </div>
 
     <div class="section level2">

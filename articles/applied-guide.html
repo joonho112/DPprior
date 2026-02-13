@@ -81,7 +81,7 @@
       <img src="../logo.svg" class="logo" alt=""><h1>The Applied Researcher's Guide to Cluster-Count Elicitation</h1>
                         <h4 data-toc-skip class="author">JoonHo Lee</h4>
             
-            <h4 data-toc-skip class="date">2026-01-01</h4>
+            <h4 data-toc-skip class="date">2026-02-13</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/joonho112/DPprior/blob/main/vignettes/applied-guide.Rmd" class="external-link"><code>vignettes/applied-guide.Rmd</code></a></small>
       <div class="d-none name"><code>applied-guide.Rmd</code></div>
@@ -332,7 +332,7 @@ implies you believe nearly every observation is unique</p></li>
 <span>  <span class="va">comparison_df</span><span class="op">$</span><span class="va">SD_alpha</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">a</span><span class="op">)</span> <span class="op">/</span> <span class="va">fit</span><span class="op">$</span><span class="va">b</span></span>
 <span><span class="op">}</span></span>
 <span><span class="co">#&gt; Warning: HIGH DOMINANCE RISK: P(w1 &gt; 0.5) = 60.6% exceeds 40%.</span></span>
-<span><span class="co">#&gt;   This may indicate unintended prior behavior (RN-07).</span></span>
+<span><span class="co">#&gt;   This may indicate unintended prior behavior (Lee, 2026).</span></span>
 <span><span class="co">#&gt;   Consider using DPprior_dual() for weight-constrained elicitation.</span></span>
 <span><span class="co">#&gt;   See ?DPprior_diagnostics for interpretation.</span></span>
 <span></span>
@@ -696,8 +696,8 @@ just moments.</p>
 <ul>
 <li><p>Matches the entire distribution shape, not just moments</p></li>
 <li><p>Useful for custom target distributions</p></li>
-<li><p>Faithful to the DORO (Discrepancy Optimization) philosophy
-(Dorazio, 2009)</p></li>
+<li><p>Faithful to the Design-Conditional Elicitation (DCE) philosophy
+(Lee, 2026; Dorazio, 2009)</p></li>
 </ul>
 <p><strong>Cons:</strong></p>
 <ul>
@@ -814,7 +814,7 @@ scenarios:</p>
 <td align="right">0.4283</td>
 <td align="right">20.0000</td>
 <td align="right">95.0000</td>
-<td align="left">2.7e-12</td>
+<td align="left">2.9e-12</td>
 </tr>
 <tr class="odd">
 <td align="left">A2-KL</td>
@@ -1082,7 +1082,7 @@ package facilitates sensitivity analysis.</p>
 <span>  <span class="fu"><a href="../reference/DPprior_fit.html">DPprior_fit</a></span><span class="op">(</span>J <span class="op">=</span> <span class="va">J</span>, mu_K <span class="op">=</span> <span class="va">mu</span>, confidence <span class="op">=</span> <span class="st">"low"</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: HIGH DOMINANCE RISK: P(w1 &gt; 0.5) = 40.4% exceeds 40%.</span></span>
-<span><span class="co">#&gt;   This may indicate unintended prior behavior (RN-07).</span></span>
+<span><span class="co">#&gt;   This may indicate unintended prior behavior (Lee, 2026).</span></span>
 <span><span class="co">#&gt;   Consider using DPprior_dual() for weight-constrained elicitation.</span></span>
 <span><span class="co">#&gt;   See ?DPprior_diagnostics for interpretation.</span></span>
 <span></span>

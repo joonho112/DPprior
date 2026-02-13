@@ -92,13 +92,11 @@ digamma/trigamma formulas.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">logS</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_log_stirling.html">compute_log_stirling</a></span><span class="op">(</span><span class="fl">50</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="va">logS</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_log_stirling.html">compute_log_stirling</a></span><span class="op">(</span><span class="fl">50</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">verify_pmf_moments</span><span class="op">(</span><span class="fl">50</span>, <span class="fl">2.0</span>, <span class="va">logS</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> PMF-Moments Verification (J=50, alpha=2.00):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Mean: PMF=7.03762636, digamma=7.03762636, error=2.04e-14 [PASS]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Var:  PMF=4.53555756, trigamma=4.53555756, error=8.88e-14 [PASS]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Overall: PASS</span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

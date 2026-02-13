@@ -48,7 +48,7 @@ mu_K <- 5
 
 fit_K <- DPprior_fit(J = J, mu_K = mu_K, confidence = "low")
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 56.3% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 print(fit_K)
@@ -331,7 +331,7 @@ limited. Specifically, you want $P\left( w_{1} > 0.5 \right) \leq 0.25$:
 # Step 1: Start with K-only calibration
 fit_K <- DPprior_fit(J = 50, mu_K = 5, confidence = "low")
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 56.3% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 

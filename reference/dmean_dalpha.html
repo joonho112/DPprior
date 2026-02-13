@@ -88,16 +88,16 @@ $$\frac{d}{d\alpha}\mu_J(\alpha) =
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">dmean_dalpha</span><span class="op">(</span><span class="fl">50</span>, <span class="fl">2.0</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.267779</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="fu">dmean_dalpha</span><span class="op">(</span><span class="fl">50</span>, <span class="fl">2.0</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Verify with finite difference</span></span></span>
 <span class="r-in"><span><span class="va">J</span> <span class="op">&lt;-</span> <span class="fl">50</span>; <span class="va">alpha</span> <span class="op">&lt;-</span> <span class="fl">2.0</span>; <span class="va">eps</span> <span class="op">&lt;-</span> <span class="fl">1e-6</span></span></span>
 <span class="r-in"><span><span class="va">fd</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu"><a href="mean_K_given_alpha.html">mean_K_given_alpha</a></span><span class="op">(</span><span class="va">J</span>, <span class="va">alpha</span> <span class="op">+</span> <span class="va">eps</span><span class="op">)</span> <span class="op">-</span></span></span>
 <span class="r-in"><span>       <span class="fu"><a href="mean_K_given_alpha.html">mean_K_given_alpha</a></span><span class="op">(</span><span class="va">J</span>, <span class="va">alpha</span> <span class="op">-</span> <span class="va">eps</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="va">eps</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">fd</span> <span class="op">-</span> <span class="fu">dmean_dalpha</span><span class="op">(</span><span class="va">J</span>, <span class="va">alpha</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">1e-5</span>  <span class="co"># TRUE</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

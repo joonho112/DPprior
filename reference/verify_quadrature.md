@@ -48,19 +48,12 @@ For \\\alpha \sim \text{Gamma}(a, b)\\:
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 # Should return TRUE
 verify_quadrature(2.5, 1.5, M = 80)
-#> Quadrature verification (a=2.50, b=1.50, M=80):
-#>   E[alpha]:   true=1.666667, quad=1.6666666667, error=4.44e-16 [PASS]
-#>   E[alpha^2]:  true=3.888889, quad=3.8888888889, error=0.00e+00 [PASS]
-#>   Var(alpha): true=1.111111, quad=1.1111111111, error=1.33e-15 [PASS]
-#>   Overall: PASS
 
 # More challenging case
 verify_quadrature(0.5, 2.0, M = 100, verbose = TRUE)
-#> Quadrature verification (a=0.50, b=2.00, M=100):
-#>   E[alpha]:   true=0.250000, quad=0.2500000000, error=1.94e-16 [PASS]
-#>   E[alpha^2]:  true=0.187500, quad=0.1875000000, error=6.11e-16 [PASS]
-#>   Var(alpha): true=0.125000, quad=0.1250000000, error=5.13e-16 [PASS]
-#>   Overall: PASS
+
+} # }
 ```

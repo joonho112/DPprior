@@ -169,7 +169,7 @@ confidence level (if used), and target type.</p></dd>
 <dd><p>List; achieved moments (mu_K, var_K) and residual.</p></dd>
 
 <dt>diagnostics</dt>
-<dd><p>List; comprehensive RN-07 diagnostics (if requested).</p></dd>
+<dd><p>List; comprehensive diagnostics (if requested).</p></dd>
 
 <dt>solver_diagnostics</dt>
 <dd><p>List; backend solver details (if applicable).</p></dd>
@@ -184,6 +184,10 @@ confidence level (if used), and target type.</p></dd>
     <p>This function provides a convenient interface for specifying beliefs about
 the number of clusters and uncertainty, then calibrates a Gamma hyperprior
 for the Dirichlet Process concentration parameter alpha.</p>
+<p>This function is the primary interface for Design-Conditional Elicitation
+(DCE) as described in Lee (2026). The underlying engine is Two-Stage Moment
+Matching (TSMM): Stage 1 (A1) provides a closed-form initialization, and
+Stage 2 (A2-MN) refines to exact moments via Newton iteration.</p>
 <div class="section">
 <h3 id="variance-constraints">Variance Constraints<a class="anchor" aria-label="anchor" href="#variance-constraints"></a></h3>
 <p>The target variance must satisfy two constraints:</p><ol><li><p>Upper bound: <code>var_K &lt;= (J-1)^2/4</code> (maximum possible variance
@@ -205,11 +209,8 @@ A2-MN does not have this constraint.</p></li>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
-    <p>Lee, J. (2025). Prior Elicitation for the Dirichlet Process Concentration
-Parameter in Low-Information Settings. <em>Working Paper</em>.</p>
-<p>RN-03: Closed-Form Mapping for the Gamma Hyperprior.
-RN-04: Small-J Correction via Newton Refinement.
-RN-07: Unintended Prior Diagnostic.</p>
+    <p>Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+<em>arXiv preprint</em> arXiv:2602.06301.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -217,7 +218,12 @@ RN-07: Unintended Prior Diagnostic.</p>
 <code><a href="DPprior_a2_newton.html">DPprior_a2_newton</a></code> for A2 Newton refinement,
 <code><a href="DPprior_a2_kl.html">DPprior_a2_kl</a></code> for A2-KL divergence minimization,
 <code><a href="DPprior_diagnostics.html">DPprior_diagnostics</a></code> for detailed diagnostics,
-<code><a href="DPprior_dual.html">DPprior_dual</a></code> for dual-anchor calibration with weight constraints.</p></div>
+<code><a href="DPprior_dual.html">DPprior_dual</a></code> for dual-anchor calibration with weight constraints.</p>
+<p>Other elicitation:
+<code><a href="DPprior_a1.html">DPprior_a1()</a></code>,
+<code><a href="DPprior_a2_kl.html">DPprior_a2_kl()</a></code>,
+<code><a href="DPprior_a2_newton.html">DPprior_a2_newton()</a></code>,
+<code><a href="DPprior_dual.html">DPprior_dual()</a></code></p></div>
     </div>
 
     <div class="section level2">
@@ -225,7 +231,7 @@ RN-07: Unintended Prior Diagnostic.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Basic usage with target moments</span></span></span>
 <span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">DPprior_fit</span><span class="op">(</span>J <span class="op">=</span> <span class="fl">50</span>, mu_K <span class="op">=</span> <span class="fl">5</span>, var_K <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>HIGH DOMINANCE RISK: P(w1 &gt; 0.5) = 48.1% exceeds 40%.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   This may indicate unintended prior behavior (RN-07).</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   This may indicate unintended prior behavior (Lee, 2026).</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span>   Consider using DPprior_dual() for weight-constrained elicitation.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span>   See ?DPprior_diagnostics for interpretation.</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
@@ -250,19 +256,19 @@ RN-07: Unintended Prior Diagnostic.</p>
 <span class="r-in"><span><span class="co"># Using confidence level instead of explicit variance</span></span></span>
 <span class="r-in"><span><span class="va">fit_medium</span> <span class="op">&lt;-</span> <span class="fu">DPprior_fit</span><span class="op">(</span>J <span class="op">=</span> <span class="fl">50</span>, mu_K <span class="op">=</span> <span class="fl">5</span>, confidence <span class="op">=</span> <span class="st">"medium"</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>HIGH DOMINANCE RISK: P(w1 &gt; 0.5) = 49.7% exceeds 40%.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   This may indicate unintended prior behavior (RN-07).</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   This may indicate unintended prior behavior (Lee, 2026).</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span>   Consider using DPprior_dual() for weight-constrained elicitation.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span>   See ?DPprior_diagnostics for interpretation.</span>
 <span class="r-in"><span><span class="va">fit_low</span> <span class="op">&lt;-</span> <span class="fu">DPprior_fit</span><span class="op">(</span>J <span class="op">=</span> <span class="fl">50</span>, mu_K <span class="op">=</span> <span class="fl">5</span>, confidence <span class="op">=</span> <span class="st">"low"</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>HIGH DOMINANCE RISK: P(w1 &gt; 0.5) = 56.3% exceeds 40%.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   This may indicate unintended prior behavior (RN-07).</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   This may indicate unintended prior behavior (Lee, 2026).</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span>   Consider using DPprior_dual() for weight-constrained elicitation.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span>   See ?DPprior_diagnostics for interpretation.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Quick approximation for exploration</span></span></span>
 <span class="r-in"><span><span class="va">fit_quick</span> <span class="op">&lt;-</span> <span class="fu">DPprior_fit</span><span class="op">(</span>J <span class="op">=</span> <span class="fl">50</span>, mu_K <span class="op">=</span> <span class="fl">5</span>, var_K <span class="op">=</span> <span class="fl">8</span>, method <span class="op">=</span> <span class="st">"A1"</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>HIGH DOMINANCE RISK: P(w1 &gt; 0.5) = 52.1% exceeds 40%.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   This may indicate unintended prior behavior (RN-07).</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   This may indicate unintended prior behavior (Lee, 2026).</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span>   Consider using DPprior_dual() for weight-constrained elicitation.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span>   See ?DPprior_diagnostics for interpretation.</span>
 <span class="r-in"><span></span></span>
@@ -284,7 +290,7 @@ RN-07: Unintended Prior Diagnostic.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Converged: ||F|| = 7.60e-09 &lt; 1.00e-08</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>HIGH DOMINANCE RISK: P(w1 &gt; 0.5) = 48.1% exceeds 40%.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   This may indicate unintended prior behavior (RN-07).</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   This may indicate unintended prior behavior (Lee, 2026).</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span>   Consider using DPprior_dual() for weight-constrained elicitation.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span>   See ?DPprior_diagnostics for interpretation.</span>
 <span class="r-in"><span></span></span>

@@ -27,8 +27,10 @@ Numeric vector of length J containing \\\log\|s(J,k)\|\\ for \\k = 1,
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 logS <- compute_log_stirling(10)
 log_s_row <- get_stirling_row(5, logS)
 exp(log_s_row)
-#> [1] 24 50 35 10  1
+
+} # }
 ```

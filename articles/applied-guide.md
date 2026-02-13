@@ -208,7 +208,7 @@ for (i in seq_along(mu_K_values)) {
   comparison_df$SD_alpha[i] <- sqrt(fit$a) / fit$b
 }
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 60.6% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 
@@ -489,8 +489,8 @@ have a specific target distribution in mind, not just moments.
 
 - Useful for custom target distributions
 
-- Faithful to the DORO (Discrepancy Optimization) philosophy (Dorazio,
-  2009)
+- Faithful to the Design-Conditional Elicitation (DCE) philosophy (Lee,
+  2026; Dorazio, 2009)
 
 **Cons:**
 
@@ -561,7 +561,7 @@ knitr::kable(compare_methods(200, 20, 95))
 | Method |      a |      b |  E\[K\] |  Var(K) | Residual |
 |:-------|-------:|-------:|--------:|--------:|:---------|
 | A1     | 4.7500 | 1.3246 | 14.6529 | 34.4044 | 6.1e+01  |
-| A2-MN  | 2.4541 | 0.4283 | 20.0000 | 95.0000 | 2.7e-12  |
+| A2-MN  | 2.4541 | 0.4283 | 20.0000 | 95.0000 | 2.9e-12  |
 | A2-KL  | 2.6502 | 0.4634 | 20.0459 | 89.5053 | 9.2e-03  |
 
 ``` r
@@ -781,7 +781,7 @@ sensitivity_mu <- lapply(mu_K_grid, function(mu) {
   DPprior_fit(J = J, mu_K = mu, confidence = "low")
 })
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 40.4% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 

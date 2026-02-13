@@ -37,7 +37,9 @@ Numeric; marginal variance.
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 logS <- compute_log_stirling(50)
 var_K_from_marginal_pmf(50, 1.5, 0.5, logS)
-#> [1] 22.76895
+
+} # }
 ```

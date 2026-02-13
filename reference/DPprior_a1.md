@@ -102,7 +102,7 @@ An S3 object of class `DPprior_fit` with components:
 
 ## Details
 
-### Theory (RN-03)
+### Theory (TSMM Stage 1)
 
 The A1 method uses a shifted Negative Binomial approximation: \$\$K_J -
 1 \mid \alpha \approx \text{Poisson}(\alpha \cdot c_J)\$\$
@@ -124,6 +124,11 @@ High-confidence specifications (low variance) may violate this
 constraint under the A1 proxy, even though they may be feasible under
 the exact DP.
 
+## References
+
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet
+Process Mixtures. *arXiv preprint* arXiv:2602.06301.
+
 ## See also
 
 [`vif_to_variance`](https://joonho112.github.io/DPprior/reference/vif_to_variance.md)
@@ -132,6 +137,12 @@ for VIF conversion,
 for confidence mapping,
 [`print.DPprior_fit`](https://joonho112.github.io/DPprior/reference/print.DPprior_fit.md)
 for print method
+
+Other elicitation:
+[`DPprior_a2_kl()`](https://joonho112.github.io/DPprior/reference/DPprior_a2_kl.md),
+[`DPprior_a2_newton()`](https://joonho112.github.io/DPprior/reference/DPprior_a2_newton.md),
+[`DPprior_dual()`](https://joonho112.github.io/DPprior/reference/DPprior_dual.md),
+[`DPprior_fit()`](https://joonho112.github.io/DPprior/reference/DPprior_fit.md)
 
 ## Examples
 

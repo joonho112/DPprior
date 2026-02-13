@@ -44,14 +44,11 @@ A data frame with columns: M, estimate, change, relative_change.
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 # Check convergence for E[alpha]
 convergence_quadrature(identity, 2.5, 1.5,
                        M_values = c(10, 20, 50, 80, 100),
                        true_value = 2.5/1.5)
-#>     M estimate        change relative_change        error relative_error
-#> 1  10 1.666667            NA              NA 4.440892e-16   2.664535e-16
-#> 2  20 1.666667 -1.332268e-15    7.993606e-16 8.881784e-16   5.329071e-16
-#> 3  50 1.666667  0.000000e+00    0.000000e+00 8.881784e-16   5.329071e-16
-#> 4  80 1.666667  4.440892e-16    2.664535e-16 4.440892e-16   2.664535e-16
-#> 5 100 1.666667  4.440892e-16    2.664535e-16 0.000000e+00   0.000000e+00
+
+} # }
 ```

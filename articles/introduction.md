@@ -381,12 +381,13 @@ process:
     Antoniak distribution, we refine $(a,b)$ to precisely match the
     target $\left( \mu_{K},\sigma_{K}^{2} \right)$.
 
-This approach—which we call *DORO 2.0*—extends the original DORO method
-(Dorazio, 2009; Lee et al., 2025) by replacing computationally expensive
-grid search with near-instantaneous closed-form solutions backed by
-Newton iteration for guaranteed accuracy. The optional dual-anchor
-extension further incorporates weight constraints, addressing the
-“unintended prior” problem identified by Vicentini & Jermyn (2025).
+This approach—which we call *Design-Conditional Elicitation
+(DCE)*—extends the original DORO method (Dorazio, 2009; Lee et al.,
+2025) by replacing computationally expensive grid search with
+near-instantaneous closed-form solutions backed by Newton iteration for
+guaranteed accuracy. The optional dual-anchor extension further
+incorporates weight constraints, addressing the “unintended prior”
+problem identified by Vicentini & Jermyn (2025).
 
 ``` r
 # Demonstrate the elicitation workflow
@@ -396,17 +397,17 @@ mu_K <- 5
 # Method 1: Using confidence levels
 fit_low <- DPprior_fit(J = J, mu_K = mu_K, confidence = "low")
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 56.3% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 fit_med <- DPprior_fit(J = J, mu_K = mu_K, confidence = "medium")
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 49.7% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 fit_high <- DPprior_fit(J = J, mu_K = mu_K, confidence = "high")
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 46.5% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 
@@ -452,7 +453,7 @@ fit <- DPprior_fit(
   confidence = "medium" # Uncertainty about that expectation
 )
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 49.7% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 
@@ -471,7 +472,7 @@ Go beyond cluster counts to control weight concentration, addressing the
 # First, fit K-only prior
 fit_K <- DPprior_fit(J = 50, mu_K = 5, var_K = 8)
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 48.1% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 
@@ -499,7 +500,7 @@ dimensions:
 # Run diagnostics
 fit <- DPprior_fit(J = 50, mu_K = 5, var_K = 8, check_diagnostics = TRUE)
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 48.1% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 
@@ -623,7 +624,7 @@ $\alpha$. Key features include:
     counts and weight concentration, rather than abstract parameters
 
 2.  **Fast computation**: Closed-form approximations with Newton
-    refinement, eliminating the need for grid search (DORO 2.0)
+    refinement, eliminating the need for grid search (DCE via TSMM)
 
 3.  **Comprehensive control**: Dual-anchor framework for joint control
     of cluster counts and weight behavior, addressing the “unintended

@@ -103,15 +103,11 @@ nodes increases.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">logS</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_log_stirling.html">compute_log_stirling</a></span><span class="op">(</span><span class="fl">50</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="va">logS</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_log_stirling.html">compute_log_stirling</a></span><span class="op">(</span><span class="fl">50</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">verify_pmf_marginal_convergence</span><span class="op">(</span><span class="fl">50</span>, <span class="fl">1.5</span>, <span class="fl">0.5</span>, <span class="va">logS</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Quadrature Convergence (J=50, a=1.50, b=0.50):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      M         mean          var     mean_chg      var_chg       L1_chg</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     20   8.35549735  22.76870932     0.00e+00     0.00e+00     0.00e+00</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     40   8.35548682  22.76894879     1.05e-05     2.39e-04     4.09e-03</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     80   8.35548676  22.76895012     5.91e-08     1.34e-06     7.89e-05</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    120   8.35548676  22.76895013     3.75e-11     8.48e-10     8.62e-08</span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

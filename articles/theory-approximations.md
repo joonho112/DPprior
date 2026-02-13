@@ -689,7 +689,7 @@ exact_a1 <- exact_K_moments(J, fit_a1$a, fit_a1$b)
 # A2 refinement (full DPprior_fit)
 fit_a2 <- DPprior_fit(J = J, mu_K = mu_K, var_K = var_K)
 #> Warning: HIGH DOMINANCE RISK: P(w1 > 0.5) = 48.1% exceeds 40%.
-#>   This may indicate unintended prior behavior (RN-07).
+#>   This may indicate unintended prior behavior (Lee, 2026).
 #>   Consider using DPprior_dual() for weight-constrained elicitation.
 #>   See ?DPprior_diagnostics for interpretation.
 exact_a2 <- exact_K_moments(J, fit_a2$a, fit_a2$b)

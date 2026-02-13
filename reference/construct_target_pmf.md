@@ -66,13 +66,14 @@ constructed using: \$\$\text{scale} = \sigma^2_K / (2\mu_K), \quad
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 # Direct PMF
 result <- construct_target_pmf(50, rep(1, 50))  # Uniform on 1:50
 
 # Moment specification
 result <- construct_target_pmf(50, list(mu_K = 5, var_K = 8))
 result$mu_K  # 5
-#> [1] 5
 result$df    # 6.25
-#> [1] 6.25
+
+} # }
 ```

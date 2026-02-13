@@ -30,11 +30,12 @@ Numeric; the conditional variance \\Var(K_J \mid \alpha)\\.
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 logS <- compute_log_stirling(50)
 
 # Should match var_K_given_alpha(50, 2.0)
 var_K_from_pmf(50, 2.0, logS)
-#> [1] 4.535558
 var_K_given_alpha(50, 2.0)
-#> [1] 4.535558
+
+} # }
 ```

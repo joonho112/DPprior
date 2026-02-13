@@ -73,42 +73,10 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">verify_dual_anchor</span><span class="op">(</span>verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> === Dual-Anchor Verification Tests ===</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Test 1: ABSOLUTE loss barely moves (expected)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Before: 0.4815, After: 0.4791, Reduction: 0.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   PASS (confirmed ABSOLUTE loss is inadequate)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Test 2: RELATIVE loss gives meaningful reduction</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Before: 0.4815, After: 0.4379, Reduction: 9.0%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Test 3: ADAPTIVE loss is more aggressive</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Before: 0.4815, After: 0.3427, Reduction: 28.8%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Test 4: lambda = 1 recovers K-only</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Test 5: lambda = 0 achieves weight target</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Target: 0.30, Achieved: 0.3000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Test 6: Trade-off curve</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   lambda w1_prob_gt_50     mu_K     var_K</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    0.0     0.3000000 7.116329 11.903303</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    0.5     0.4379077 5.380060  7.930247</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3    1.0     0.4814780 5.000000  8.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   PASS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> === All Tests Passed ===</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Summary:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ABSOLUTE (broken): 0.5% reduction</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   RELATIVE (fixed):  9.0% reduction</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ADAPTIVE (best):   28.8% reduction</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="fu">verify_dual_anchor</span><span class="op">(</span>verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -1,7 +1,8 @@
 # Compute A1 Approximation Error Bounds
 
 Comprehensive error analysis for the A1 large-J approximation.
-Implements the error quantification framework from RN-05.
+Implements the error quantification framework from Lee (2026, Section
+3.3).
 
 ## Usage
 
@@ -72,8 +73,8 @@ This function provides:
 
 ## References
 
-RN-05: Error Quantification & Guarantees for the A1 Large-J
-Approximation
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet
+Process Mixtures. *arXiv preprint* arXiv:2602.06301.
 
 ## See also
 
@@ -81,6 +82,12 @@ Approximation
 [`compute_total_tv_bound`](https://joonho112.github.io/DPprior/reference/compute_total_tv_bound.md),
 [`DPprior_a1`](https://joonho112.github.io/DPprior/reference/DPprior_a1.md),
 [`DPprior_a2_newton`](https://joonho112.github.io/DPprior/reference/DPprior_a2_newton.md)
+
+Other diagnostics:
+[`DPprior_diagnostics()`](https://joonho112.github.io/DPprior/reference/DPprior_diagnostics.md),
+[`compute_error_landscape()`](https://joonho112.github.io/DPprior/reference/compute_error_landscape.md),
+[`compute_weight_diagnostics()`](https://joonho112.github.io/DPprior/reference/compute_weight_diagnostics.md),
+[`dual_anchor_diagnostics()`](https://joonho112.github.io/DPprior/reference/dual_anchor_diagnostics.md)
 
 ## Examples
 

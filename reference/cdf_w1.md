@@ -40,11 +40,13 @@ particularly when the CDF is close to 0 (small x).
 
 The weight w₁ is in **GEM (size-biased) order**, not ranked by size. It
 represents the asymptotic cluster share of a randomly chosen unit,
-**not** the largest cluster proportion. See RN-06 §1 for details.
+**not** the largest cluster proportion. See Lee (2026, Section 4) for
+details.
 
 ## References
 
-Lee, J. (2025). RN-06: Dual-Anchor Design II.
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet
+Process Mixtures. *arXiv preprint* arXiv:2602.06301.
 
 Vicentini, C. and Jermyn, I. H. (2025). Prior selection for the
 precision parameter of Dirichlet Process Mixtures. arXiv:2502.00864.
@@ -54,6 +56,14 @@ precision parameter of Dirichlet Process Mixtures. arXiv:2502.00864.
 [`quantile_w1`](https://joonho112.github.io/DPprior/reference/quantile_w1.md),
 [`density_w1`](https://joonho112.github.io/DPprior/reference/density_w1.md),
 [`prob_w1_exceeds`](https://joonho112.github.io/DPprior/reference/prob_w1_exceeds.md)
+
+Other weights_w1:
+[`density_w1()`](https://joonho112.github.io/DPprior/reference/density_w1.md),
+[`mean_w1()`](https://joonho112.github.io/DPprior/reference/mean_w1.md),
+[`prob_w1_exceeds()`](https://joonho112.github.io/DPprior/reference/prob_w1_exceeds.md),
+[`quantile_w1()`](https://joonho112.github.io/DPprior/reference/quantile_w1.md),
+[`summary_w1()`](https://joonho112.github.io/DPprior/reference/summary_w1.md),
+[`var_w1()`](https://joonho112.github.io/DPprior/reference/var_w1.md)
 
 ## Examples
 

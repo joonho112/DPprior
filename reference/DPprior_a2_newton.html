@@ -175,9 +175,10 @@ Default: 80.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The A2-MN algorithm uses Newton's method in log-scale to ensure positivity
+    <p>This implements TSMM Stage 2 (A2-MN) from Lee (2026).
+The A2-MN algorithm uses Newton's method in log-scale to ensure positivity
 of the Gamma parameters. The Jacobian is computed exactly using score
-function identities (RN-04 Corollary 1), avoiding finite difference
+function identities (Lee, 2026, Section 3.2, Corollary 1), avoiding finite difference
 approximations.</p>
 <p><strong>Algorithm Steps:</strong></p><ol><li><p>Initialize: \((a_0, b_0)\) from A1 closed-form or user-provided</p></li>
 <li><p>Log-parameterize: \(\eta = (\log a, \log b)\)</p></li>
@@ -203,14 +204,19 @@ convergence may be slower; the Nelder-Mead fallback handles these cases</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
-    <p>Lee, J. (2025). RN-04: A2 Small-J Correction Note. <em>Research Notes
-for DPprior Package Development</em>.</p>
+    <p>Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+<em>arXiv preprint</em> arXiv:2602.06301.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="DPprior_a1.html">DPprior_a1</a></code> for closed-form initialization,
 <code><a href="moments_with_jacobian.html">moments_with_jacobian</a></code> for Jacobian computation,
-<code><a href="exact_K_moments.html">exact_K_moments</a></code> for moment verification</p></div>
+<code><a href="exact_K_moments.html">exact_K_moments</a></code> for moment verification</p>
+<p>Other elicitation:
+<code><a href="DPprior_a1.html">DPprior_a1()</a></code>,
+<code><a href="DPprior_a2_kl.html">DPprior_a2_kl()</a></code>,
+<code><a href="DPprior_dual.html">DPprior_dual()</a></code>,
+<code><a href="DPprior_fit.html">DPprior_fit()</a></code></p></div>
     </div>
 
     <div class="section level2">
@@ -258,7 +264,7 @@ for DPprior Package Development</em>.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3    3 1.844384 1.4552538 4.974913  8.399473 4.002603e-01    1 -15.313512</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4    4 2.029223 1.5996801 4.999187  8.013243 1.326844e-02    1 -14.298307</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5    5 2.036082 1.6050455 4.999999  8.000021 2.078492e-05    1 -14.263052</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6    6 2.036093 1.6050541 5.000000  8.000000 7.600370e-09   NA -14.262997</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6    6 2.036093 1.6050541 5.000000  8.000000 7.600363e-09   NA -14.262997</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

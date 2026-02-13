@@ -41,13 +41,13 @@ function
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 # (2)_3 = 2 * 3 * 4 = 24
 exp(log_rising_factorial(2, 3))
-#> [1] 24
 
 # (1)_5 = 5!
 exp(log_rising_factorial(1, 5))
-#> [1] 120
 factorial(5)
-#> [1] 120
+
+} # }
 ```

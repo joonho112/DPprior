@@ -119,12 +119,19 @@ the marginal distribution is typically overdispersed</p></li>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="K_moments.html">K_moments</a></code> for convenience wrapper,
-<code><a href="mean_K_given_alpha.html">mean_K_given_alpha</a></code>, <code><a href="var_K_given_alpha.html">var_K_given_alpha</a></code></p></div>
+<code><a href="mean_K_given_alpha.html">mean_K_given_alpha</a></code>, <code><a href="var_K_given_alpha.html">var_K_given_alpha</a></code></p>
+<p>Other marginal_K:
+<code><a href="K_moments.html">K_moments()</a></code>,
+<code><a href="cdf_K_marginal.html">cdf_K_marginal()</a></code>,
+<code><a href="mode_K_marginal.html">mode_K_marginal()</a></code>,
+<code><a href="pmf_K_marginal.html">pmf_K_marginal()</a></code>,
+<code><a href="quantile_K_marginal.html">quantile_K_marginal()</a></code>,
+<code><a href="summary_K_marginal.html">summary_K_marginal()</a></code></p></div>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Example from RN-01: J=50, Gamma(1.5, 0.5) prior</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Example: J=50, Gamma(1.5, 0.5) prior</span></span></span>
 <span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">exact_K_moments</span><span class="op">(</span><span class="fl">50</span>, <span class="fl">1.5</span>, <span class="fl">0.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $mean</span>

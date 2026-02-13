@@ -49,16 +49,9 @@ of permutations is J!.
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 logS <- compute_log_stirling(15)
 verify_stirling_row_sum(logS, J_values = 2:10)
-#> PASS: sum_k |s(2,k)| = 2! [error = 0.00e+00]
-#> PASS: sum_k |s(3,k)| = 3! [error = 0.00e+00]
-#> PASS: sum_k |s(4,k)| = 4! [error = 4.44e-16]
-#> PASS: sum_k |s(5,k)| = 5! [error = 0.00e+00]
-#> PASS: sum_k |s(6,k)| = 6! [error = 8.88e-16]
-#> PASS: sum_k |s(7,k)| = 7! [error = 0.00e+00]
-#> PASS: sum_k |s(8,k)| = 8! [error = 0.00e+00]
-#> PASS: sum_k |s(9,k)| = 9! [error = 0.00e+00]
-#> PASS: sum_k |s(10,k)| = 10! [error = 0.00e+00]
-#> [1] TRUE
+
+} # }
 ```
