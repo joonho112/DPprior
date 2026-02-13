@@ -72,6 +72,9 @@
 #' @param base_size Numeric; base font size (default: 11).
 #' @param base_family Character; base font family (default: "").
 #' @return A ggplot2 theme object.
+#'
+#' @family visualization
+#'
 #' @export
 theme_DPprior <- function(base_size = 11, base_family = "") {
   .dpprior_require_ggplot2()
@@ -91,6 +94,9 @@ theme_DPprior <- function(base_size = 11, base_family = "") {
 
 #' DPprior Color Palette
 #' @return A named list with color values.
+#'
+#' @family visualization
+#'
 #' @export
 DPprior_colors <- function() {
   list(
@@ -168,17 +174,7 @@ DPprior_colors <- function() {
     }, error = function(e) NULL)
   }
 
-  # Method 2: exact_K_pmf
-  if (exists("exact_K_pmf", mode = "function")) {
-    tryCatch({
-      pmf <- as.numeric(exact_K_pmf(J, a, b, M))
-      if (length(pmf) == J + 1L) pmf <- pmf[-1L]
-      pmf <- pmf / sum(pmf)
-      return(list(k = seq_len(J), pmf = pmf, method = "exact_K_pmf"))
-    }, error = function(e) NULL)
-  }
-
-  # Method 3: pmf_K_marginal + Stirling
+  # Method 2: pmf_K_marginal + Stirling
   if (exists("pmf_K_marginal", mode = "function") &&
       exists("compute_log_stirling", mode = "function")) {
     tryCatch({
@@ -315,6 +311,10 @@ DPprior_colors <- function() {
 #' # Direct parameter specification
 #' plot_alpha_prior(a = 1.6, b = 1.2)
 #'
+#' @seealso \code{\link{DPprior_fit}} for fitting, \code{\link{plot.DPprior_fit}} for S3 plot method
+#'
+#' @family visualization
+#'
 #' @export
 plot_alpha_prior <- function(fit = NULL, a = NULL, b = NULL,
                              engine = c("ggplot2", "base"),
@@ -401,6 +401,10 @@ plot_alpha_prior <- function(fit = NULL, a = NULL, b = NULL,
 #' plot_K_prior(fit)
 #'
 #' plot_K_prior(J = 50, a = 1.6, b = 1.2)
+#'
+#' @seealso \code{\link{DPprior_fit}} for fitting, \code{\link{plot.DPprior_fit}} for S3 plot method
+#'
+#' @family visualization
 #'
 #' @export
 plot_K_prior <- function(fit = NULL, J = NULL, a = NULL, b = NULL,
@@ -513,6 +517,10 @@ plot_K_prior <- function(fit = NULL, J = NULL, a = NULL, b = NULL,
 #' plot_w1_prior(fit)
 #'
 #' plot_w1_prior(a = 1.6, b = 1.2)
+#'
+#' @seealso \code{\link{DPprior_fit}} for fitting, \code{\link{plot.DPprior_fit}} for S3 plot method
+#'
+#' @family visualization
 #'
 #' @export
 plot_w1_prior <- function(fit = NULL, a = NULL, b = NULL,
@@ -716,6 +724,15 @@ plot_w1_prior <- function(fit = NULL, a = NULL, b = NULL,
 #' @param title Optional overall title for the dashboard.
 #' @param show If TRUE, draw the dashboard.
 #' @return A gtable grob (for ggplot2) or invisible(NULL) for base.
+#'
+#' @references
+#' Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+#' \emph{arXiv preprint} arXiv:2602.06301.
+#'
+#' @seealso \code{\link{DPprior_fit}} for fitting, \code{\link{plot.DPprior_fit}} for S3 plot method
+#'
+#' @family visualization
+#'
 #' @export
 plot_prior_dashboard <- function(fit,
                                  engine = c("ggplot2", "base"),
@@ -778,58 +795,9 @@ plot_prior_dashboard <- function(fit,
 }
 
 
-#' S3 plot method for DPprior_fit
-#'
-#' @param x A DPprior_fit object.
-#' @param type Plot type: "dashboard" (default), "alpha", "K", "w1",
-#'   "dual" (for dual-anchor comparison), or "auto" (auto-detect).
-#' @param engine Character; plotting engine, either "ggplot2" (default) or "base".
-#' @param ... Additional arguments passed to plotting functions.
-#'
-#' @details
-#' If \code{type = "auto"} (default for dual fits), the function automatically
-#' chooses the appropriate dashboard:
-#' \itemize{
-#'   \item For K-only fits: \code{plot_prior_dashboard()}
-#'   \item For dual-anchor fits: \code{plot_dual_comparison()}
-#' }
-#'
-#' @export
-plot.DPprior_fit <- function(x, type = c("auto", "dashboard", "alpha", "K", "w1",
-                                         "dual", "comparison"),
-                             engine = c("ggplot2", "base"), ...) {
-  type <- match.arg(type)
-  engine <- match.arg(engine)
-
-  # Auto-detect: use dual comparison for dual-anchor fits
-
-  if (type == "auto") {
-    type <- if (.dpprior_is_dual(x)) "dual" else "dashboard"
-  }
-
-  switch(type,
-         "dashboard" = plot_prior_dashboard(x, engine = engine, ...),
-         "alpha" = plot_alpha_prior(x, engine = engine, ...),
-         "K" = plot_K_prior(x, engine = engine, ...),
-         "w1" = plot_w1_prior(x, engine = engine, ...),
-         "dual" = if (.dpprior_is_dual(x)) plot_dual_comparison(x, engine = engine, ...) else plot_prior_dashboard(x, engine = engine, ...),
-         "comparison" = if (.dpprior_is_dual(x)) plot_dual_comparison(x, engine = engine, ...) else {
-           warning("Not a dual-anchor fit; showing standard dashboard", call. = FALSE)
-           plot_prior_dashboard(x, engine = engine, ...)
-         }
-  )
-}
-
-
 # =============================================================================
 # Dual-Anchor Visualization Functions
 # =============================================================================
-
-#' Check if fit is a dual-anchor result
-#' @keywords internal
-.dpprior_is_dual <- function(fit) {
-  !is.null(fit$dual_anchor) && !is.null(fit$dual_anchor$init)
-}
 
 #' Plot Dual-Anchor Comparison Dashboard
 #'
@@ -851,6 +819,10 @@ plot.DPprior_fit <- function(x, type = c("auto", "dashboard", "alpha", "K", "w1"
 #'   w1_target = list(prob = list(threshold = 0.5, value = 0.3)),
 #'   lambda = 0.5)
 #' plot_dual_comparison(fit_dual)
+#'
+#' @seealso \code{\link{DPprior_fit}} for fitting, \code{\link{plot.DPprior_fit}} for S3 plot method
+#'
+#' @family visualization
 #'
 #' @export
 plot_dual_comparison <- function(fit_dual,
@@ -1120,6 +1092,10 @@ plot_dual_comparison <- function(fit_dual,
 #' )
 #' plot_tradeoff_curve(curve, target_value = 0.25)
 #'
+#' @seealso \code{\link{DPprior_fit}} for fitting, \code{\link{plot.DPprior_fit}} for S3 plot method
+#'
+#' @family visualization
+#'
 #' @export
 plot_tradeoff_curve <- function(tradeoff_data,
                                 metric = c("w1_prob_gt_50", "E_w1", "K_loss", "var_K"),
@@ -1208,6 +1184,10 @@ plot_tradeoff_curve <- function(tradeoff_data,
 #'
 #' @return A gtable grob or list of ggplot objects.
 #'
+#' @seealso \code{\link{DPprior_fit}} for fitting, \code{\link{plot.DPprior_fit}} for S3 plot method
+#'
+#' @family visualization
+#'
 #' @export
 plot_tradeoff_dashboard <- function(tradeoff_data,
                                     w1_target_prob = NULL,
@@ -1292,6 +1272,14 @@ plot_tradeoff_dashboard <- function(tradeoff_data,
 #' @param show If TRUE, draw the plot.
 #'
 #' @return A gtable grob or invisible(NULL).
+#'
+#' @references
+#' Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+#' \emph{arXiv preprint} arXiv:2602.06301.
+#'
+#' @seealso \code{\link{DPprior_fit}} for fitting, \code{\link{plot.DPprior_fit}} for S3 plot method
+#'
+#' @family visualization
 #'
 #' @export
 plot_dual_dashboard <- function(fit_dual,
@@ -1566,7 +1554,7 @@ plot_dual_dashboard <- function(fit_dual,
 #'
 #' @param verbose Logical; if TRUE, print progress messages. Default is TRUE.
 #'
-#' @export
+#' @keywords internal
 verify_visualization <- function(verbose = TRUE) {
   if (verbose) cat("Verifying visualization module (final)...\n")
 

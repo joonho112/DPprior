@@ -22,9 +22,9 @@
 #   - A2-KL dual-mode support (pmf, chisq)
 #
 # References:
-#   - RN-03: Closed-Form Mapping for the Gamma Hyperprior
-#   - RN-04: Small-J Correction via Newton Refinement
-#   - RN-07: Unintended Prior Diagnostic
+#   - Lee (2026), Section 3.1: Closed-Form Mapping (TSMM Stage 1)
+#   - Lee (2026), Section 3.2: Newton Refinement (TSMM Stage 2)
+#   - Lee (2026), Section 4: Dual-Anchor Diagnostic
 # =============================================================================
 
 
@@ -111,26 +111,6 @@ vif_to_variance_fit <- function(mu_K, vif) {
 
 
 # =============================================================================
-# Null-Coalescing Operator
-# =============================================================================
-
-#' Null-Coalescing Operator
-#'
-#' Returns the left operand if not NULL, otherwise the right operand.
-#'
-#' @param x Left operand.
-#' @param y Right operand (default value).
-#'
-#' @return \code{x} if not NULL, else \code{y}.
-#'
-#' @noRd
-#' @keywords internal
-`%||%` <- function(x, y) {
-  if (is.null(x)) y else x
-}
-
-
-# =============================================================================
 # Main Entry Point: DPprior_fit()
 # =============================================================================
 
@@ -191,12 +171,17 @@ vif_to_variance_fit <- function(mu_K, vif) {
 #'     \item{converged}{Logical; whether the calibration converged.}
 #'     \item{iterations}{Integer; number of iterations (for iterative methods).}
 #'     \item{fit}{List; achieved moments (mu_K, var_K) and residual.}
-#'     \item{diagnostics}{List; comprehensive RN-07 diagnostics (if requested).}
+#'     \item{diagnostics}{List; comprehensive diagnostics (if requested).}
 #'     \item{solver_diagnostics}{List; backend solver details (if applicable).}
 #'     \item{trace}{Data frame; iteration history (for iterative methods).}
 #'   }
 #'
 #' @details
+#' This function is the primary interface for Design-Conditional Elicitation
+#' (DCE) as described in Lee (2026). The underlying engine is Two-Stage Moment
+#' Matching (TSMM): Stage 1 (A1) provides a closed-form initialization, and
+#' Stage 2 (A2-MN) refines to exact moments via Newton iteration.
+#'
 #' \subsection{Variance Constraints}{
 #' The target variance must satisfy two constraints:
 #' \enumerate{
@@ -248,12 +233,10 @@ vif_to_variance_fit <- function(mu_K, vif) {
 #' fit$diagnostics$weights$dominance_risk  # Dominance risk level
 #'
 #' @references
-#' Lee, J. (2025). Prior Elicitation for the Dirichlet Process Concentration
-#' Parameter in Low-Information Settings. \emph{Working Paper}.
+#' Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+#' \emph{arXiv preprint} arXiv:2602.06301.
 #'
-#' RN-03: Closed-Form Mapping for the Gamma Hyperprior.
-#' RN-04: Small-J Correction via Newton Refinement.
-#' RN-07: Unintended Prior Diagnostic.
+#' @family elicitation
 #'
 #' @export
 DPprior_fit <- function(J, mu_K, var_K = NULL,
@@ -283,7 +266,7 @@ DPprior_fit <- function(J, mu_K, var_K = NULL,
     stop("mu_K must be a finite numeric scalar", call. = FALSE)
   }
 
-  # GPT improvement: mu_K = 1 is trivial (single cluster)
+  # mu_K = 1 is trivial (single cluster)
   if (mu_K <= 1) {
     stop("mu_K must be > 1 (mu_K = 1 implies trivial single-cluster case)",
          call. = FALSE)
@@ -325,7 +308,7 @@ DPprior_fit <- function(J, mu_K, var_K = NULL,
   }
 
   # ---------------------------------------------------------------------------
-  # GPT improvement: var_K Upper Bound Check (Universal)
+  # var_K upper bound check (universal)
   # ---------------------------------------------------------------------------
 
   # Hard upper bound: K_J in {1, ..., J} implies Var(K) <= (J-1)^2 / 4
@@ -366,7 +349,7 @@ DPprior_fit <- function(J, mu_K, var_K = NULL,
                     message("Using A1 closed-form approximation")
                   }
 
-                  # GPT improvement: A1-only feasibility projection
+                  # A1-only feasibility projection
                   # NegBin requires var_K >= mu_K - 1
                   # A2-MN does NOT have this constraint
                   min_var <- mu_K - 1 + .TOL_PROJECTION_BUFFER
@@ -385,7 +368,7 @@ DPprior_fit <- function(J, mu_K, var_K = NULL,
                     message("Using A2-MN Newton refinement")
                   }
 
-                  # GPT insight: A2-MN does NOT require the NegBin feasibility constraint
+                  # A2-MN does NOT require the NegBin feasibility constraint
                   # It matches exact DP moments, which can handle any valid (mu_K, var_K)
 
                   DPprior_a2_newton(J, mu_K, var_K_used, M = M, verbose = verbose)
@@ -396,7 +379,7 @@ DPprior_fit <- function(J, mu_K, var_K = NULL,
                     message("Using A2-KL divergence minimization")
                   }
 
-                  # GPT improvement: dual-mode dispatch for A2-KL
+                  # Dual-mode dispatch for A2-KL
                   # API: DPprior_a2_kl(J, target, method = c("pmf", "chisq"), ...)
                   if (!is.null(target_pmf)) {
                     # PMF matching mode: target is numeric vector
@@ -424,7 +407,7 @@ DPprior_fit <- function(J, mu_K, var_K = NULL,
     )
   }
 
-  # GPT improvement: preserve solver-specific diagnostics before overwriting
+  # Preserve solver-specific diagnostics before overwriting
   solver_diag <- NULL
   if (!is.null(fit$diagnostics) &&
       !("weights" %in% names(fit$diagnostics))) {
@@ -453,7 +436,7 @@ DPprior_fit <- function(J, mu_K, var_K = NULL,
   )
 
   # ---------------------------------------------------------------------------
-  # Optional Diagnostics (RN-07)
+  # Optional Diagnostics (Lee, 2026, Section 4)
   # ---------------------------------------------------------------------------
 
   if (isTRUE(check_diagnostics)) {
@@ -472,7 +455,7 @@ DPprior_fit <- function(J, mu_K, var_K = NULL,
           warning(sprintf(
             "HIGH DOMINANCE RISK: P(w1 > 0.5) = %.1f%% exceeds 40%%.\n",
             100 * p_gt_50),
-            "  This may indicate unintended prior behavior (RN-07).\n",
+            "  This may indicate unintended prior behavior (Lee, 2026).\n",
             "  Consider using DPprior_dual() for weight-constrained elicitation.\n",
             "  See ?DPprior_diagnostics for interpretation.",
             call. = FALSE)
@@ -497,119 +480,6 @@ DPprior_fit <- function(J, mu_K, var_K = NULL,
 
 
 # =============================================================================
-# S3 Methods for DPprior_fit
-# =============================================================================
-
-#' @export
-print.DPprior_fit <- function(x, ...) {
-  cat("DPprior Elicitation Result\n")
-  cat(strrep("=", 55), "\n")
-
-  cat(sprintf("Method: %s\n", x$method))
-  cat(sprintf("Sample size J: %d\n", x$J))
-
-  cat("\nTarget:\n")
-  cat(sprintf("  E[K_J]   = %.4f\n", x$target$mu_K))
-  if (!is.null(x$target$var_K_used) &&
-      abs(x$target$var_K - x$target$var_K_used) > 1e-10) {
-    cat(sprintf("  Var(K_J) = %.4f (requested), %.4f (used after projection)\n",
-                x$target$var_K, x$target$var_K_used))
-  } else {
-    cat(sprintf("  Var(K_J) = %.4f\n", x$target$var_K))
-  }
-  if (!is.null(x$target$confidence)) {
-    cat(sprintf("  (from confidence = '%s')\n", x$target$confidence))
-  }
-
-  cat("\nOptimal Gamma(a, b) hyperprior:\n")
-  cat(sprintf("  a (shape) = %.8f\n", x$a))
-  cat(sprintf("  b (rate)  = %.8f\n", x$b))
-  cat(sprintf("  E[alpha]  = %.4f\n", x$a / x$b))
-  cat(sprintf("  CV(alpha) = %.4f\n", 1 / sqrt(x$a)))
-
-  cat("\nConvergence:\n")
-  if (!is.null(x$status)) {
-    cat(sprintf("  Status:      %s\n", x$status))
-  }
-  cat(sprintf("  Converged:   %s\n", x$converged))
-  if (!is.na(x$iterations)) {
-    cat(sprintf("  Iterations:  %d\n", x$iterations))
-  }
-  if (!is.null(x$termination) && !is.na(x$termination)) {
-    cat(sprintf("  Termination: %s\n", x$termination))
-  }
-
-  if (!is.null(x$fit)) {
-    cat("\nAchieved fit:\n")
-    cat(sprintf("  E[K_J]   = %.10f\n", x$fit$mu_K))
-    cat(sprintf("  Var(K_J) = %.10f\n", x$fit$var_K))
-    if (!is.null(x$fit$residual) && !is.na(x$fit$residual)) {
-      cat(sprintf("  Residual = %.2e\n", x$fit$residual))
-    }
-  }
-
-  # Print diagnostic summary if available
-  if (!is.null(x$diagnostics)) {
-    cat("\nDiagnostics Summary:\n")
-    if (!is.null(x$diagnostics$weights)) {
-      risk <- x$diagnostics$weights$dominance_risk
-      risk_symbol <- switch(risk,
-                            "low" = "\u2713",      # checkmark
-                            "moderate" = "\u26A0", # warning
-                            "high" = "\u2718",     # X mark
-                            "?")
-      cat(sprintf("  Dominance risk: %s (%s)\n", toupper(risk), risk_symbol))
-    }
-    cat("  (Run DPprior_diagnostics(fit) for full report)\n")
-  }
-
-  invisible(x)
-}
-
-
-#' @export
-summary.DPprior_fit <- function(object, ...) {
-  # Helper to safely extract a scalar value
-  safe_scalar <- function(x, default = NA) {
-    if (is.null(x) || length(x) == 0L) return(default)
-    if (length(x) == 1L) return(x)
-    return(x[1L])
-  }
-
-  # Return list structure matching test-10_a1_mapping.R expectations
-  # Expected: c("method", "status", "gamma_prior", "alpha_summary",
-  #             "target", "scaling", "converged", "iterations")
-  result <- list(
-    method = safe_scalar(object$method, NA_character_),
-    status = safe_scalar(object$status, "success"),
-    gamma_prior = list(
-      a = safe_scalar(object$a, NA_real_),
-      b = safe_scalar(object$b, NA_real_)
-    ),
-    alpha_summary = list(
-      E_alpha = safe_scalar(object$a / object$b, NA_real_),
-      Var_alpha = safe_scalar(object$a / object$b^2, NA_real_),
-      CV_alpha = safe_scalar(1 / sqrt(object$a), NA_real_)
-    ),
-    target = list(
-      mu_K = safe_scalar(object$target$mu_K, NA_real_),
-      var_K = safe_scalar(object$target$var_K, NA_real_),
-      var_K_used = safe_scalar(object$target$var_K_used %||% object$target$var_K, NA_real_),
-      confidence = safe_scalar(object$target$confidence, NA_character_)
-    ),
-    scaling = list(
-      J = safe_scalar(object$J, NA_integer_)
-    ),
-    converged = safe_scalar(object$converged, NA),
-    iterations = safe_scalar(object$iterations, NA_integer_)
-  )
-
-  class(result) <- "summary.DPprior_fit"
-  result
-}
-
-
-# =============================================================================
 # Verification Function
 # =============================================================================
 
@@ -622,9 +492,11 @@ summary.DPprior_fit <- function(object, ...) {
 #' @return Invisibly returns TRUE if all tests pass.
 #'
 #' @examples
+#' \dontrun{
 #' verify_DPprior_fit()
 #'
-#' @export
+#' }
+#' @keywords internal
 verify_DPprior_fit <- function(verbose = TRUE) {
 
   if (isTRUE(verbose)) {
@@ -639,7 +511,7 @@ verify_DPprior_fit <- function(verbose = TRUE) {
   # Test 1: Confidence to Variance Conversion (Updated VIF values)
   # -------------------------------------------------------------------------
   if (isTRUE(verbose)) {
-    cat("[Test 1] Confidence to Variance Conversion (GPT VIF values)\n")
+    cat("[Test 1] Confidence to Variance Conversion\n")
     cat(strrep("-", 50), "\n")
   }
 
@@ -663,10 +535,10 @@ verify_DPprior_fit <- function(verbose = TRUE) {
   if (isTRUE(verbose)) cat("\n")
 
   # -------------------------------------------------------------------------
-  # Test 2: var_K Upper Bound Check (GPT improvement)
+  # Test 2: var_K Upper Bound Check
   # -------------------------------------------------------------------------
   if (isTRUE(verbose)) {
-    cat("[Test 2] var_K Upper Bound Check (GPT improvement)\n")
+    cat("[Test 2] var_K Upper Bound Check\n")
     cat(strrep("-", 50), "\n")
   }
 
@@ -690,10 +562,10 @@ verify_DPprior_fit <- function(verbose = TRUE) {
   if (isTRUE(verbose)) cat("\n")
 
   # -------------------------------------------------------------------------
-  # Test 3: A1-only Feasibility Projection (GPT insight)
+  # Test 3: A1-only Feasibility Projection
   # -------------------------------------------------------------------------
   if (isTRUE(verbose)) {
-    cat("[Test 3] A1-only Feasibility Projection (GPT insight)\n")
+    cat("[Test 3] A1-only Feasibility Projection\n")
     cat(strrep("-", 50), "\n")
   }
 
@@ -728,10 +600,10 @@ verify_DPprior_fit <- function(verbose = TRUE) {
   if (isTRUE(verbose)) cat("\n")
 
   # -------------------------------------------------------------------------
-  # Test 4: mu_K Boundary Check (GPT improvement)
+  # Test 4: mu_K Boundary Check
   # -------------------------------------------------------------------------
   if (isTRUE(verbose)) {
-    cat("[Test 4] mu_K Boundary Check (GPT improvement)\n")
+    cat("[Test 4] mu_K Boundary Check\n")
     cat(strrep("-", 50), "\n")
   }
 
@@ -821,10 +693,10 @@ verify_DPprior_fit <- function(verbose = TRUE) {
   if (isTRUE(verbose)) cat("\n")
 
   # -------------------------------------------------------------------------
-  # Test 7: Diagnostics and solver_diagnostics (GPT improvement)
+  # Test 7: Diagnostics and solver_diagnostics
   # -------------------------------------------------------------------------
   if (isTRUE(verbose)) {
-    cat("[Test 7] Diagnostics Structure (GPT: solver_diagnostics)\n")
+    cat("[Test 7] Diagnostics Structure (solver_diagnostics)\n")
     cat(strrep("-", 50), "\n")
   }
 
@@ -871,7 +743,7 @@ verify_DPprior_fit <- function(verbose = TRUE) {
     test8_pass <- test8_pass && present
   }
 
-  # Check nested structure (including GPT's var_K_used)
+  # Check nested structure (including var_K_used)
   target_ok <- all(c("mu_K", "var_K", "var_K_used") %in% names(fit$target))
   fit_ok <- all(c("mu_K", "var_K") %in% names(fit$fit))
 

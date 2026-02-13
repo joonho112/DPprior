@@ -16,6 +16,9 @@ Logical; TRUE if all tests pass.
 Comprehensive verification suite for the marginal PMF module.
 }
 \examples{
+\dontrun{
 verify_pmf_marginal_all()
 
 }
+}
+\keyword{internal}

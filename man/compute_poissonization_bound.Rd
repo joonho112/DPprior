@@ -40,6 +40,7 @@ simply using \eqn{\sum p_i^2} alone.
 The returned value is capped at 1 (since total variation is always between 0 and 1).
 }
 \examples{
+\dontrun{
 # Full Chen-Stein bound
 compute_poissonization_bound(J = 50, alpha = 1)
 
@@ -50,6 +51,7 @@ compute_poissonization_bound(J = 50, alpha = 1, raw = TRUE)
 compute_poissonization_bound(J = 50, alpha = c(0.5, 1, 2, 5))
 
 }
+}
 \references{
 Le Cam, L. (1960). An approximation theorem for the Poisson binomial
 distribution. \emph{Pacific Journal of Mathematics}, 10(4), 1181-1197.
@@ -57,8 +59,10 @@ distribution. \emph{Pacific Journal of Mathematics}, 10(4), 1181-1197.
 Chen, L. H. Y. (1975). Poisson approximation for dependent trials.
 \emph{The Annals of Probability}, 3(3), 534-545.
 
-RN-05 (Theorem 1) and references therein.
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+\emph{arXiv preprint} arXiv:2602.06301.
 }
 \seealso{
 \code{\link{compute_sum_p_squared}}, \code{\link{compute_linearization_bound}}
 }
+\keyword{internal}

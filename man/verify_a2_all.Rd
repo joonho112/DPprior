@@ -16,6 +16,9 @@ Logical; TRUE if all tests pass.
 Comprehensive verification suite for the A2-MN Newton solver.
 }
 \examples{
+\dontrun{
 verify_a2_all()
 
 }
+}
+\keyword{internal}

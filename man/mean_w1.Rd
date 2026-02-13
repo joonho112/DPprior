@@ -34,8 +34,18 @@ mean_w1(a = 1.6, b = 1.22)  # ~0.508
 
 }
 \references{
-Lee, J. (2025). RN-06: Dual-Anchor Design II, §2.3.
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+\emph{arXiv preprint} arXiv:2602.06301.
 }
 \seealso{
 \code{\link{var_w1}}, \code{\link{summary_w1}}
+
+Other weights_w1: 
+\code{\link{cdf_w1}()},
+\code{\link{density_w1}()},
+\code{\link{prob_w1_exceeds}()},
+\code{\link{quantile_w1}()},
+\code{\link{summary_w1}()},
+\code{\link{var_w1}()}
 }
+\concept{weights_w1}

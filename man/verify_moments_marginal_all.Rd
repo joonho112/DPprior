@@ -16,6 +16,9 @@ Logical; \code{TRUE} if all tests pass.
 Comprehensive verification suite for the marginal moments module.
 }
 \examples{
+\dontrun{
 verify_moments_marginal_all()
 
 }
+}
+\keyword{internal}

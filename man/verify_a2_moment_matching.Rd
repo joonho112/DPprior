@@ -24,7 +24,9 @@ Logical; TRUE if verification passes.
 Tests that the A2-MN solver achieves exact moment matching.
 }
 \examples{
+\dontrun{
 verify_a2_moment_matching(J = 50, mu_K = 5, var_K = 8)
 
+}
 }
 \keyword{internal}

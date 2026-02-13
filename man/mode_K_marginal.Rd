@@ -33,4 +33,13 @@ mode_K_marginal(50, 1.5, 0.5, logS)
 }
 \seealso{
 \code{\link{pmf_K_marginal}}, \code{\link{summary_K_marginal}}
+
+Other marginal_K: 
+\code{\link{K_moments}()},
+\code{\link{cdf_K_marginal}()},
+\code{\link{exact_K_moments}()},
+\code{\link{pmf_K_marginal}()},
+\code{\link{quantile_K_marginal}()},
+\code{\link{summary_K_marginal}()}
 }
+\concept{marginal_K}

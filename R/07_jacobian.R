@@ -12,7 +12,7 @@
 # 3. Better documentation about numerical considerations
 # 4. More robust quadrature using orthpol-style approach
 #
-# Theory Reference: RN-04 Corollary 1
+# Theory Reference: Lee (2026), Section 3.2
 #
 # Author: JoonHo Lee
 # Date: December 2025
@@ -23,11 +23,7 @@
 # Constants for Numerical Stability
 # =============================================================================
 
-#' Threshold for Small Alpha Handling
-#' @description Values of alpha below this threshold trigger edge-case handling
-#'   to avoid numerical issues with log(alpha).
-#' @keywords internal
-.ALPHA_SMALL <- 1e-12
+# .ALPHA_SMALL is now defined in R/00_constants.R (loaded first alphabetically)
 
 #' Default Quadrature Nodes for Verification
 #' @description Higher M value recommended for Jacobian verification due to
@@ -66,7 +62,8 @@
 #' Use higher M (e.g., 120-200) for verification purposes.
 #'
 #' @references
-#' RN-04, Section 4.2: Jacobian via score identities
+#' Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+#' \emph{arXiv preprint} arXiv:2602.06301.
 #'
 #' @seealso \code{\link{score_b}} for the score with respect to b
 #'
@@ -109,7 +106,8 @@ score_a <- function(alpha, a, b) {
 #' expectation converges very quickly with quadrature.
 #'
 #' @references
-#' RN-04, Section 4.2: Jacobian via score identities
+#' Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+#' \emph{arXiv preprint} arXiv:2602.06301.
 #'
 #' @seealso \code{\link{score_a}} for the score with respect to a
 #'
@@ -218,7 +216,7 @@ var_K_given_alpha_safe <- function(J, alpha) {
 #' }
 #'
 #' @details
-#' This function uses the score identity (RN-04 Corollary 1) to compute exact
+#' This function uses the score identity (Lee, 2026, Section 3.2, Corollary 1) to compute exact
 #' derivatives without finite differences:
 #' \deqn{\frac{\partial}{\partial\theta} E[f(\alpha)] = E[f(\alpha) \cdot s_\theta(\alpha)]}
 #'
@@ -238,7 +236,8 @@ var_K_given_alpha_safe <- function(J, alpha) {
 #' }
 #'
 #' @references
-#' RN-04, Corollary 1: Closed Jacobian formula via score identities
+#' Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+#' \emph{arXiv preprint} arXiv:2602.06301.
 #'
 #' @seealso
 #' \code{\link{exact_K_moments}} for moments only,
@@ -485,10 +484,11 @@ verify_jacobian <- function(J, a, b, eps = 1e-6, M = .QUAD_NODES_VERIFICATION,
 #' scipy.integrate.quad) which provides independent ground truth.
 #'
 #' @examples
+#' \dontrun{
 #' verify_score_expectation(a = 2.0, b = 1.0, verbose = TRUE)
 #'
+#' }
 #' @keywords internal
-#' @export
 verify_score_expectation <- function(a, b, M = .QUAD_NODES_VERIFICATION,
                                      verbose = TRUE) {
   # Build quadrature
@@ -528,9 +528,11 @@ verify_score_expectation <- function(a, b, M = .QUAD_NODES_VERIFICATION,
 #' @return Logical; TRUE if all tests pass.
 #'
 #' @examples
+#' \dontrun{
 #' verify_jacobian_all()
 #'
-#' @export
+#' }
+#' @keywords internal
 verify_jacobian_all <- function(verbose = TRUE) {
   if (isTRUE(verbose)) {
     cat(strrep("=", 70), "\n")

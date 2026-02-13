@@ -599,7 +599,7 @@ $$
 
 | $\lambda$ | Behavior |
 |-----------|----------|
-| $\lambda = 1$ | K-only calibration (RN-01 through RN-05) |
+| $\lambda = 1$ | K-only calibration (Lee, 2026, Sections 2--3) |
 | $\lambda = 0$ | Weight-only calibration (SSI-style) |
 | $0 < \lambda < 1$ | Compromise between both anchors |
 

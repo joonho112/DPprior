@@ -30,7 +30,9 @@ Data frame with convergence results.
 Tests that marginal moments converge as the number of quadrature nodes increases.
 }
 \examples{
+\dontrun{
 verify_quadrature_convergence(50, 1.5, 0.5)
 
+}
 }
 \keyword{internal}

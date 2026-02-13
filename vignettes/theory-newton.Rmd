@@ -220,7 +220,7 @@ ggplot(score_df, aes(x = alpha, y = score, color = Type)) +
 Using the score identities, we derive closed-form expressions for the 
 Jacobian entries.
 
-**Corollary 1** (Closed Jacobian formulas; RN-04).
+**Corollary 1** (Closed Jacobian formulas; Lee, 2026, Section 3.2).
 
 *Define the auxiliary expectations:*
 $$

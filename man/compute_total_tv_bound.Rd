@@ -23,13 +23,14 @@ Computes the combined conditional TV bound using the triangle inequality:
 \details{
 The result is capped at 1 since TV distance is bounded by 1.
 
-From RN-05, Theorem 1, the total conditional TV error decomposes as:
+From Lee (2026, Section 3.3, Theorem 1), the total conditional TV error decomposes as:
 \enumerate{
 \item Poissonization error: \eqn{S_J | \alpha} vs \eqn{\text{Poisson}(\lambda_J(\alpha))}
 \item Linearization error: \eqn{\text{Poisson}(\lambda_J(\alpha))} vs \eqn{\text{Poisson}(\alpha c_J)}
 }
 }
 \examples{
+\dontrun{
 # Total bound at alpha = E[alpha] under Gamma(2, 1)
 compute_total_tv_bound(J = 50, alpha = 2)
 
@@ -37,7 +38,9 @@ compute_total_tv_bound(J = 50, alpha = 2)
 compute_total_tv_bound(J = 50, alpha = c(0.5, 1, 2, 5))
 
 }
+}
 \seealso{
 \code{\link{compute_poissonization_bound}}, \code{\link{compute_linearization_bound}},
 \code{\link{expected_tv_bound}}
 }
+\keyword{internal}

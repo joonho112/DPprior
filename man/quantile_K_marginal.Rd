@@ -49,4 +49,13 @@ diff(qs)
 }
 \seealso{
 \code{\link{cdf_K_marginal}}, \code{\link{pmf_K_marginal}}
+
+Other marginal_K: 
+\code{\link{K_moments}()},
+\code{\link{cdf_K_marginal}()},
+\code{\link{exact_K_moments}()},
+\code{\link{mode_K_marginal}()},
+\code{\link{pmf_K_marginal}()},
+\code{\link{summary_K_marginal}()}
 }
+\concept{marginal_K}

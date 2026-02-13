@@ -51,7 +51,7 @@ the marginal distribution is typically overdispersed
 }
 }
 \examples{
-# Example from RN-01: J=50, Gamma(1.5, 0.5) prior
+# Example: J=50, Gamma(1.5, 0.5) prior
 result <- exact_K_moments(50, 1.5, 0.5)
 print(result)
 
@@ -70,4 +70,13 @@ Antoniak, C. E. (1974). Mixtures of Dirichlet Processes.
 \seealso{
 \code{\link{K_moments}} for convenience wrapper,
 \code{\link{mean_K_given_alpha}}, \code{\link{var_K_given_alpha}}
+
+Other marginal_K: 
+\code{\link{K_moments}()},
+\code{\link{cdf_K_marginal}()},
+\code{\link{mode_K_marginal}()},
+\code{\link{pmf_K_marginal}()},
+\code{\link{quantile_K_marginal}()},
+\code{\link{summary_K_marginal}()}
 }
+\concept{marginal_K}

@@ -16,6 +16,9 @@ Logical; TRUE if all tests pass.
 Comprehensive verification suite for the score-based Jacobian module.
 }
 \examples{
+\dontrun{
 verify_jacobian_all()
 
 }
+}
+\keyword{internal}

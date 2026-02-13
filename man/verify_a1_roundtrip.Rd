@@ -26,8 +26,10 @@ Under the A1 NegBin approximation:
 where \eqn{p = b/(b + c_J)}.
 }
 \examples{
+\dontrun{
 fit <- DPprior_a1(J = 50, mu_K = 5, var_K = 8)
 verify_a1_roundtrip(fit)
 
+}
 }
 \keyword{internal}

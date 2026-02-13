@@ -25,6 +25,9 @@ Verifies the analytic derivative of the conditional mean against
 finite difference approximation.
 }
 \examples{
+\dontrun{
 verify_derivative(50, 2.0)
 
 }
+}
+\keyword{internal}

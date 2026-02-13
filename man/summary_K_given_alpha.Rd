@@ -18,6 +18,9 @@ A list with components: J, alpha, mean, var, sd, cv, dispersion, dmean_dalpha.
 Returns a comprehensive summary of the conditional distribution of K given alpha.
 }
 \examples{
+\dontrun{
 summary_K_given_alpha(50, 2.0)
 
 }
+}
+\keyword{internal}

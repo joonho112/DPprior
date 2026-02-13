@@ -33,6 +33,7 @@ For \eqn{\alpha \sim \text{Gamma}(a, b)}:
 }
 }
 \examples{
+\dontrun{
 # Should return TRUE
 verify_quadrature(2.5, 1.5, M = 80)
 
@@ -40,3 +41,5 @@ verify_quadrature(2.5, 1.5, M = 80)
 verify_quadrature(0.5, 2.0, M = 100, verbose = TRUE)
 
 }
+}
+\keyword{internal}

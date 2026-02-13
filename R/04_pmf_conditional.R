@@ -6,7 +6,7 @@
 # using the Antoniak distribution, which is derived from unsigned Stirling
 # numbers of the first kind.
 #
-# Theory (RN-01 Theorem 2):
+# Theory (Lee, 2026, Sections 2--3):
 # ------------------------
 # The exact PMF of K_J given alpha is:
 #   P(K_J = k | alpha) = |s(J,k)| * alpha^k / (alpha)_J
@@ -32,7 +32,7 @@
 # Author: JoonHo Lee
 # Date: December 2025
 # Part of: DPprior R Package
-# Reference: RN-01 Theorem 2, Antoniak (1974)
+# Reference: Lee (2026), Sections 2--3; Antoniak (1974)
 # =============================================================================
 
 
@@ -89,6 +89,7 @@
 #' This is numerically stable for all \eqn{\alpha > 0} and \eqn{J \geq 1}.
 #'
 #' @examples
+#' \dontrun{
 #' # (2)_3 = 2 * 3 * 4 = 24
 #' exp(log_rising_factorial(2, 3))
 #'
@@ -96,10 +97,10 @@
 #' exp(log_rising_factorial(1, 5))
 #' factorial(5)
 #'
+#' }
 #' @seealso \code{\link{lgamma}} for the log-gamma function
 #'
 #' @keywords internal
-#' @export
 log_rising_factorial <- function(alpha, J) {
   assert_valid_J(J)
   assert_positive(alpha, "alpha")
@@ -143,14 +144,20 @@ log_rising_factorial <- function(alpha, J) {
 #' logS <- compute_log_stirling(50)
 #' log_pmf <- log_pmf_K_given_alpha(50, 2.0, logS)
 #'
-#' # Convert to probabilities
-#' pmf <- softmax(log_pmf)
+#' # Convert to probabilities (numerically stable softmax)
+#' pmf <- exp(log_pmf - max(log_pmf))
+#' pmf <- pmf / sum(pmf)
 #' sum(pmf)  # Should be 1
+#'
+#' # Or use pmf_K_given_alpha() directly
+#' pmf2 <- pmf_K_given_alpha(50, 2.0, logS)
+#' sum(pmf2)  # Should be 1
 #'
 #' @seealso \code{\link{pmf_K_given_alpha}} for normalized PMF,
 #'   \code{\link{compute_log_stirling}} for Stirling computation
 #'
-#' @keywords internal
+#' @family conditional_K
+#'
 #' @export
 log_pmf_K_given_alpha <- function(J, alpha, logS) {
   # Input validation
@@ -261,6 +268,8 @@ log_pmf_K_given_alpha <- function(J, alpha, logS) {
 #' to Bayesian Nonparametric Problems. \emph{The Annals of Statistics},
 #' 2(6), 1152-1174.
 #'
+#' @family conditional_K
+#'
 #' @export
 pmf_K_given_alpha <- function(J, alpha, logS, normalize = TRUE) {
   log_pmf <- log_pmf_K_given_alpha(J, alpha, logS)
@@ -291,7 +300,8 @@ pmf_K_given_alpha <- function(J, alpha, logS, normalize = TRUE) {
 #' logS <- compute_log_stirling(50)
 #' mode_K_given_alpha(50, 2.0, logS)
 #'
-#' @keywords internal
+#' @family conditional_K
+#'
 #' @export
 mode_K_given_alpha <- function(J, alpha, logS) {
   pmf <- pmf_K_given_alpha(J, alpha, logS, normalize = TRUE)
@@ -329,7 +339,8 @@ mode_K_given_alpha <- function(J, alpha, logS) {
 #' # P(K <= 5)
 #' cdf[6]
 #'
-#' @keywords internal
+#' @family conditional_K
+#'
 #' @export
 cdf_K_given_alpha <- function(J, alpha, logS) {
   pmf <- pmf_K_given_alpha(J, alpha, logS, normalize = TRUE)
@@ -374,7 +385,8 @@ cdf_K_given_alpha <- function(J, alpha, logS) {
 #' quantile_K_given_alpha(0, 50, 2.0, logS)  # Returns 0
 #' quantile_K_given_alpha(1, 50, 2.0, logS)  # Returns 50
 #'
-#' @keywords internal
+#' @family conditional_K
+#'
 #' @export
 quantile_K_given_alpha <- function(p, J, alpha, logS) {
 
@@ -431,14 +443,15 @@ quantile_K_given_alpha <- function(p, J, alpha, logS) {
 #' @return Numeric; the conditional mean \eqn{E[K_J \mid \alpha]}.
 #'
 #' @examples
+#' \dontrun{
 #' logS <- compute_log_stirling(50)
 #'
 #' # Should match mean_K_given_alpha(50, 2.0)
 #' mean_K_from_pmf(50, 2.0, logS)
 #' mean_K_given_alpha(50, 2.0)
 #'
+#' }
 #' @keywords internal
-#' @export
 mean_K_from_pmf <- function(J, alpha, logS) {
   pmf <- pmf_K_given_alpha(J, alpha, logS, normalize = TRUE)
   k_vals <- 0:J
@@ -458,14 +471,15 @@ mean_K_from_pmf <- function(J, alpha, logS) {
 #' @return Numeric; the conditional variance \eqn{Var(K_J \mid \alpha)}.
 #'
 #' @examples
+#' \dontrun{
 #' logS <- compute_log_stirling(50)
 #'
 #' # Should match var_K_given_alpha(50, 2.0)
 #' var_K_from_pmf(50, 2.0, logS)
 #' var_K_given_alpha(50, 2.0)
 #'
+#' }
 #' @keywords internal
-#' @export
 var_K_from_pmf <- function(J, alpha, logS) {
   pmf <- pmf_K_given_alpha(J, alpha, logS, normalize = TRUE)
   k_vals <- 0:J
@@ -502,11 +516,13 @@ var_K_from_pmf <- function(J, alpha, logS) {
 #'   }
 #'
 #' @examples
+#' \dontrun{
 #' logS <- compute_log_stirling(50)
 #' summary <- summary_pmf_K_given_alpha(50, 2.0, logS)
 #' print(summary)
 #'
-#' @export
+#' }
+#' @keywords internal
 summary_pmf_K_given_alpha <- function(J, alpha, logS) {
   pmf <- pmf_K_given_alpha(J, alpha, logS, normalize = TRUE)
   cdf <- cumsum(pmf)
@@ -552,10 +568,12 @@ summary_pmf_K_given_alpha <- function(J, alpha, logS) {
 #' @return Logical; \code{TRUE} if verification passes.
 #'
 #' @examples
+#' \dontrun{
 #' logS <- compute_log_stirling(50)
 #' verify_pmf_moments(50, 2.0, logS)
 #'
-#' @export
+#' }
+#' @keywords internal
 verify_pmf_moments <- function(J, alpha, logS, tol = 1e-8, verbose = TRUE) {
   # Moments from PMF
   mean_pmf <- mean_K_from_pmf(J, alpha, logS)
@@ -600,7 +618,7 @@ verify_pmf_moments <- function(J, alpha, logS, tol = 1e-8, verbose = TRUE) {
 #'
 #' @return Logical; \code{TRUE} if verification passes.
 #'
-#' @export
+#' @keywords internal
 verify_pmf_normalization <- function(J, alpha, logS, tol = 1e-10, verbose = TRUE) {
   pmf <- pmf_K_given_alpha(J, alpha, logS, normalize = TRUE)
   total <- sum(pmf)
@@ -629,7 +647,7 @@ verify_pmf_normalization <- function(J, alpha, logS, tol = 1e-10, verbose = TRUE
 #'
 #' @return Logical; \code{TRUE} if verification passes.
 #'
-#' @export
+#' @keywords internal
 verify_zero_probability <- function(J, alpha, logS, tol = 1e-15, verbose = TRUE) {
   pmf <- pmf_K_given_alpha(J, alpha, logS, normalize = TRUE)
 
@@ -657,7 +675,7 @@ verify_zero_probability <- function(J, alpha, logS, tol = 1e-15, verbose = TRUE)
 #'
 #' @return Logical; \code{TRUE} if verification passes.
 #'
-#' @export
+#' @keywords internal
 verify_cdf_properties <- function(J, alpha, logS, tol = 1e-10, verbose = TRUE) {
   cdf <- cdf_K_given_alpha(J, alpha, logS)
 
@@ -694,9 +712,11 @@ verify_cdf_properties <- function(J, alpha, logS, tol = 1e-10, verbose = TRUE) {
 #' @return Logical; \code{TRUE} if all verifications pass.
 #'
 #' @examples
+#' \dontrun{
 #' verify_pmf_all()
 #'
-#' @export
+#' }
+#' @keywords internal
 verify_pmf_all <- function(J_values = c(10, 50, 100),
                            alpha_values = c(0.5, 1.0, 2.0, 5.0),
                            verbose = TRUE) {

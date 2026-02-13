@@ -34,7 +34,10 @@ Checks that the marginal PMF converges as the number of quadrature
 nodes increases.
 }
 \examples{
+\dontrun{
 logS <- compute_log_stirling(50)
 verify_pmf_marginal_convergence(50, 1.5, 0.5, logS)
 
 }
+}
+\keyword{internal}

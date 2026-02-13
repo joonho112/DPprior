@@ -22,6 +22,9 @@ Logical; \code{TRUE} if all verifications pass.
 Runs verification tests on the marginal moment computations.
 }
 \examples{
+\dontrun{
 verify_marginal_moments(50, 2.0, 1.0)
 
 }
+}
+\keyword{internal}

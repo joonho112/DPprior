@@ -13,7 +13,7 @@
 # Probabilistic interpretation:
 #   rho = P(Z1 = Z2 | w) where Z1, Z2 are cluster labels for two random units.
 #
-# Conditional moments given alpha (RN-06 §3):
+# Conditional moments given alpha (Lee, 2026, Section 4):
 #   E[rho | alpha] = 1 / (1 + alpha)
 #   E[rho^2 | alpha] = (alpha + 6) / ((alpha+1)(alpha+2)(alpha+3))
 #   Var(rho | alpha) = 2 alpha / ((alpha+1)^2 (alpha+2)(alpha+3))
@@ -57,9 +57,12 @@
 #' mean_rho_given_alpha(c(0.5, 1, 2, 5, 10))
 #'
 #' @references
-#' Lee, J. (2025). RN-06: Dual-Anchor Design II, Section 3.2.
+#' Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+#' \emph{arXiv preprint} arXiv:2602.06301.
 #'
 #' @seealso \code{\link{var_rho_given_alpha}}, \code{\link{mean_rho}}
+#'
+#' @family co_clustering
 #'
 #' @export
 mean_rho_given_alpha <- function(alpha) {
@@ -116,9 +119,12 @@ mean_rho_sq_given_alpha <- function(alpha) {
 #' var_rho_given_alpha(c(0.5, 1, 2, 5, 10))
 #'
 #' @references
-#' Lee, J. (2025). RN-06: Dual-Anchor Design II, Appendix A.2.
+#' Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+#' \emph{arXiv preprint} arXiv:2602.06301.
 #'
 #' @seealso \code{\link{mean_rho_given_alpha}}, \code{\link{var_rho}}
+#'
+#' @family co_clustering
 #'
 #' @export
 var_rho_given_alpha <- function(alpha) {
@@ -158,9 +164,12 @@ var_rho_given_alpha <- function(alpha) {
 #' mean_rho(a = 1.6, b = 1.22)
 #'
 #' @references
-#' Lee, J. (2025). RN-06: Dual-Anchor Design II, Section 3.3.
+#' Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+#' \emph{arXiv preprint} arXiv:2602.06301.
 #'
 #' @seealso \code{\link{var_rho}}, \code{\link{cv_rho}}, \code{\link{mean_w1}}
+#'
+#' @family co_clustering
 #'
 #' @export
 mean_rho <- function(a, b, M = .QUAD_NODES_DEFAULT) {
@@ -217,9 +226,12 @@ mean_rho_sq <- function(a, b, M = .QUAD_NODES_DEFAULT) {
 #' var_rho(a = 2, b = 1)
 #'
 #' @references
-#' Lee, J. (2025). RN-06: Dual-Anchor Design II, Section 3.3.
+#' Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+#' \emph{arXiv preprint} arXiv:2602.06301.
 #'
 #' @seealso \code{\link{mean_rho}}, \code{\link{cv_rho}}, \code{\link{var_w1}}
+#'
+#' @family co_clustering
 #'
 #' @export
 var_rho <- function(a, b, M = .QUAD_NODES_DEFAULT) {
@@ -253,6 +265,8 @@ var_rho <- function(a, b, M = .QUAD_NODES_DEFAULT) {
 #' cv_rho(a = 1.6, b = 1.22)
 #'
 #' @seealso \code{\link{mean_rho}}, \code{\link{var_rho}}
+#'
+#' @family co_clustering
 #'
 #' @export
 cv_rho <- function(a, b, M = .QUAD_NODES_DEFAULT) {
@@ -522,10 +536,12 @@ verify_rho_conditional_variance <- function(alpha, tol = 1e-12) {
 #' Generally, Var(rho) < Var(w1) because rho averages over all squared weights.
 #'
 #' @examples
+#' \dontrun{
 #' compare_rho_w1(a = 2, b = 1)
 #' compare_rho_w1(a = 1.6, b = 1.22)
 #'
-#' @export
+#' }
+#' @keywords internal
 compare_rho_w1 <- function(a, b, M = .QUAD_NODES_DEFAULT) {
   assert_positive(a, "a")
   assert_positive(b, "b")

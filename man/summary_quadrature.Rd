@@ -29,7 +29,9 @@ Returns summary information about the quadrature nodes and weights
 for a given Gamma(a, b) distribution.
 }
 \examples{
+\dontrun{
 summary_quadrature(2.5, 1.5, M = 80)
 
+}
 }
 \keyword{internal}

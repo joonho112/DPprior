@@ -28,6 +28,7 @@ Therefore:
 This is numerically stable for all \eqn{\alpha > 0} and \eqn{J \geq 1}.
 }
 \examples{
+\dontrun{
 # (2)_3 = 2 * 3 * 4 = 24
 exp(log_rising_factorial(2, 3))
 
@@ -35,6 +36,7 @@ exp(log_rising_factorial(2, 3))
 exp(log_rising_factorial(1, 5))
 factorial(5)
 
+}
 }
 \seealso{
 \code{\link{lgamma}} for the log-gamma function

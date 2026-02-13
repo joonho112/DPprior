@@ -18,9 +18,11 @@ Numeric vector of length J containing \eqn{\log|s(J,k)|} for \eqn{k = 1, \ldots,
 Returns a vector of \eqn{\log|s(J,k)|} for \eqn{k = 1, \ldots, J}.
 }
 \examples{
+\dontrun{
 logS <- compute_log_stirling(10)
 log_s_row <- get_stirling_row(5, logS)
 exp(log_s_row)
 
+}
 }
 \keyword{internal}

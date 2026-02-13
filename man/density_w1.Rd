@@ -40,4 +40,13 @@ density_w1(0.5, a = 2, b = 1, log = TRUE)
 }
 \seealso{
 \code{\link{cdf_w1}}, \code{\link{quantile_w1}}
+
+Other weights_w1: 
+\code{\link{cdf_w1}()},
+\code{\link{mean_w1}()},
+\code{\link{prob_w1_exceeds}()},
+\code{\link{quantile_w1}()},
+\code{\link{summary_w1}()},
+\code{\link{var_w1}()}
 }
+\concept{weights_w1}

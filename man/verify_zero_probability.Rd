@@ -23,3 +23,4 @@ Logical; \code{TRUE} if verification passes.
 \description{
 Verifies that P(K_J = 0 | alpha) = 0.
 }
+\keyword{internal}

@@ -25,7 +25,7 @@ stick-breaking weight exceeds threshold t.
 The survival function has the closed form:
 \deqn{P(w_1 > t | a, b) = \left(\frac{b}{b - \log(1-t)}\right)^a}
 
-This is a \strong{key quantity for dominance risk assessment} (RN-07).
+This is a \strong{key quantity for dominance risk assessment} (Lee, 2026, Section 4).
 A large P(w₁ > 0.5) indicates high prior probability that a single
 cluster dominates the mixture.
 }
@@ -44,9 +44,18 @@ prob_w1_exceeds(0.5, a = 2, b = 1)       # ~0.349
 
 }
 \references{
-Lee, J. (2025). RN-06: Dual-Anchor Design II, Corollary 1.
-Lee, J. (2025). RN-07: Unintended Prior Consequences.
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+\emph{arXiv preprint} arXiv:2602.06301.
 }
 \seealso{
 \code{\link{cdf_w1}}, \code{\link{summary_w1}}
+
+Other weights_w1: 
+\code{\link{cdf_w1}()},
+\code{\link{density_w1}()},
+\code{\link{mean_w1}()},
+\code{\link{quantile_w1}()},
+\code{\link{summary_w1}()},
+\code{\link{var_w1}()}
 }
+\concept{weights_w1}

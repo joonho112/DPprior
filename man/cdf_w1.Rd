@@ -32,7 +32,7 @@ stability, particularly when the CDF is close to 0 (small x).
 
 The weight w₁ is in \strong{GEM (size-biased) order}, not ranked by size.
 It represents the asymptotic cluster share of a randomly chosen unit,
-\strong{not} the largest cluster proportion. See RN-06 §1 for details.
+\strong{not} the largest cluster proportion. See Lee (2026, Section 4) for details.
 }
 
 \examples{
@@ -44,7 +44,8 @@ cdf_w1(c(0.1, 0.3, 0.5, 0.7), a = 1.6, b = 1.22)
 
 }
 \references{
-Lee, J. (2025). RN-06: Dual-Anchor Design II.
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+\emph{arXiv preprint} arXiv:2602.06301.
 
 Vicentini, C. and Jermyn, I. H. (2025). Prior selection for the precision
 parameter of Dirichlet Process Mixtures. arXiv:2502.00864.
@@ -52,4 +53,13 @@ parameter of Dirichlet Process Mixtures. arXiv:2502.00864.
 \seealso{
 \code{\link{quantile_w1}}, \code{\link{density_w1}},
 \code{\link{prob_w1_exceeds}}
+
+Other weights_w1: 
+\code{\link{density_w1}()},
+\code{\link{mean_w1}()},
+\code{\link{prob_w1_exceeds}()},
+\code{\link{quantile_w1}()},
+\code{\link{summary_w1}()},
+\code{\link{var_w1}()}
 }
+\concept{weights_w1}

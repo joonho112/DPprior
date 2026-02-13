@@ -73,9 +73,10 @@ Finds Gamma(a, b) hyperprior parameters that exactly match target moments
 for the number of clusters K_J under a Dirichlet process prior.
 }
 \details{
+This implements TSMM Stage 2 (A2-MN) from Lee (2026).
 The A2-MN algorithm uses Newton's method in log-scale to ensure positivity
 of the Gamma parameters. The Jacobian is computed exactly using score
-function identities (RN-04 Corollary 1), avoiding finite difference
+function identities (Lee, 2026, Section 3.2, Corollary 1), avoiding finite difference
 approximations.
 
 \strong{Algorithm Steps:}
@@ -139,11 +140,18 @@ head(fit$trace)
 
 }
 \references{
-Lee, J. (2025). RN-04: A2 Small-J Correction Note. \emph{Research Notes
-for DPprior Package Development}.
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+\emph{arXiv preprint} arXiv:2602.06301.
 }
 \seealso{
 \code{\link{DPprior_a1}} for closed-form initialization,
 \code{\link{moments_with_jacobian}} for Jacobian computation,
 \code{\link{exact_K_moments}} for moment verification
+
+Other elicitation: 
+\code{\link{DPprior_a1}()},
+\code{\link{DPprior_a2_kl}()},
+\code{\link{DPprior_dual}()},
+\code{\link{DPprior_fit}()}
 }
+\concept{elicitation}

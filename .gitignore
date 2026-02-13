@@ -1,28 +1,34 @@
+# R session files
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
-inst/doc
 
-# Added by T0 setup
 # R package build artifacts
 *.Rcheck/
 *.tar.gz
-*.Rproj.user
-.Rproj.user/
 
 # IDE
 .vscode/
 .idea/
+
 # OS
 .DS_Store
 Thumbs.db
-# Development files
+
+# Development files (not part of the package)
 dev/
 scratch/
-# Documentation build
+paper/
+
+# Documentation build artifacts
 docs/
 inst/doc/
-/doc/
-/Meta/
-docs
+doc/
+Meta/
+
+# Test artifacts
+tests/testthat/Rplots.pdf
+
+# Claude Code
+.claude/

@@ -37,7 +37,10 @@ Verifies that moments computed from the marginal PMF match those from
 \code{exact_K_moments()}.
 }
 \examples{
+\dontrun{
 logS <- compute_log_stirling(50)
 verify_pmf_marginal_moments(50, 1.5, 0.5, logS)
 
 }
+}
+\keyword{internal}

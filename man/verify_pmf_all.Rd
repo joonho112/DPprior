@@ -24,6 +24,9 @@ Logical; \code{TRUE} if all verifications pass.
 Runs comprehensive verification tests for the conditional PMF module.
 }
 \examples{
+\dontrun{
 verify_pmf_all()
 
 }
+}
+\keyword{internal}

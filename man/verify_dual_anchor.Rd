@@ -16,6 +16,9 @@ Invisible TRUE if all tests pass.
 Verify Dual-Anchor Module
 }
 \examples{
+\dontrun{
 verify_dual_anchor(verbose = TRUE)
 
 }
+}
+\keyword{internal}

@@ -30,10 +30,12 @@ A data frame with columns: M, estimate, change, relative_change.
 Examines how quadrature accuracy improves with increasing number of nodes.
 }
 \examples{
+\dontrun{
 # Check convergence for E[alpha]
 convergence_quadrature(identity, 2.5, 1.5,
                        M_values = c(10, 20, 50, 80, 100),
                        true_value = 2.5/1.5)
 
+}
 }
 \keyword{internal}

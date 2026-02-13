@@ -21,11 +21,13 @@ Computes \eqn{E[K_J \mid \alpha]} by summing over the PMF.
 This is primarily for verification against the closed-form digamma formula.
 }
 \examples{
+\dontrun{
 logS <- compute_log_stirling(50)
 
 # Should match mean_K_given_alpha(50, 2.0)
 mean_K_from_pmf(50, 2.0, logS)
 mean_K_given_alpha(50, 2.0)
 
+}
 }
 \keyword{internal}

@@ -12,3 +12,16 @@ A named list with color values.
 \description{
 DPprior Color Palette
 }
+\seealso{
+Other visualization: 
+\code{\link{plot_K_prior}()},
+\code{\link{plot_alpha_prior}()},
+\code{\link{plot_dual_comparison}()},
+\code{\link{plot_dual_dashboard}()},
+\code{\link{plot_prior_dashboard}()},
+\code{\link{plot_tradeoff_curve}()},
+\code{\link{plot_tradeoff_dashboard}()},
+\code{\link{plot_w1_prior}()},
+\code{\link{theme_DPprior}()}
+}
+\concept{visualization}

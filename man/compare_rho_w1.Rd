@@ -38,7 +38,10 @@ While E(rho) = E(w1), the variances differ because:
 Generally, Var(rho) < Var(w1) because rho averages over all squared weights.
 }
 \examples{
+\dontrun{
 compare_rho_w1(a = 2, b = 1)
 compare_rho_w1(a = 1.6, b = 1.22)
 
 }
+}
+\keyword{internal}

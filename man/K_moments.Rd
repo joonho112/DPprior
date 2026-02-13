@@ -27,4 +27,13 @@ K_moments(50, 2.0, 1.0)
 }
 \seealso{
 \code{\link{exact_K_moments}} for full output
+
+Other marginal_K: 
+\code{\link{cdf_K_marginal}()},
+\code{\link{exact_K_moments}()},
+\code{\link{mode_K_marginal}()},
+\code{\link{pmf_K_marginal}()},
+\code{\link{quantile_K_marginal}()},
+\code{\link{summary_K_marginal}()}
 }
+\concept{marginal_K}

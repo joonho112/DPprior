@@ -79,4 +79,13 @@ c(summary$mean - exact$mean, summary$var - exact$var)
 }
 \seealso{
 \code{\link{pmf_K_marginal}}, \code{\link{exact_K_moments}}
+
+Other marginal_K: 
+\code{\link{K_moments}()},
+\code{\link{cdf_K_marginal}()},
+\code{\link{exact_K_moments}()},
+\code{\link{mode_K_marginal}()},
+\code{\link{pmf_K_marginal}()},
+\code{\link{quantile_K_marginal}()}
 }
+\concept{marginal_K}

@@ -22,7 +22,7 @@ Computes error metrics over a grid of (J, alpha) values for visualization.
 }
 \details{
 This function is useful for creating error landscape visualizations
-as shown in RN-05, Figures 1-3.
+as shown in Lee (2026, Section 3.3).
 }
 \examples{
 # Create error landscape
@@ -33,3 +33,11 @@ landscape <- compute_error_landscape(
 print(landscape)
 
 }
+\seealso{
+Other diagnostics: 
+\code{\link{DPprior_diagnostics}()},
+\code{\link{DPprior_error_bounds}()},
+\code{\link{compute_weight_diagnostics}()},
+\code{\link{dual_anchor_diagnostics}()}
+}
+\concept{diagnostics}

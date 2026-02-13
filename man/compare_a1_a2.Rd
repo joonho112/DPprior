@@ -25,4 +25,3 @@ Compares the accuracy of A1 closed-form and A2 Newton methods.
 compare_a1_a2(J = 50, mu_K = 5, var_K = 8)
 
 }
-\keyword{internal}

@@ -27,6 +27,7 @@ This derivative is always positive for \eqn{\alpha > 0}, confirming that
 \eqn{E[K_J | \alpha]} is strictly increasing in \eqn{\alpha}.
 }
 \examples{
+\dontrun{
 dmean_dalpha(50, 2.0)
 
 # Verify with finite difference
@@ -35,5 +36,6 @@ fd <- (mean_K_given_alpha(J, alpha + eps) -
        mean_K_given_alpha(J, alpha - eps)) / (2 * eps)
 abs(fd - dmean_dalpha(J, alpha)) < 1e-5  # TRUE
 
+}
 }
 \keyword{internal}

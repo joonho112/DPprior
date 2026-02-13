@@ -45,6 +45,14 @@
 #' @keywords internal
 .TOL_PROJECTION_BUFFER <- 1e-6
 
+# --- Numerical safety thresholds ---
+.ALPHA_SMALL <- 1e-10          # Floor for alpha in safe moment computations
+.TOL_SINGULAR_JACOBIAN <- 1e-12  # Jacobian determinant singularity threshold
+.PENALTY_INF <- 1e10            # Penalty return for infeasible parameters
+.GD_FALLBACK_STEP <- 0.1        # Gradient descent fallback step size
+.LOG_BOUNDS_DEFAULT <- c(-15, 15)  # L-BFGS-B bounds on log(a), log(b)
+.EXP_MAX <- 700                 # Maximum safe exponent for exp()
+
 
 # =============================================================================
 # Numerically Stable Operations
@@ -178,6 +186,7 @@ logsumexp_vec <- function(x) {
 #' }
 #'
 #' @examples
+#' \dontrun{
 #' softmax(c(1, 2, 3))
 #' sum(softmax(c(1, 2, 3)))
 #'
@@ -187,7 +196,8 @@ logsumexp_vec <- function(x) {
 #' # Inf handling
 #' softmax(c(1, Inf, Inf))
 #'
-#' @export
+#' }
+#' @keywords internal
 softmax <- function(x) {
   if (length(x) == 0L) {
     stop("x must have positive length", call. = FALSE)
@@ -328,4 +338,12 @@ assert_valid_k <- function(k, J) {
     stop(sprintf("k must be an integer in [1, %d]", J), call. = FALSE)
   }
   invisible(TRUE)
+}
+
+
+# Null-coalescing operator: returns x if not NULL, otherwise y.
+# Defined once here; do NOT duplicate in other modules.
+# @noRd
+`%||%` <- function(x, y) {
+  if (is.null(x)) y else x
 }

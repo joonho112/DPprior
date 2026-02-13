@@ -51,7 +51,7 @@ Numeric; the combined loss value.
 }
 \description{
 Computes the combined loss for K_J and first-weight targets used in the dual-anchor
-calibration framework (RN-06, Algorithm 2).
+calibration framework.
 }
 \details{
 \subsection{Loss Scaling Comparison}{

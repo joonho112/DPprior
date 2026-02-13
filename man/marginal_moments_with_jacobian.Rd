@@ -46,9 +46,11 @@ For Gamma(a, b):
 }
 }
 \examples{
+\dontrun{
 result <- marginal_moments_with_jacobian(50, 2.0, 1.0)
 result$jacobian
 
+}
 }
 \seealso{
 \code{\link{exact_K_moments}}, Module 07 (Jacobian)

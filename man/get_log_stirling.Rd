@@ -21,6 +21,7 @@ Safe accessor for the log-Stirling matrix with automatic bounds checking.
 Returns \code{-Inf} for invalid indices (k > J, k < 1).
 }
 \examples{
+\dontrun{
 logS <- compute_log_stirling(10)
 
 # Valid access
@@ -30,6 +31,7 @@ get_log_stirling(4, 2, logS)
 get_log_stirling(4, 5, logS)
 get_log_stirling(4, 0, logS)
 
+}
 }
 \seealso{
 \code{\link{compute_log_stirling}} for matrix computation

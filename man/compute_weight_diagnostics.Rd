@@ -29,7 +29,7 @@ probabilities for each threshold), and dominance_risk (character: "low",
 }
 \description{
 Computes comprehensive diagnostics for the first stick-breaking weight.
-This is the KEY diagnostic for RN-07 concerns about unintended prior behavior.
+This is the KEY diagnostic for concerns about unintended prior behavior (Lee, 2026, Section 4).
 }
 \details{
 The weight w1 is the first stick-breaking weight in GEM order
@@ -52,5 +52,14 @@ compute_weight_diagnostics(5, 1)
 
 }
 \references{
-Lee, J. (2025). RN-07: Unintended Prior Diagnostic.
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+\emph{arXiv preprint} arXiv:2602.06301.
 }
+\seealso{
+Other diagnostics: 
+\code{\link{DPprior_diagnostics}()},
+\code{\link{DPprior_error_bounds}()},
+\code{\link{compute_error_landscape}()},
+\code{\link{dual_anchor_diagnostics}()}
+}
+\concept{diagnostics}

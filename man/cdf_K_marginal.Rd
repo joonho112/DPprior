@@ -46,4 +46,13 @@ cdf[11]
 }
 \seealso{
 \code{\link{pmf_K_marginal}}, \code{\link{quantile_K_marginal}}
+
+Other marginal_K: 
+\code{\link{K_moments}()},
+\code{\link{exact_K_moments}()},
+\code{\link{mode_K_marginal}()},
+\code{\link{pmf_K_marginal}()},
+\code{\link{quantile_K_marginal}()},
+\code{\link{summary_K_marginal}()}
 }
+\concept{marginal_K}

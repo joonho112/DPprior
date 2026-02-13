@@ -1,772 +1,424 @@
 # =============================================================================
-# Module 13: Error Bounds Implementation
+# Tests for Module 10: A1 Closed-Form Prior Elicitation
 # =============================================================================
-#
-# This module provides functions for quantifying approximation errors in the
-# A1 large-J approximation, implementing the error quantification framework
-# from RN-05.
-#
-# The A1 approximation (shifted NegBin) differs from the exact K_J distribution
-# due to three error sources:
-# 1. Poissonization error: Bernoulli sum -> Poisson approximation
-# 2. Mean-linearization error: Exact mean lambda_J(alpha) -> alpha*c_J
-# 3. Mixing error: Poisson-Gamma identity -> shifted NegBin
 #
 # Author: JoonHo Lee
 # Date: December 2025
 # Part of: DPprior R Package
-# Reference: RN-05 (Error Quantification & Guarantees for the A1 Large-J Approximation)
 # =============================================================================
 
+# Note: context() is deprecated in testthat 3rd edition
+
 
 # =============================================================================
-# Poissonization Error Bound
+# Test: compute_scaling_constant
 # =============================================================================
 
-#' Poissonization Error Bound (Raw Sum of Squared Probabilities)
-#'
-#' Computes the raw sum of squared Bernoulli probabilities:
-#' \deqn{\sum_{i=2}^{J} p_i^2 = \alpha^2 [\psi_1(\alpha+1) - \psi_1(\alpha+J)]}
-#' where \eqn{p_i = \alpha / (\alpha + i - 1)}.
-#'
-#' This quantity represents the "underdispersion gap" between the conditional
-#' variance of \eqn{K_J | \alpha} and a Poisson with the same mean.
-#'
-#' @param J Integer; sample size (number of observations).
-#' @param alpha Numeric; concentration parameter (can be vectorized).
-#'
-#' @return Numeric vector; sum of squared probabilities for each alpha value.
-#'
-#' @details
-#' From the Poisson-binomial representation, \eqn{S_J = K_J - 1 = \sum_{i=2}^{J} I_i}
-#' where \eqn{I_i \sim \text{Bernoulli}(p_i)}.
-#'
-#' This sum equals:
-#' \deqn{\sum_{i=2}^{J} p_i^2 = \alpha^2 [\psi_1(\alpha+1) - \psi_1(\alpha+J)]}
-#' using the identity for sums of squared reciprocals.
-#'
-#' @seealso \code{\link{compute_poissonization_bound}} for the full Chen-Stein bound
-#'
-#' @references
-#' RN-05: Error Quantification & Guarantees for the A1 Large-J Approximation
-#'
-#' @examples
-#' # Compute raw sum for J=50, alpha=1
-#' compute_sum_p_squared(J = 50, alpha = 1)
-#'
-#' # Vectorized over alpha
-#' compute_sum_p_squared(J = 50, alpha = c(0.5, 1, 2))
-#'
-#' @export
-compute_sum_p_squared <- function(J, alpha) {
-  assert_valid_J(J)
-  assert_positive(alpha, "alpha")
+test_that("log scaling returns log(J)", {
+  expect_equal(compute_scaling_constant(50, "log"), log(50))
+  expect_equal(compute_scaling_constant(100, "log"), log(100))
+  expect_equal(compute_scaling_constant(2, "log"), log(2))
+})
 
-  alpha^2 * (trigamma(alpha + 1) - trigamma(alpha + J))
-}
+test_that("harmonic scaling returns H_{J-1} = digamma(J) + gamma", {
+  euler_gamma <- 0.5772156649015329
+  expect_equal(compute_scaling_constant(50, "harmonic"),
+               digamma(50) + euler_gamma)
+  expect_equal(compute_scaling_constant(10, "harmonic"),
+               digamma(10) + euler_gamma)
+})
+
+test_that("digamma scaling requires mu_K argument", {
+  expect_error(compute_scaling_constant(50, "digamma"),
+               "mu_K required for digamma scaling")
+  # Should succeed when mu_K is provided
+  result <- compute_scaling_constant(50, "digamma", mu_K = 5)
+  expect_true(is.finite(result))
+  expect_true(result > 0)
+})
+
+test_that("all scalings converge toward log(J) for large J", {
+  J_large <- 500
+  cJ_log <- compute_scaling_constant(J_large, "log")
+  cJ_harm <- compute_scaling_constant(J_large, "harmonic")
+  cJ_dig <- compute_scaling_constant(J_large, "digamma", mu_K = 5)
+
+  # Harmonic and digamma should be within ~15% of log(J) for large J
+  # The harmonic sum H_{J-1} converges to log(J) + gamma, so the relative
+
+  # difference shrinks with J but does not vanish entirely
+  expect_equal(cJ_harm / cJ_log, 1, tolerance = 0.15)
+  expect_equal(cJ_dig / cJ_log, 1, tolerance = 0.25)
+})
+
+test_that("digamma scaling uses correct formula", {
+  J <- 50
+  mu_K <- 5
+  alpha_tilde <- (mu_K - 1) / log(J)
+  expected <- digamma(alpha_tilde + J) - digamma(alpha_tilde)
+  expect_equal(compute_scaling_constant(J, "digamma", mu_K = mu_K), expected)
+})
 
 
-#' Poissonization Error Bound (Chen-Stein / Le Cam Bound)
-#'
-#' Computes an upper bound on the conditional total variation distance
-#' between the shifted cluster count \eqn{S_J = K_J - 1} and a Poisson law
-#' with the same mean (Poissonization error).
-#'
-#' @param J Integer; sample size (number of observations).
-#' @param alpha Numeric; concentration parameter (can be vectorized).
-#' @param raw Logical; if TRUE, return just sum(p_i^2) without the prefactor.
-#'   Default is FALSE.
-#'
-#' @return Numeric vector; upper bound on
-#'   \eqn{d_{TV}(S_J | \alpha, \text{Poisson}(\lambda_J(\alpha)))}.
-#'
-#' @details
-#' Under the CRP representation,
-#' \eqn{S_J = \sum_{i=2}^J I_i} where \eqn{I_i \sim \text{Bernoulli}(p_i)} and
-#' \eqn{p_i = \alpha / (\alpha + i - 1)}.
-#'
-#' A standard Chen-Stein/Le Cam bound gives:
-#' \deqn{d_{TV}(S_J, \text{Poisson}(\lambda)) \le
-#'       \frac{1 - e^{-\lambda}}{\lambda} \sum_{i=2}^J p_i^2}
-#' where \eqn{\lambda = \sum_{i=2}^J p_i = E[S_J | \alpha]}.
-#'
-#' The prefactor \eqn{(1 - e^{-\lambda})/\lambda} is always in (0, 1] and
-#' approaches 1 as \eqn{\lambda \to 0}. This provides a tighter bound than
-#' simply using \eqn{\sum p_i^2} alone.
-#'
-#' The returned value is capped at 1 (since total variation is always between 0 and 1).
-#'
-#' @seealso \code{\link{compute_sum_p_squared}}, \code{\link{compute_linearization_bound}}
-#'
-#' @references
-#' Le Cam, L. (1960). An approximation theorem for the Poisson binomial
-#' distribution. \emph{Pacific Journal of Mathematics}, 10(4), 1181-1197.
-#'
-#' Chen, L. H. Y. (1975). Poisson approximation for dependent trials.
-#' \emph{The Annals of Probability}, 3(3), 534-545.
-#'
-#' RN-05 (Theorem 1) and references therein.
-#'
-#' @examples
-#' # Full Chen-Stein bound
-#' compute_poissonization_bound(J = 50, alpha = 1)
-#'
-#' # Raw bound (sum of p_i^2)
-#' compute_poissonization_bound(J = 50, alpha = 1, raw = TRUE)
-#'
-#' # Vectorized
-#' compute_poissonization_bound(J = 50, alpha = c(0.5, 1, 2, 5))
-#'
-#' @export
-compute_poissonization_bound <- function(J, alpha, raw = FALSE) {
-  assert_valid_J(J)
-  assert_positive(alpha, "alpha")
+# =============================================================================
+# Test: DPprior_a1 basic functionality
+# =============================================================================
 
-  # Sum_{i=2}^J p_i^2 in closed form via trigamma
-  sum_p_sq <- compute_sum_p_squared(J, alpha)
+test_that("DPprior_a1 returns valid positive parameters", {
+  fit <- DPprior_a1(J = 50, mu_K = 5, var_K = 8)
+  expect_true(fit$a > 0)
+  expect_true(fit$b > 0)
+})
 
-  if (raw) {
-    return(sum_p_sq)
+test_that("DPprior_a1 returns correct structure", {
+  fit <- DPprior_a1(J = 50, mu_K = 5, var_K = 8)
+
+  # Check all required components are present
+  expect_true("a" %in% names(fit))
+  expect_true("b" %in% names(fit))
+  expect_true("J" %in% names(fit))
+  expect_true("target" %in% names(fit))
+  expect_true("method" %in% names(fit))
+  expect_true("status" %in% names(fit))
+  expect_true("scaling" %in% names(fit))
+  expect_true("cJ" %in% names(fit))
+  expect_true("var_K_used" %in% names(fit))
+  expect_true("converged" %in% names(fit))
+  expect_true("iterations" %in% names(fit))
+
+  # Check values
+  expect_equal(fit$method, "A1")
+  expect_equal(fit$J, 50)
+  expect_equal(fit$target$mu_K, 5)
+  expect_equal(fit$target$var_K, 8)
+  expect_equal(fit$target$type, "moments")
+  expect_true(fit$converged)
+  expect_identical(fit$iterations, 0L)
+})
+
+test_that("DPprior_a1 output has class DPprior_fit", {
+  fit <- DPprior_a1(J = 50, mu_K = 5, var_K = 8)
+  expect_s3_class(fit, "DPprior_fit")
+})
+
+test_that("DPprior_a1 round-trip: NegBin moments recover targets", {
+  fit <- DPprior_a1(J = 50, mu_K = 5, var_K = 8)
+  a <- fit$a
+  b <- fit$b
+  cJ <- fit$cJ
+
+  # Forward NegBin model
+  p <- b / (b + cJ)
+  mu_S <- a * (1 - p) / p
+  var_S <- a * (1 - p) / p^2
+
+  mu_K_recovered <- mu_S + 1
+  var_K_recovered <- var_S
+
+  expect_equal(mu_K_recovered, 5, tolerance = 1e-10)
+  expect_equal(var_K_recovered, 8, tolerance = 1e-10)
+})
+
+test_that("DPprior_a1 works with all scaling methods", {
+  for (scaling in c("log", "harmonic", "digamma")) {
+    fit <- DPprior_a1(J = 50, mu_K = 5, var_K = 8, scaling = scaling)
+    expect_true(fit$a > 0)
+    expect_true(fit$b > 0)
+    expect_equal(fit$scaling, scaling)
+    expect_equal(fit$status, "success")
   }
+})
 
+test_that("DPprior_a1 different scalings give different parameters", {
+  fit_log <- DPprior_a1(J = 50, mu_K = 5, var_K = 8, scaling = "log")
+  fit_harm <- DPprior_a1(J = 50, mu_K = 5, var_K = 8, scaling = "harmonic")
 
-  # Shifted mean: lambda_J(alpha) = E[S_J | alpha] = E[K_J | alpha] - 1
-  lambda <- pmax(0, mean_K_given_alpha(J, alpha) - 1)
-
-  # Chen-Stein prefactor: (1 - exp(-lambda))/lambda
-  # This equals 1 when lambda = 0 (by L'Hopital or Taylor expansion)
-  # The prefactor is always in (0, 1], providing a tighter bound
-  prefactor <- ifelse(lambda > 0, (1 - exp(-lambda)) / lambda, 1)
-
-  # Cap at 1 (TV is bounded by 1)
-  pmin(1, prefactor * sum_p_sq)
-}
-
-
-# =============================================================================
-# Mean-Linearization Error Bound
-# =============================================================================
-
-#' Poisson-Poisson KL Divergence
-#'
-#' Computes the Kullback-Leibler divergence between two Poisson distributions:
-#' \deqn{KL(\text{Poisson}(\lambda) || \text{Poisson}(\lambda')) =
-#'       \lambda \log(\lambda/\lambda') + \lambda' - \lambda}
-#'
-#' @param lambda Numeric; mean of first Poisson distribution.
-#' @param lambda_prime Numeric; mean of second Poisson distribution.
-#'
-#' @return Numeric; KL divergence (non-negative, possibly Inf).
-#'
-#' @details
-#' Special cases:
-#' \itemize{
-#'   \item If both \eqn{\lambda = 0} and \eqn{\lambda' = 0}: KL = 0
-#'   \item If \eqn{\lambda = 0} and \eqn{\lambda' > 0}: KL = \eqn{\lambda'}
-#'   \item If \eqn{\lambda > 0} and \eqn{\lambda' = 0}: KL = Inf
-#' }
-#'
-#' @keywords internal
-poisson_kl_divergence <- function(lambda, lambda_prime) {
-  n <- length(lambda)
-  kl <- rep(0, n)
-
-  # Both zero: KL = 0 (already initialized)
-
-  # lambda = 0, lambda' > 0: KL = lambda'
-  idx0 <- (lambda == 0) & (lambda_prime > 0)
-  kl[idx0] <- lambda_prime[idx0]
-
-  # lambda > 0, lambda' > 0: standard formula
-  idxp <- (lambda > 0) & (lambda_prime > 0)
-  kl[idxp] <- lambda[idxp] * log(lambda[idxp] / lambda_prime[idxp]) +
-    (lambda_prime[idxp] - lambda[idxp])
-
-  # lambda > 0, lambda' = 0: KL = Inf
-  idx_inf <- (lambda > 0) & (lambda_prime == 0)
-  kl[idx_inf] <- Inf
-
-  kl
-}
-
-
-#' Mean-Linearization Error Bound
-#'
-#' Computes an upper bound on the TV distance between two Poisson distributions,
-#' \eqn{\text{Poisson}(\lambda_J(\alpha))} and \eqn{\text{Poisson}(\alpha c_J)},
-#' using the Poisson-Poisson KL divergence together with Pinsker's inequality.
-#'
-#' @param J Integer; sample size.
-#' @param alpha Numeric; concentration parameter (vectorized).
-#' @param cJ Numeric; scaling constant (default: log(J)).
-#'
-#' @return Numeric; upper bound via Pinsker's inequality.
-#'
-#' @details
-#' Let \eqn{\lambda = \lambda_J(\alpha)} (exact shifted mean) and
-#' \eqn{\lambda' = \alpha c_J} (A1 approximate mean).
-#'
-#' The KL divergence is:
-#' \deqn{KL(\text{Poisson}(\lambda) || \text{Poisson}(\lambda')) =
-#'       \lambda \log(\lambda/\lambda') + \lambda' - \lambda}
-#'
-#' By Pinsker's inequality:
-#' \deqn{d_{TV}(\text{Poisson}(\lambda), \text{Poisson}(\lambda')) \le \sqrt{KL/2}}
-#'
-#' Numerical safeguards handle edge cases where \eqn{\lambda} or \eqn{c_J} is zero.
-#'
-#' @seealso \code{\link{compute_poissonization_bound}}, \code{\link{compute_total_tv_bound}}
-#'
-#' @references
-#' RN-05, Lemma 1: Poisson-Poisson TV bound via KL + Pinsker
-#'
-#' @examples
-#' # Linearization bound for J=50, alpha=1
-#' compute_linearization_bound(J = 50, alpha = 1)
-#'
-#' # Effect of J on linearization bound (should decrease)
-#' sapply(c(25, 50, 100, 200), function(J)
-#'   compute_linearization_bound(J, alpha = 2))
-#'
-#' @export
-compute_linearization_bound <- function(J, alpha, cJ = log(J)) {
-  assert_valid_J(J)
-  assert_positive(alpha, "alpha")
-
-  # Validate cJ
-  if (!is.numeric(cJ) || length(cJ) != 1L || !is.finite(cJ) || cJ < 0) {
-    stop("cJ must be a finite non-negative scalar", call. = FALSE)
-  }
-
-  # Exact conditional mean for shifted count S_J = K_J - 1
-  lambda_exact <- pmax(0, mean_K_given_alpha(J, alpha) - 1)
-  lambda_approx <- alpha * cJ
-
-  # Handle all edge cases properly
-  both_zero <- (lambda_exact == 0) & (lambda_approx == 0)
-
-  # Compute KL divergence with proper edge case handling
-  kl_div <- poisson_kl_divergence(lambda_exact, lambda_approx)
-
-  # Pinsker's inequality: d_TV <= sqrt(KL/2)
-  out <- sqrt(0.5 * pmax(0, kl_div))
-
-  # Both zero means identical distributions: TV = 0
-  out[both_zero] <- 0
-
-  # Cap at 1
-  pmin(1, out)
-}
+  # Different cJ values should lead to different b (but same a)
+  expect_false(identical(fit_log$cJ, fit_harm$cJ))
+  expect_false(identical(fit_log$b, fit_harm$b))
+  # Shape a should be identical since it depends only on mu_K and var_K
+  expect_equal(fit_log$a, fit_harm$a, tolerance = 1e-10)
+})
 
 
 # =============================================================================
-# Total TV Bound (Conditional)
+# Test: DPprior_a1 input validation
 # =============================================================================
 
-#' Total TV Error Bound (Conditional)
-#'
-#' Computes the combined conditional TV bound using the triangle inequality:
-#' \deqn{d_{TV}(K_J | \alpha, 1 + \text{NegBin}) \le B_{\text{Pois}} + B_{\text{lin}}}
-#'
-#' The result is capped at 1 since TV distance is bounded by 1.
-#'
-#' @param J Integer; sample size.
-#' @param alpha Numeric; concentration parameter (vectorized).
-#' @param cJ Numeric; scaling constant (default: log(J)).
-#'
-#' @return Numeric; upper bound on total TV error (capped at 1).
-#'
-#' @details
-#' From RN-05, Theorem 1, the total conditional TV error decomposes as:
-#' \enumerate{
-#'   \item Poissonization error: \eqn{S_J | \alpha} vs \eqn{\text{Poisson}(\lambda_J(\alpha))}
-#'   \item Linearization error: \eqn{\text{Poisson}(\lambda_J(\alpha))} vs \eqn{\text{Poisson}(\alpha c_J)}
-#' }
-#'
-#' @seealso \code{\link{compute_poissonization_bound}}, \code{\link{compute_linearization_bound}},
-#'   \code{\link{expected_tv_bound}}
-#'
-#' @examples
-#' # Total bound at alpha = E[alpha] under Gamma(2, 1)
-#' compute_total_tv_bound(J = 50, alpha = 2)
-#'
-#' # Vectorized
-#' compute_total_tv_bound(J = 50, alpha = c(0.5, 1, 2, 5))
-#'
-#' @export
-compute_total_tv_bound <- function(J, alpha, cJ = log(J)) {
-  assert_valid_J(J)
-  assert_positive(alpha, "alpha")
+test_that("DPprior_a1 errors on invalid J", {
+  expect_error(DPprior_a1(J = 1, mu_K = 5, var_K = 8),
+               "J must be an integer >= 2")
+  expect_error(DPprior_a1(J = 0, mu_K = 5, var_K = 8),
+               "J must be an integer >= 2")
+  expect_error(DPprior_a1(J = -5, mu_K = 5, var_K = 8),
+               "J must be an integer >= 2")
+  expect_error(DPprior_a1(J = 3.5, mu_K = 2, var_K = 3),
+               "J must be an integer >= 2")
+})
 
-  B_pois <- compute_poissonization_bound(J, alpha, raw = FALSE)
-  B_lin <- compute_linearization_bound(J, alpha, cJ)
+test_that("DPprior_a1 errors on invalid mu_K", {
+  expect_error(DPprior_a1(J = 50, mu_K = 0.5, var_K = 8),
+               "mu_K must be > 1")
+  expect_error(DPprior_a1(J = 50, mu_K = 1, var_K = 8),
+               "mu_K must be > 1")
+  expect_error(DPprior_a1(J = 50, mu_K = 51, var_K = 8),
+               "mu_K must be <= J")
+})
 
-  # TV distance is bounded by 1
-  pmin(1, B_pois + B_lin)
-}
+test_that("DPprior_a1 errors on invalid var_K", {
+  expect_error(DPprior_a1(J = 50, mu_K = 5, var_K = 0),
+               "var_K must be a positive finite numeric scalar")
+  expect_error(DPprior_a1(J = 50, mu_K = 5, var_K = -1),
+               "var_K must be a positive finite numeric scalar")
+})
 
 
 # =============================================================================
-# A1 Moment Error
+# Test: DPprior_a1 variance feasibility (boundary projection)
 # =============================================================================
 
-#' A1 Approximation Moment Errors
-#'
-#' Computes the discrepancy between the A1 (shifted NegBin) approximation
-#' and exact marginal moments of \eqn{K_J}.
-#'
-#' @param J Integer; sample size.
-#' @param a,b Numeric; Gamma hyperparameters (shape, rate).
-#' @param cJ Numeric; scaling constant (default: log(J)).
-#' @param M Integer; number of quadrature nodes (default: 80).
-#'
-#' @return A list with components:
-#'   \describe{
-#'     \item{exact_mean, exact_var}{Exact moments via Gauss-Laguerre quadrature}
-#'     \item{a1_mean, a1_var}{A1 (shifted NegBin) approximation moments}
-#'     \item{error_mean_abs, error_var_abs}{Absolute errors}
-#'     \item{error_mean_rel, error_var_rel}{Relative errors (percentage)}
-#'   }
-#'
-#' @details
-#' The A1 approximation models \eqn{K_J \approx 1 + \text{NegBin}(a, p_J)} where
-#' \eqn{p_J = b / (b + c_J)}.
-#'
-#' The NegBin(a, p) moments are:
-#' \itemize{
-#'   \item Mean: \eqn{a(1-p)/p}
-#'   \item Variance: \eqn{a(1-p)/p^2}
-#' }
-#'
-#' @seealso \code{\link{exact_K_moments}}, \code{\link{DPprior_error_bounds}}
-#'
-#' @examples
-#' # Moment errors for J=50, Gamma(2, 1) prior
-#' errors <- a1_moment_error(J = 50, a = 2, b = 1)
-#' print(errors)
-#'
-#' # Compare A1 accuracy at different J values
-#' sapply(c(25, 50, 100, 200), function(J) {
-#'   err <- a1_moment_error(J, a = 2, b = 1)
-#'   c(mean_err = err$error_mean_rel, var_err = err$error_var_rel)
-#' })
-#'
-#' # Compare different scaling constants
-#' a1_moment_error(J = 50, a = 2, b = 1, cJ = log(50))
-#' a1_moment_error(J = 50, a = 2, b = 1, cJ = digamma(50) + 0.5772)
-#'
-#' @export
-a1_moment_error <- function(J, a, b, cJ = log(J), M = .QUAD_NODES_DEFAULT) {
-  assert_valid_J(J)
-  assert_positive(a, "a")
-  assert_positive(b, "b")
-
-  # Validate cJ
-  if (!is.numeric(cJ) || length(cJ) != 1L || !is.finite(cJ) || cJ < 0) {
-    stop("cJ must be a finite non-negative scalar", call. = FALSE)
-  }
-
-  # Exact moments via quadrature
-  exact <- exact_K_moments(J, a, b, M)
-
-  # A1 approximation moments (shifted NegBin from Poisson-Gamma identity)
-  # S := K_J - 1 ~ NegBin(a, pJ) with pJ = b / (b + cJ)
-  pJ <- b / (b + cJ)
-
-  # NegBin(a, pJ) moments: mean = a*(1-pJ)/pJ, var = a*(1-pJ)/pJ^2
-  mu_S <- a * (1 - pJ) / pJ
-  var_S <- a * (1 - pJ) / pJ^2
-
-  a1_mean <- 1 + mu_S
-  a1_var <- var_S
-
-  # Compute errors
-  error_mean_abs <- abs(exact$mean - a1_mean)
-  error_var_abs <- abs(exact$var - a1_var)
-  error_mean_rel <- 100 * error_mean_abs / exact$mean
-  error_var_rel <- 100 * error_var_abs / exact$var
-
-  list(
-    exact_mean = exact$mean,
-    exact_var = exact$var,
-    a1_mean = a1_mean,
-    a1_var = a1_var,
-    error_mean_abs = error_mean_abs,
-    error_var_abs = error_var_abs,
-    error_mean_rel = error_mean_rel,
-    error_var_rel = error_var_rel
+test_that("infeasible variance triggers projection with warning", {
+  # mu_K = 5 means mu_S = 4, so var_K must be > 4 for feasibility
+  # var_K = 3 < 4 is infeasible
+  expect_warning(
+    fit <- DPprior_a1(J = 50, mu_K = 5, var_K = 3),
+    "var_K <= mu_K - 1: projected to feasible boundary"
   )
-}
+  expect_true(grepl("projected", fit$status))
+  expect_true(fit$var_K_used > fit$target$var_K)
+  expect_true(fit$a > 0)
+  expect_true(fit$b > 0)
+})
 
+test_that("feasible variance does not trigger projection", {
+  fit <- DPprior_a1(J = 50, mu_K = 5, var_K = 8)
+  expect_equal(fit$status, "success")
+  expect_equal(fit$var_K_used, 8)
+})
 
-# =============================================================================
-# Expected (Marginal) TV Bound
-# =============================================================================
-
-#' Expected TV Bound Under Gamma Prior
-#'
-#' Integrates the conditional TV bound over \eqn{\alpha \sim \text{Gamma}(a, b)}
-#' to obtain the marginal error bound.
-#'
-#' @param J Integer; sample size.
-#' @param a,b Numeric; Gamma hyperparameters.
-#' @param cJ Numeric; scaling constant (default: log(J)).
-#' @param M Integer; number of quadrature nodes.
-#'
-#' @return Numeric; \eqn{E[d_{TV} \text{ bound} | a, b]}.
-#'
-#' @details
-#' From Corollary 1 of RN-05, the TV error between the exact prior predictive
-#' \eqn{p(S_J | a, b)} and the A1 shifted NegBin proxy is bounded by:
-#' \deqn{d_{TV}(P^{\text{exact}}, Q^{A1}) \le E_{\alpha \sim \Gamma(a,b)}[B_{\text{Pois}} + B_{\text{lin}}]}
-#'
-#' This follows from the mixture contraction property of TV distance.
-#'
-#' @seealso \code{\link{compute_total_tv_bound}}, \code{\link{integrate_gamma}}
-#'
-#' @examples
-#' # Marginal TV bound for J=100, Gamma(1, 1)
-#' expected_tv_bound(J = 100, a = 1, b = 1)
-#'
-#' @export
-expected_tv_bound <- function(J, a, b, cJ = log(J), M = .QUAD_NODES_DEFAULT) {
-  assert_valid_J(J)
-  assert_positive(a, "a")
-  assert_positive(b, "b")
-
-  integrate_gamma(
-    function(alpha) compute_total_tv_bound(J, alpha, cJ),
-    a, b, M
+test_that("var_K exactly at boundary triggers projection", {
+  # mu_K = 5 means mu_S = 4, boundary is var_K = mu_S = 4
+  # Due to epsilon buffering, var_K = 4 should be projected
+  expect_warning(
+    fit <- DPprior_a1(J = 50, mu_K = 5, var_K = 4),
+    "var_K <= mu_K - 1: projected to feasible boundary"
   )
-}
+  expect_true(grepl("projected", fit$status))
+})
 
 
 # =============================================================================
-# Threshold J Finder
+# Test: DPprior_a1 closed-form algebra
 # =============================================================================
 
-#' Find Threshold J for A1 Adequacy
-#'
-#' Determines the minimum sample size J for which the A1 approximation
-#' achieves target accuracy in moment matching.
-#'
-#' @param a,b Numeric; Gamma hyperparameters.
-#' @param target_error Numeric; target relative error for mean (default: 5%).
-#' @param target_var_error Numeric; target relative error for variance
-#'   (default: 2 * target_error).
-#' @param J_min,J_max Integer; search range for J.
-#' @param step Integer; step size for search.
-#'
-#' @return Integer; minimum J achieving target accuracy, or NA if not found.
-#'
-#' @details
-#' Searches over J values to find the smallest J where:
-#' \itemize{
-#'   \item Mean relative error < target_error
-#'   \item Variance relative error < target_var_error
-#' }
-#'
-#' Note: For many parameter combinations, especially with high \eqn{E[\alpha]},
-#' the A1 approximation may never achieve low errors within practical J ranges.
-#' In such cases, A2 refinement is recommended.
-#'
-#' @seealso \code{\link{a1_moment_error}}, \code{\link{DPprior_error_bounds}}
-#'
-#' @examples
-#' \dontrun{
-#' # Find threshold for 5% mean error
-#' find_a1_threshold_J(a = 1, b = 2)
-#'
-#' # For higher E[alpha], threshold may not exist
-#' find_a1_threshold_J(a = 2, b = 1)  # Likely returns NA
-#' }
-#'
-#' @keywords internal
-find_a1_threshold_J <- function(a, b, target_error = 0.05,
-                                target_var_error = NULL,
-                                J_min = 10, J_max = 500, step = 10) {
-  assert_positive(a, "a")
-  assert_positive(b, "b")
-  assert_positive(target_error, "target_error")
+test_that("A1 closed-form formulas are algebraically correct", {
+  J <- 50
+  mu_K <- 5
+  var_K <- 8
 
-  if (is.null(target_var_error)) {
-    target_var_error <- 2 * target_error
-  }
+  cJ <- log(J)
+  m <- mu_K - 1       # shifted mean
+  D <- var_K - m       # denominator
 
-  for (J in seq(J_min, J_max, by = step)) {
-    errors <- a1_moment_error(J, a, b)
-    if (errors$error_mean_rel / 100 < target_error &&
-        errors$error_var_rel / 100 < target_var_error) {
-      return(as.integer(J))
-    }
-  }
+  a_expected <- m^2 / D
+  b_expected <- m * cJ / D
 
-  NA_integer_
-}
+  fit <- DPprior_a1(J = J, mu_K = mu_K, var_K = var_K, scaling = "log")
+  expect_equal(fit$a, a_expected, tolerance = 1e-12)
+  expect_equal(fit$b, b_expected, tolerance = 1e-12)
+})
 
 
 # =============================================================================
-# Main User-Facing Function
+# Test: vif_to_variance
 # =============================================================================
 
-#' Compute A1 Approximation Error Bounds
-#'
-#' Comprehensive error analysis for the A1 large-J approximation.
-#' Implements the error quantification framework from RN-05.
-#'
-#' @param J Integer; sample size.
-#' @param a,b Numeric; Gamma hyperparameters (shape, rate).
-#' @param cJ Numeric; scaling constant (default: log(J)).
-#' @param M Integer; number of quadrature nodes (default: 80).
-#'
-#' @return An S3 object of class "DPprior_error_bounds" with components:
-#'   \describe{
-#'     \item{J, a, b, cJ}{Input parameters}
-#'     \item{moment_errors}{List of moment error metrics from \code{a1_moment_error}}
-#'     \item{tv_bounds}{List with conditional and marginal TV bounds}
-#'     \item{recommendation}{"A1_sufficient" or "A2_recommended"}
-#'     \item{threshold_J}{Estimated J threshold for A1 adequacy (or NA)}
-#'   }
-#'
-#' @details
-#' The recommendation is based on:
-#' \itemize{
-#'   \item A1 sufficient if: mean relative error < 5\% AND variance relative error < 10\%
-#'   \item A2 recommended otherwise
-#' }
-#'
-#' This function provides:
-#' \enumerate{
-#'   \item Moment errors: Exact vs A1 approximation for mean and variance
-#'   \item TV bounds: Conditional bounds at multiple alpha values, plus marginal bound
-#'   \item Recommendation: Whether to use A1 or refine with A2
-#'   \item Threshold: Minimum J for A1 adequacy with current prior
-#' }
-#'
-#' @seealso \code{\link{a1_moment_error}}, \code{\link{compute_total_tv_bound}},
-#'   \code{\link{DPprior_a1}}, \code{\link{DPprior_a2_newton}}
-#'
-#' @references
-#' RN-05: Error Quantification & Guarantees for the A1 Large-J Approximation
-#'
-#' @examples
-#' # Check A1 adequacy for J=50, typical prior
-#' bounds <- DPprior_error_bounds(J = 50, a = 1.6, b = 1.2)
-#' print(bounds)
-#'
-#' # For larger J, A1 becomes more adequate
-#' bounds_200 <- DPprior_error_bounds(J = 200, a = 1.6, b = 1.2)
-#' print(bounds_200)
-#'
-#' @export
-DPprior_error_bounds <- function(J, a, b, cJ = log(J), M = .QUAD_NODES_DEFAULT) {
-  assert_valid_J(J)
-  assert_positive(a, "a")
-  assert_positive(b, "b")
+test_that("VIF = 1 gives Poisson baseline variance (mu_K - 1)", {
+  expect_equal(vif_to_variance(mu_K = 5, vif = 1), 4)
+  expect_equal(vif_to_variance(mu_K = 10, vif = 1), 9)
+})
 
-  # Validate cJ
-  if (!is.numeric(cJ) || length(cJ) != 1L || !is.finite(cJ) || cJ < 0) {
-    stop("cJ must be a finite non-negative scalar", call. = FALSE)
-  }
+test_that("VIF = 2 gives twice the Poisson baseline variance", {
+  expect_equal(vif_to_variance(mu_K = 5, vif = 2), 8)
+  expect_equal(vif_to_variance(mu_K = 10, vif = 2), 18)
+})
 
-  # Moment errors
-  moment_errors <- a1_moment_error(J, a, b, cJ = cJ, M = M)
+test_that("VIF < 1 errors", {
+  expect_error(vif_to_variance(mu_K = 5, vif = 0.5),
+               "vif must be >= 1")
+  expect_error(vif_to_variance(mu_K = 5, vif = 0),
+               "vif must be >= 1")
+})
 
-  # TV bounds at selected alpha values (around E[alpha] = a/b)
-  E_alpha <- a / b
-  alpha_multipliers <- c(0.1, 0.25, 0.5, 1, 2, 3, 5)
-  alpha_vals <- alpha_multipliers * E_alpha
-  # Filter to reasonable range
-  alpha_vals <- alpha_vals[alpha_vals > 0.01 & alpha_vals < 100]
-
-  cond_bounds <- data.frame(
-    alpha = alpha_vals,
-    poissonization_raw = sapply(alpha_vals, function(al)
-      compute_poissonization_bound(J, al, raw = TRUE)),
-    poissonization = sapply(alpha_vals, function(al)
-      compute_poissonization_bound(J, al, raw = FALSE)),
-    linearization = sapply(alpha_vals, function(al)
-      compute_linearization_bound(J, al, cJ)),
-    total = sapply(alpha_vals, function(al)
-      compute_total_tv_bound(J, al, cJ))
-  )
-
-  # Marginal bound
-  marginal_bound <- expected_tv_bound(J, a, b, cJ, M)
-
-  # Recommendation based on moment errors
-  a1_sufficient <- moment_errors$error_mean_rel < 5 &&
-    moment_errors$error_var_rel < 10
-  recommendation <- if (a1_sufficient) "A1_sufficient" else "A2_recommended"
-
-  # Threshold J estimation
-  threshold_J <- find_a1_threshold_J(a, b, target_error = 0.05)
-
-  result <- list(
-    J = J,
-    a = a,
-    b = b,
-    cJ = cJ,
-    moment_errors = moment_errors,
-    tv_bounds = list(
-      conditional = cond_bounds,
-      marginal = marginal_bound
-    ),
-    recommendation = recommendation,
-    threshold_J = threshold_J
-  )
-
-  class(result) <- "DPprior_error_bounds"
-  result
-}
+test_that("vif_to_variance errors on invalid mu_K", {
+  expect_error(vif_to_variance(mu_K = 0.5, vif = 2),
+               "mu_K must be > 1")
+})
 
 
 # =============================================================================
-# S3 Print Method
+# Test: confidence_to_vif
 # =============================================================================
 
-#' Print Method for DPprior_error_bounds Objects
-#'
-#' Displays a formatted summary of the A1 approximation error analysis.
-#'
-#' @param x An object of class "DPprior_error_bounds".
-#' @param ... Additional arguments (ignored).
-#'
-#' @return Invisibly returns the input object.
-#'
-#' @export
-print.DPprior_error_bounds <- function(x, ...) {
-  cat("DPprior A1 Approximation Error Analysis\n")
-  cat(strrep("=", 50), "\n\n")
+test_that("confidence levels map to decreasing VIF (low > medium > high)", {
+  vif_low <- confidence_to_vif("low")
+  vif_med <- confidence_to_vif("medium")
+  vif_high <- confidence_to_vif("high")
 
-  cat(sprintf("Sample size J = %d, c_J = %.4f\n", x$J, x$cJ))
-  cat(sprintf("Gamma prior: alpha ~ Gamma(%.4f, %.4f) [shape-rate]\n", x$a, x$b))
-  cat(sprintf("E[alpha] = %.4f, CV(alpha) = %.4f\n\n", x$a / x$b, 1 / sqrt(x$a)))
+  expect_true(vif_low > vif_med)
+  expect_true(vif_med > vif_high)
+})
 
-  cat("Moment Errors (A1 vs Exact):\n")
-  cat(strrep("-", 45), "\n")
-  cat(sprintf("  E[K_J]:   exact = %8.4f, A1 = %8.4f, error = %6.2f%%\n",
-              x$moment_errors$exact_mean, x$moment_errors$a1_mean,
-              x$moment_errors$error_mean_rel))
-  cat(sprintf("  Var(K_J): exact = %8.4f, A1 = %8.4f, error = %6.2f%%\n",
-              x$moment_errors$exact_var, x$moment_errors$a1_var,
-              x$moment_errors$error_var_rel))
+test_that("confidence_to_vif returns known values", {
+  expect_equal(confidence_to_vif("low"), 5.0)
+  expect_equal(confidence_to_vif("medium"), 2.5)
+  expect_equal(confidence_to_vif("high"), 1.5)
+})
 
-  cat("\nTV Bounds:\n")
-  cat(strrep("-", 45), "\n")
-  cat(sprintf("  Marginal E[d_TV] <= %.4f\n", x$tv_bounds$marginal))
-  cat(sprintf("  At E[alpha] = %.2f:\n", x$a / x$b))
+test_that("confidence_to_vif returns scalar numeric", {
+  result <- confidence_to_vif("medium")
+  expect_true(is.numeric(result))
+  expect_length(result, 1)
+})
 
-  # Find row closest to E[alpha]
-  E_alpha <- x$a / x$b
-  idx <- which.min(abs(x$tv_bounds$conditional$alpha - E_alpha))
-  if (length(idx) > 0) {
-    row <- x$tv_bounds$conditional[idx, ]
-    cat(sprintf("    Poissonization: %.4f (raw: %.4f)\n",
-                row$poissonization, row$poissonization_raw))
-    cat(sprintf("    Linearization:  %.4f\n", row$linearization))
-    cat(sprintf("    Total:          %.4f\n", row$total))
-  }
-
-  cat(sprintf("\nRecommendation: %s\n", x$recommendation))
-  if (!is.na(x$threshold_J)) {
-    cat(sprintf("  (A1 adequate for J >= %d with this prior)\n", x$threshold_J))
-  } else {
-    cat("  (A1 may not achieve < 5%% mean error for J <= 500 with this prior)\n")
-  }
-
-  invisible(x)
-}
+test_that("confidence_to_vif rejects invalid input", {
+  expect_error(confidence_to_vif("extreme"))
+})
 
 
 # =============================================================================
-# Summary Method
+# Test: cv_alpha_to_variance
 # =============================================================================
 
-#' Summary Method for DPprior_error_bounds Objects
-#'
-#' Provides a detailed summary including conditional bounds at multiple alpha values.
-#'
-#' @param object An object of class "DPprior_error_bounds".
-#' @param ... Additional arguments (ignored).
-#'
-#' @return Invisibly returns the input object.
-#'
-#' @export
-summary.DPprior_error_bounds <- function(object, ...) {
-  print(object)
+test_that("cv_alpha_to_variance follows correct algebra", {
+  mu_K <- 5
+  cv_alpha <- 0.5
+  m <- mu_K - 1
+  expected <- m + (cv_alpha * m)^2   # m(1 + cv^2 * m) = m + cv^2 * m^2
+  expect_equal(cv_alpha_to_variance(mu_K, cv_alpha), expected)
+})
 
-  cat("\nConditional TV Bounds at Various alpha:\n")
-  cat(strrep("-", 70), "\n")
-  cat(sprintf("%10s %12s %12s %12s %12s\n",
-              "alpha", "Pois(raw)", "Pois(C-S)", "Linear", "Total"))
-  cat(strrep("-", 70), "\n")
+test_that("larger cv_alpha gives larger variance", {
+  var1 <- cv_alpha_to_variance(mu_K = 5, cv_alpha = 0.5)
+  var2 <- cv_alpha_to_variance(mu_K = 5, cv_alpha = 1.0)
+  var3 <- cv_alpha_to_variance(mu_K = 5, cv_alpha = 2.0)
 
-  for (i in seq_len(nrow(object$tv_bounds$conditional))) {
-    row <- object$tv_bounds$conditional[i, ]
-    cat(sprintf("%10.3f %12.4f %12.4f %12.4f %12.4f\n",
-                row$alpha, row$poissonization_raw, row$poissonization,
-                row$linearization, row$total))
-  }
+  expect_true(var1 < var2)
+  expect_true(var2 < var3)
+})
 
-  invisible(object)
-}
+test_that("cv_alpha round-trip: recovered CV matches target", {
+  mu_K <- 5
+  cv_target <- 0.5
+
+  var_K <- cv_alpha_to_variance(mu_K, cv_target)
+  fit <- DPprior_a1(J = 50, mu_K = mu_K, var_K = var_K)
+  cv_recovered <- 1 / sqrt(fit$a)
+
+  expect_equal(cv_recovered, cv_target, tolerance = 1e-8)
+})
+
+test_that("cv_alpha_to_variance errors on invalid inputs", {
+  expect_error(cv_alpha_to_variance(mu_K = 0.5, cv_alpha = 1),
+               "mu_K must be > 1")
+  expect_error(cv_alpha_to_variance(mu_K = 5, cv_alpha = -0.5),
+               "cv_alpha must be positive")
+  expect_error(cv_alpha_to_variance(mu_K = 5, cv_alpha = 0),
+               "cv_alpha must be positive")
+})
 
 
 # =============================================================================
-# Utility Function: Error Landscape
+# Test: compare_a1_a2
 # =============================================================================
 
-#' Compute A1 Error Landscape
-#'
-#' Computes error metrics over a grid of (J, alpha) values for visualization.
-#'
-#' @param J_seq Numeric vector; sequence of J values.
-#' @param alpha_seq Numeric vector; sequence of alpha values.
-#' @param cJ_fun Function; scaling constant function (default: log).
-#'
-#' @return A data frame with columns: J, alpha, lambda_exact, lambda_approx,
-#'   pois_raw, pois_bound, lin_bound, total_tv.
-#'
-#' @details
-#' This function is useful for creating error landscape visualizations
-#' as shown in RN-05, Figures 1-3.
-#'
-#' @examples
-#' # Create error landscape
-#' landscape <- compute_error_landscape(
-#'   J_seq = c(25, 50, 100),
-#'   alpha_seq = c(0.5, 1, 2, 5)
-#' )
-#' print(landscape)
-#'
-#' @export
-compute_error_landscape <- function(J_seq, alpha_seq, cJ_fun = log) {
-  results <- expand.grid(J = J_seq, alpha = alpha_seq)
+test_that("compare_a1_a2 returns list with a1 and a2 components", {
+  result <- compare_a1_a2(J = 50, mu_K = 5, var_K = 8, verbose = FALSE)
 
-  results$lambda_exact <- mapply(function(J, alpha) {
-    mean_K_given_alpha(J, alpha) - 1
-  }, results$J, results$alpha)
+  expect_true(is.list(result))
+  expect_true("a1" %in% names(result))
+  expect_true("a2" %in% names(result))
+  expect_true("improvement_ratio" %in% names(result))
 
-  results$lambda_approx <- mapply(function(J, alpha) {
-    alpha * cJ_fun(J)
-  }, results$J, results$alpha)
+  # Both components have expected fields
+  expect_true("a" %in% names(result$a1))
+  expect_true("b" %in% names(result$a1))
+  expect_true("residual" %in% names(result$a1))
+  expect_true("a" %in% names(result$a2))
+  expect_true("b" %in% names(result$a2))
+  expect_true("residual" %in% names(result$a2))
+})
 
-  results$pois_raw <- mapply(function(J, alpha) {
-    compute_poissonization_bound(J, alpha, raw = TRUE)
-  }, results$J, results$alpha)
+test_that("A2 achieves smaller or equal residual than A1", {
+  result <- compare_a1_a2(J = 50, mu_K = 5, var_K = 8, verbose = FALSE)
+  expect_true(result$a2$residual <= result$a1$residual)
+  expect_true(result$improvement_ratio >= 1)
+})
 
-  results$pois_bound <- mapply(function(J, alpha) {
-    compute_poissonization_bound(J, alpha, raw = FALSE)
-  }, results$J, results$alpha)
+test_that("compare_a1_a2 works for various parameter combos", {
+  # Moderate case
 
-  results$lin_bound <- mapply(function(J, alpha) {
-    compute_linearization_bound(J, alpha, cJ_fun(J))
-  }, results$J, results$alpha)
+  result <- compare_a1_a2(J = 100, mu_K = 10, var_K = 20, verbose = FALSE)
+  expect_true(is.list(result))
+  expect_true(result$a1$a > 0)
+  expect_true(result$a2$a > 0)
+})
 
-  results$total_tv <- mapply(function(J, alpha) {
-    compute_total_tv_bound(J, alpha, cJ_fun(J))
-  }, results$J, results$alpha)
 
-  results
-}
+# =============================================================================
+# Test: S3 methods (print, summary, as.data.frame)
+# =============================================================================
+
+test_that("print.DPprior_fit runs without error", {
+  fit <- DPprior_a1(J = 50, mu_K = 5, var_K = 8)
+  expect_output(print(fit), "DPprior")
+  expect_output(print(fit), "Method: A1")
+})
+
+test_that("summary.DPprior_fit returns correct structure", {
+  fit <- DPprior_a1(J = 50, mu_K = 5, var_K = 8)
+  s <- summary(fit, print_output = FALSE)
+
+  expect_true(is.list(s))
+  expect_equal(s$method, "A1")
+  expect_equal(s$gamma_prior$a, fit$a)
+  expect_equal(s$gamma_prior$b, fit$b)
+  # Module 17 summary uses E_alpha and CV_alpha field names
+  expect_equal(s$alpha_summary$E_alpha, fit$a / fit$b)
+  expect_equal(s$alpha_summary$CV_alpha, 1 / sqrt(fit$a))
+  expect_true(s$converged)
+  expect_equal(s$iterations, 0L)
+})
+
+test_that("as.data.frame.DPprior_fit returns one-row data.frame", {
+  fit <- DPprior_a1(J = 50, mu_K = 5, var_K = 8)
+  df <- as.data.frame(fit)
+
+  expect_s3_class(df, "data.frame")
+  expect_equal(nrow(df), 1)
+  expect_equal(df$method, "A1")
+  expect_equal(df$a, fit$a)
+  expect_equal(df$b, fit$b)
+  expect_equal(df$J, 50)
+  expect_equal(df$mu_K, 5)
+  expect_equal(df$var_K, 8)
+})
+
+
+# =============================================================================
+# Test: verify_a1_roundtrip (internal verification function)
+# =============================================================================
+
+test_that("verify_a1_roundtrip passes for feasible cases", {
+  fit <- DPprior_a1(J = 50, mu_K = 5, var_K = 8)
+  expect_true(verify_a1_roundtrip(fit, verbose = FALSE))
+
+  fit2 <- DPprior_a1(J = 100, mu_K = 10, var_K = 20)
+  expect_true(verify_a1_roundtrip(fit2, verbose = FALSE))
+})
+
+test_that("verify_a1_roundtrip passes for projected cases", {
+  fit <- suppressWarnings(DPprior_a1(J = 50, mu_K = 5, var_K = 3))
+  # Round-trip should still pass using var_K_used (projected value)
+  expect_true(verify_a1_roundtrip(fit, verbose = FALSE))
+})

@@ -36,7 +36,10 @@ Logical; TRUE if all verifications pass.
 Verifies that the marginal PMF satisfies basic probability properties.
 }
 \examples{
+\dontrun{
 logS <- compute_log_stirling(50)
 verify_pmf_marginal_properties(50, 1.5, 0.5, logS)
 
 }
+}
+\keyword{internal}

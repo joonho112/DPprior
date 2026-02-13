@@ -42,7 +42,9 @@ For rigorous verification, use adaptive integration (e.g., in Python with
 scipy.integrate.quad) which provides independent ground truth.
 }
 \examples{
+\dontrun{
 verify_score_expectation(a = 2.0, b = 1.0, verbose = TRUE)
 
+}
 }
 \keyword{internal}

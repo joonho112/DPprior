@@ -12,3 +12,4 @@ verify_visualization(verbose = TRUE)
 \description{
 Verify Visualization Module
 }
+\keyword{internal}

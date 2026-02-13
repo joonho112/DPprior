@@ -38,7 +38,8 @@ score_b(alpha_vals, a = 2.0, b = 1.0)
 
 }
 \references{
-RN-04, Section 4.2: Jacobian via score identities
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+\emph{arXiv preprint} arXiv:2602.06301.
 }
 \seealso{
 \code{\link{score_a}} for the score with respect to a

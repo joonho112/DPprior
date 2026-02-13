@@ -7,7 +7,9 @@ template:
 home:
   title: 'DPprior: Prior Elicitation for DP Models'
   description: |
-    Principled prior elicitation on the concentration parameter α in Dirichlet Process mixture models.
+    Principled prior elicitation on the concentration parameter alpha in
+    Dirichlet Process mixture models via Design-Conditional Elicitation (DCE)
+    and Two-Stage Moment Matching (TSMM).
 authors:
   JoonHo Lee:
     href: https://github.com/joonho112
@@ -51,6 +53,25 @@ navbar:
         href: articles/theory-weights.html
       - text: API Reference
         href: articles/api-reference.html
+articles:
+- title: Applied Track
+  navbar: ~
+  contents:
+  - introduction
+  - quick-start
+  - applied-guide
+  - dual-anchor
+  - diagnostics
+  - case-studies
+- title: Methodological Track
+  navbar: ~
+  contents:
+  - theory-overview
+  - theory-stirling
+  - theory-approximations
+  - theory-newton
+  - theory-weights
+  - api-reference
 reference:
 - title: Core Elicitation
   desc: Main user-facing functions for prior elicitation
@@ -67,10 +88,8 @@ reference:
   desc: Computation of unsigned Stirling numbers of the first kind
   contents:
   - compute_log_stirling
-  - get_log_stirling
-  - get_stirling_row
 - title: K Distribution (Conditional)
-  desc: Antoniak distribution P(K | α)
+  desc: Antoniak distribution P(K | alpha)
   contents:
   - pmf_K_given_alpha
   - log_pmf_K_given_alpha
@@ -80,21 +99,19 @@ reference:
   - mode_K_given_alpha
   - quantile_K_given_alpha
   - moments_K_given_alpha
-  - summary_K_given_alpha
   - cv_K_given_alpha
   - dispersion_K_given_alpha
 - title: K Distribution (Marginal)
-  desc: Marginal distribution of K under Gamma prior on α
+  desc: Marginal distribution of K under Gamma prior on alpha
   contents:
   - pmf_K_marginal
-  - log_pmf_K_marginal
   - cdf_K_marginal
   - mode_K_marginal
   - quantile_K_marginal
   - summary_K_marginal
   - K_moments
   - exact_K_moments
-- title: Weight Distribution (w₁)
+- title: Weight Distribution (w1)
   desc: Distribution of the largest stick-breaking weight
   contents:
   - mean_w1
@@ -106,15 +123,13 @@ reference:
   - rw1
   - summary_w1
   - w1_grid
-- title: Co-clustering Probability (ρ)
+- title: Co-clustering Probability (rho)
   desc: Pairwise co-clustering probability functions
   contents:
   - mean_rho
   - var_rho
   - mean_rho_given_alpha
   - var_rho_given_alpha
-  - mean_rho_sq
-  - mean_rho_sq_given_alpha
   - cv_rho
   - rrho
   - summary_rho
@@ -126,10 +141,7 @@ reference:
   - DPprior_error_bounds
   - check_dominance_risk
   - dual_anchor_diagnostics
-  - compare_diagnostics
   - compare_a1_a2
-  - compare_rho_w1
-  - compare_to_negbin
 - title: Visualization
   desc: Plotting functions
   contents:
@@ -145,7 +157,7 @@ reference:
   - DPprior_colors
   - theme_DPprior
 - title: S3 Methods
-  desc: Print and summary methods
+  desc: Print, summary, and coercion methods
   contents:
   - print.DPprior_fit
   - summary.DPprior_fit
@@ -157,53 +169,41 @@ reference:
   - summary.DPprior_error_bounds
   - print.w1_summary
   - print.rho_summary
-- title: Utilities
-  desc: Helper and conversion functions
+- title: Numerical Utilities
+  desc: Conversion, quadrature, and numerical helper functions
   contents:
   - vif_to_variance
-  - vif_to_variance_fit
   - confidence_to_vif
-  - confidence_to_vif_fit
   - cv_alpha_to_variance
   - integrate_gamma
   - build_gamma_quadrature
   - gauss_laguerre_nodes
-  - log_rising_factorial
   - logsumexp
   - logsumexp_vec
-  - softmax
-- title: Internal Computation
+  - score_a
+  - score_b
+- title: Computation
   desc: Lower-level computational functions
   contents:
-  - compute_K_diagnostics
   - compute_weight_diagnostics
-  - compute_alpha_diagnostics
-  - compute_coclustering_diagnostics
   - compute_error_landscape
   - compute_tradeoff_curve
-  - compute_linearization_bound
-  - compute_poissonization_bound
-  - compute_total_tv_bound
   - compute_scaling_constant
-  - compute_sum_p_squared
-  - expected_tv_bound
-- title: Validation & Verification
-  desc: Internal testing and validation functions
-  contents:
-  - starts_with("verify_")
-  - starts_with("validate_")
-- title: Other Internal
-  desc: Other internal helper functions
-  contents:
   - a1_moment_error
-  - construct_target_pmf
   - discretize_chisq
   - kl_divergence_K
   - kl_divergence_pmf
   - moments_with_jacobian
-  - summary_pmf_K_given_alpha
+- title: Validation & Verification
+  desc: Functions for verifying mathematical properties
+  contents:
+  - validate_stirling
+  - verify_jacobian
+  - verify_underdispersion
+- title: internal
+  contents:
+  - matches(".")
 footer:
   structure:
     left: developed_by
     right: built_with
-

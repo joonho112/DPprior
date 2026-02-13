@@ -23,3 +23,4 @@ Logical; \code{TRUE} if verification passes.
 \description{
 Verifies that the CDF is non-decreasing and ends at 1.
 }
+\keyword{internal}

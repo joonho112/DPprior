@@ -6,7 +6,7 @@
 # on the Dirichlet process concentration parameter by minimizing KL divergence
 # between a target distribution and the induced marginal PMF of K_J.
 #
-# Theory Background (RN-01, RN-04):
+# Theory Background (Lee, 2026, Sections 2--3 and Section 3.2):
 # ---------------------------------
 # Given a target PMF p*(k) for K_J, the A2-KL algorithm finds (a*, b*) such that
 # the induced marginal distribution p_{a,b}(K_J = k) minimizes:
@@ -27,7 +27,7 @@
 # Author: JoonHo Lee
 # Date: December 2025
 # Part of: DPprior R Package
-# Reference: RN-01 Section 6.5, RN-04 Section 4
+# Reference: Lee (2026), Sections 2--3 and Section 3.2
 # Dependencies: Modules 00 (constants), 02 (quadrature), 04 (conditional PMF),
 #               05 (marginal moments), 06 (marginal PMF), 10 (A1), 11 (A2-MN)
 # =============================================================================
@@ -327,6 +327,7 @@ discretize_chisq <- function(J, df, scale = 1) {
 #' \deqn{\text{scale} = \sigma^2_K / (2\mu_K), \quad \text{df} = 2\mu_K^2 / \sigma^2_K}
 #'
 #' @examples
+#' \dontrun{
 #' # Direct PMF
 #' result <- construct_target_pmf(50, rep(1, 50))  # Uniform on 1:50
 #'
@@ -335,9 +336,10 @@ discretize_chisq <- function(J, df, scale = 1) {
 #' result$mu_K  # 5
 #' result$df    # 6.25
 #'
+#' }
 #' @seealso \code{\link{discretize_chisq}}, \code{\link{DPprior_a2_kl}}
 #'
-#' @export
+#' @keywords internal
 construct_target_pmf <- function(J, target) {
   J <- as.integer(J)
   assert_valid_J(J)
@@ -485,6 +487,10 @@ construct_target_pmf <- function(J, target) {
 #'         skewed, expert-elicited)
 #' }
 #'
+#' @references
+#' Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+#' \emph{arXiv preprint} arXiv:2602.06301.
+#'
 #' @seealso
 #' \code{\link{DPprior_a2_newton}} for exact moment matching,
 #' \code{\link{DPprior_a1}} for closed-form initialization,
@@ -507,6 +513,8 @@ construct_target_pmf <- function(J, target) {
 #'                        method = "chisq")
 #' cat(sprintf("A2-MN: a=%.4f, b=%.4f\n", a2_mn$a, a2_mn$b))
 #' cat(sprintf("A2-KL: a=%.4f, b=%.4f, KL=%.4e\n", a2_kl$a, a2_kl$b, a2_kl$fit$kl))
+#'
+#' @family elicitation
 #'
 #' @export
 DPprior_a2_kl <- function(J, target,
@@ -701,9 +709,9 @@ DPprior_a2_kl <- function(J, target,
     kl <- tryCatch({
       induced <- .a2_kl_induced_pmf(J, a_curr, b_curr, logS, M)
       .a2_kl_compute_kl(target_pmf, induced, eps = eps)
-    }, error = function(e) 1e10)
+    }, error = function(e) .PENALTY_INF)
 
-    if (!is.finite(kl)) kl <- 1e10
+    if (!is.finite(kl)) kl <- .PENALTY_INF
 
     # Record trace
     trace_env$n_eval <- trace_env$n_eval + 1L
@@ -903,9 +911,11 @@ DPprior_a2_kl <- function(J, target,
 #' @return Logical; TRUE if all tests pass.
 #'
 #' @examples
+#' \dontrun{
 #' verify_kl_divergence()
 #'
-#' @export
+#' }
+#' @keywords internal
 verify_kl_divergence <- function(verbose = TRUE) {
   all_pass <- TRUE
 
@@ -979,9 +989,11 @@ verify_kl_divergence <- function(verbose = TRUE) {
 #' @return Logical; TRUE if all tests pass.
 #'
 #' @examples
+#' \dontrun{
 #' verify_a2_kl()
 #'
-#' @export
+#' }
+#' @keywords internal
 verify_a2_kl <- function(verbose = TRUE) {
   all_pass <- TRUE
 
@@ -1087,9 +1099,11 @@ verify_a2_kl <- function(verbose = TRUE) {
 #' @return Logical; TRUE if all tests pass.
 #'
 #' @examples
+#' \dontrun{
 #' verify_a2_kl_all()
 #'
-#' @export
+#' }
+#' @keywords internal
 verify_a2_kl_all <- function(verbose = TRUE) {
   if (isTRUE(verbose)) {
     cat("=", rep("=", 69), "\n", sep = "")

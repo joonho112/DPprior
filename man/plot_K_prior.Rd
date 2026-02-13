@@ -48,3 +48,18 @@ plot_K_prior(fit)
 plot_K_prior(J = 50, a = 1.6, b = 1.2)
 
 }
+\seealso{
+\code{\link{DPprior_fit}} for fitting, \code{\link{plot.DPprior_fit}} for S3 plot method
+
+Other visualization: 
+\code{\link{DPprior_colors}()},
+\code{\link{plot_alpha_prior}()},
+\code{\link{plot_dual_comparison}()},
+\code{\link{plot_dual_dashboard}()},
+\code{\link{plot_prior_dashboard}()},
+\code{\link{plot_tradeoff_curve}()},
+\code{\link{plot_tradeoff_dashboard}()},
+\code{\link{plot_w1_prior}()},
+\code{\link{theme_DPprior}()}
+}
+\concept{visualization}

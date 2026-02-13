@@ -6,7 +6,7 @@
 # calibrating Gamma hyperpriors on the Dirichlet process concentration
 # parameter alpha to match target moments of K_J.
 #
-# Theory Background (RN-04 Section 4):
+# Theory Background (Lee, 2026, Section 3.2):
 # ------------------------------------
 # Given target moments (mu_K, var_K), the A2-MN algorithm finds (a*, b*)
 # such that the induced marginal distribution of K_J under alpha ~ Gamma(a*, b*)
@@ -29,7 +29,7 @@
 # Author: JoonHo Lee
 # Date: December 2025
 # Part of: DPprior R Package
-# Reference: RN-04 Section 4.3
+# Reference: Lee (2026), Section 3.2
 # Dependencies: Modules 00, 02, 03, 05, 07, 10
 # =============================================================================
 
@@ -80,9 +80,10 @@
 #'   }
 #'
 #' @details
+#' This implements TSMM Stage 2 (A2-MN) from Lee (2026).
 #' The A2-MN algorithm uses Newton's method in log-scale to ensure positivity
 #' of the Gamma parameters. The Jacobian is computed exactly using score
-#' function identities (RN-04 Corollary 1), avoiding finite difference
+#' function identities (Lee, 2026, Section 3.2, Corollary 1), avoiding finite difference
 #' approximations.
 #'
 #' \strong{Algorithm Steps:}
@@ -130,8 +131,8 @@
 #' \code{\link{exact_K_moments}} for moment verification
 #'
 #' @references
-#' Lee, J. (2025). RN-04: A2 Small-J Correction Note. \emph{Research Notes
-#'   for DPprior Package Development}.
+#' Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+#' \emph{arXiv preprint} arXiv:2602.06301.
 #'
 #' @examples
 #' # Basic usage
@@ -152,6 +153,8 @@
 #'
 #' # View iteration trace (includes step size and Jacobian determinant)
 #' head(fit$trace)
+#'
+#' @family elicitation
 #'
 #' @export
 DPprior_a2_newton <- function(J, mu_K, var_K,
@@ -296,9 +299,9 @@ DPprior_a2_newton <- function(J, mu_K, var_K,
 
     # Newton step
     delta <- NULL
-    if (!is.finite(det_Jlog) || abs(det_Jlog) < 1e-12) {
+    if (!is.finite(det_Jlog) || abs(det_Jlog) < .TOL_SINGULAR_JACOBIAN) {
       # Singular Jacobian: use gradient descent fallback
-      delta <- -0.1 * F_val
+      delta <- -0.1 * crossprod(J_log, F_val)
       if (isTRUE(verbose)) {
         cat(sprintf("  Warning: Near-singular Jacobian (det=%.2e), using gradient descent\n",
                     det_Jlog))
@@ -335,7 +338,24 @@ DPprior_a2_newton <- function(J, mu_K, var_K,
         }
         step_size <- step_size * 0.5
       }
-      delta <- step_size * delta
+
+      # Guard: if no improvement was found after all halvings, prevent bad step
+      old_norm <- residual
+      eta_trial <- eta + step_size * delta
+      a_trial <- exp(eta_trial[1L])
+      b_trial <- exp(eta_trial[2L])
+      if (is.finite(a_trial) && is.finite(b_trial) && a_trial > 0 && b_trial > 0) {
+        mj_trial <- exact_K_moments(J, a_trial, b_trial, M)
+        F_trial <- c(mj_trial$mean - mu_K, mj_trial$var - var_K)
+        new_norm <- sqrt(sum(F_trial^2))
+      } else {
+        new_norm <- old_norm
+      }
+      if (new_norm >= old_norm) {
+        delta <- rep(0, length(delta))
+      } else {
+        delta <- step_size * delta
+      }
     }
 
     # Store step size in trace
@@ -394,7 +414,7 @@ DPprior_a2_newton <- function(J, mu_K, var_K,
       a_opt <- params[1L]
       b_opt <- params[2L]
       if (a_opt <= 0 || b_opt <= 0) {
-        return(1e10)
+        return(.PENALTY_INF)
       }
       mom <- exact_K_moments(J, a_opt, b_opt, M)
       (mom$mean - mu_K)^2 + (mom$var - var_K)^2
@@ -489,42 +509,6 @@ DPprior_a2_newton <- function(J, mu_K, var_K,
 
 
 # =============================================================================
-# Enhanced Print Method for A2-MN Results
-# =============================================================================
-
-#' @export
-print.DPprior_fit <- function(x, ...) {
-  cat("DPprior Elicitation Result\n")
-  cat(strrep("=", 50), "\n")
-  cat(sprintf("Method: %s\n", x$method))
-  cat(sprintf("Sample size J: %d\n", x$J))
-
-  cat("\nTarget:\n")
-  cat(sprintf("  E[K_J]   = %.6f\n", x$target$mu_K))
-  cat(sprintf("  Var(K_J) = %.6f\n", x$target$var_K))
-
-  cat("\nOptimal Gamma(a, b) hyperprior:\n")
-  cat(sprintf("  a (shape) = %.10f\n", x$a))
-  cat(sprintf("  b (rate)  = %.10f\n", x$b))
-
-  cat("\nConvergence:\n")
-  cat(sprintf("  Status:      %s\n", x$status))
-  cat(sprintf("  Converged:   %s\n", x$converged))
-  cat(sprintf("  Iterations:  %d\n", x$iterations))
-  cat(sprintf("  Termination: %s\n", x$termination))
-
-  if (!is.null(x$fit)) {
-    cat("\nAchieved fit:\n")
-    cat(sprintf("  E[K_J]   = %.10f\n", x$fit$mu_K))
-    cat(sprintf("  Var(K_J) = %.10f\n", x$fit$var_K))
-    cat(sprintf("  Residual = %.2e\n", x$fit$residual))
-  }
-
-  invisible(x)
-}
-
-
-# =============================================================================
 # Verification Functions
 # =============================================================================
 
@@ -541,10 +525,11 @@ print.DPprior_fit <- function(x, ...) {
 #' @return Logical; TRUE if verification passes.
 #'
 #' @examples
+#' \dontrun{
 #' verify_a2_moment_matching(J = 50, mu_K = 5, var_K = 8)
 #'
+#' }
 #' @keywords internal
-#' @export
 verify_a2_moment_matching <- function(J, mu_K, var_K, tol = 1e-6, verbose = TRUE) {
   fit <- DPprior_a2_newton(J, mu_K, var_K, verbose = FALSE)
 
@@ -582,7 +567,6 @@ verify_a2_moment_matching <- function(J, mu_K, var_K, tol = 1e-6, verbose = TRUE
 #' @examples
 #' compare_a1_a2(J = 50, mu_K = 5, var_K = 8)
 #'
-#' @keywords internal
 #' @export
 compare_a1_a2 <- function(J, mu_K, var_K, verbose = TRUE) {
   # A1 solution
@@ -628,9 +612,11 @@ compare_a1_a2 <- function(J, mu_K, var_K, verbose = TRUE) {
 #' @return Logical; TRUE if all tests pass.
 #'
 #' @examples
+#' \dontrun{
 #' verify_a2_all()
 #'
-#' @export
+#' }
+#' @keywords internal
 verify_a2_all <- function(verbose = TRUE) {
   if (isTRUE(verbose)) {
     cat(strrep("=", 70), "\n")

@@ -18,9 +18,12 @@ A data frame with diagnostic metrics for each fit.
 Creates a comparison table of diagnostic metrics for multiple DPprior fits.
 }
 \examples{
+\dontrun{
 fit_K <- DPprior_a2_newton(J = 50, mu_K = 5, var_K = 8)
 fit_dual <- DPprior_dual(fit_K,
                          w1_target = list(prob = list(threshold = 0.5, value = 0.3)))
 compare_diagnostics(K_only = fit_K, Dual_anchor = fit_dual)
 
 }
+}
+\keyword{internal}

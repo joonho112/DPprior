@@ -16,6 +16,9 @@ Logical; TRUE if all tests pass.
 Runs verification tests on the A2-KL optimization algorithm.
 }
 \examples{
+\dontrun{
 verify_a2_kl()
 
 }
+}
+\keyword{internal}

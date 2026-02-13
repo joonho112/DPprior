@@ -19,3 +19,15 @@ Data frame comparing metrics.
 \description{
 Dual-Anchor Diagnostic Comparison
 }
+\references{
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+\emph{arXiv preprint} arXiv:2602.06301.
+}
+\seealso{
+Other diagnostics: 
+\code{\link{DPprior_diagnostics}()},
+\code{\link{DPprior_error_bounds}()},
+\code{\link{compute_error_landscape}()},
+\code{\link{compute_weight_diagnostics}()}
+}
+\concept{diagnostics}

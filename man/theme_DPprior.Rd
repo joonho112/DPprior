@@ -17,3 +17,16 @@ A ggplot2 theme object.
 \description{
 Publication-Quality Theme for DPprior Plots
 }
+\seealso{
+Other visualization: 
+\code{\link{DPprior_colors}()},
+\code{\link{plot_K_prior}()},
+\code{\link{plot_alpha_prior}()},
+\code{\link{plot_dual_comparison}()},
+\code{\link{plot_dual_dashboard}()},
+\code{\link{plot_prior_dashboard}()},
+\code{\link{plot_tradeoff_curve}()},
+\code{\link{plot_tradeoff_dashboard}()},
+\code{\link{plot_w1_prior}()}
+}
+\concept{visualization}

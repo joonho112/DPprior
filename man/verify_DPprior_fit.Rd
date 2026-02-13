@@ -16,6 +16,9 @@ Invisibly returns TRUE if all tests pass.
 Runs comprehensive verification tests for the DPprior_fit module.
 }
 \examples{
+\dontrun{
 verify_DPprior_fit()
 
 }
+}
+\keyword{internal}

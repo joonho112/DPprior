@@ -37,13 +37,29 @@ direct computation would overflow.
 logS <- compute_log_stirling(50)
 log_pmf <- log_pmf_K_given_alpha(50, 2.0, logS)
 
-# Convert to probabilities
-pmf <- softmax(log_pmf)
+# Convert to probabilities (numerically stable softmax)
+pmf <- exp(log_pmf - max(log_pmf))
+pmf <- pmf / sum(pmf)
 sum(pmf)  # Should be 1
+
+# Or use pmf_K_given_alpha() directly
+pmf2 <- pmf_K_given_alpha(50, 2.0, logS)
+sum(pmf2)  # Should be 1
 
 }
 \seealso{
 \code{\link{pmf_K_given_alpha}} for normalized PMF,
 \code{\link{compute_log_stirling}} for Stirling computation
+
+Other conditional_K: 
+\code{\link{cdf_K_given_alpha}()},
+\code{\link{cv_K_given_alpha}()},
+\code{\link{dispersion_K_given_alpha}()},
+\code{\link{mean_K_given_alpha}()},
+\code{\link{mode_K_given_alpha}()},
+\code{\link{moments_K_given_alpha}()},
+\code{\link{pmf_K_given_alpha}()},
+\code{\link{quantile_K_given_alpha}()},
+\code{\link{var_K_given_alpha}()}
 }
-\keyword{internal}
+\concept{conditional_K}

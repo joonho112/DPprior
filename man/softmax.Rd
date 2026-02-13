@@ -31,6 +31,7 @@ split uniformly across all \code{Inf} entries.
 }
 }
 \examples{
+\dontrun{
 softmax(c(1, 2, 3))
 sum(softmax(c(1, 2, 3)))
 
@@ -41,3 +42,5 @@ softmax(c(1000, 1001, 1002))
 softmax(c(1, Inf, Inf))
 
 }
+}
+\keyword{internal}

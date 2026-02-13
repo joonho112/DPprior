@@ -21,3 +21,4 @@ Logical; TRUE if validation passes.
 \description{
 Validates polygamma formulas against direct summation.
 }
+\keyword{internal}

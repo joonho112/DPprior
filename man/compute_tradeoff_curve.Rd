@@ -55,3 +55,7 @@ plot(curve$lambda, curve$w1_prob_gt_50, type = "b",
 abline(h = 0.25, lty = 2, col = "red")  # target
 
 }
+\references{
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+\emph{arXiv preprint} arXiv:2602.06301.
+}

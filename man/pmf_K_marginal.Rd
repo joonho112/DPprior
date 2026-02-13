@@ -79,4 +79,13 @@ to Bayesian Nonparametric Problems. \emph{The Annals of Statistics},
 \code{\link{exact_K_moments}} for marginal moments,
 \code{\link{cdf_K_marginal}}, \code{\link{quantile_K_marginal}},
 \code{\link{mode_K_marginal}}, \code{\link{summary_K_marginal}}
+
+Other marginal_K: 
+\code{\link{K_moments}()},
+\code{\link{cdf_K_marginal}()},
+\code{\link{exact_K_moments}()},
+\code{\link{mode_K_marginal}()},
+\code{\link{quantile_K_marginal}()},
+\code{\link{summary_K_marginal}()}
 }
+\concept{marginal_K}

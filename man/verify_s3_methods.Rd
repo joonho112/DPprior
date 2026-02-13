@@ -16,6 +16,9 @@ Invisibly returns TRUE if all tests pass.
 Runs comprehensive verification tests for the S3 methods module.
 }
 \examples{
+\dontrun{
 verify_s3_methods()
 
 }
+}
+\keyword{internal}

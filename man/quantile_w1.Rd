@@ -40,8 +40,18 @@ quantile_w1(0.9, a = 2, b = 1)  # ~0.732
 
 }
 \references{
-Lee, J. (2025). RN-06: Dual-Anchor Design II, Corollary 2.
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+\emph{arXiv preprint} arXiv:2602.06301.
 }
 \seealso{
 \code{\link{cdf_w1}}, \code{\link{summary_w1}}
+
+Other weights_w1: 
+\code{\link{cdf_w1}()},
+\code{\link{density_w1}()},
+\code{\link{mean_w1}()},
+\code{\link{prob_w1_exceeds}()},
+\code{\link{summary_w1}()},
+\code{\link{var_w1}()}
 }
+\concept{weights_w1}

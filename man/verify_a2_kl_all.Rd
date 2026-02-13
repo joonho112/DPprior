@@ -16,6 +16,9 @@ Logical; TRUE if all tests pass.
 Comprehensive verification suite for the A2-KL module.
 }
 \examples{
+\dontrun{
 verify_a2_kl_all()
 
 }
+}
+\keyword{internal}

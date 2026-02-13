@@ -11,13 +11,13 @@
 # Author: JoonHo Lee
 # Date: December 2025
 # Part of: DPprior R Package
-# Reference: RN-03 (DORO 2.0 A1 Closed-Form Mapping)
+# Reference: Lee (2026) arXiv:2602.06301, Section 3.1 (TSMM Stage 1)
 #
 # Revision Notes:
-# - Added epsilon validation (from GPT review)
-# - Added converged/iterations fields for A2 compatibility (from GPT review)
-# - Fixed digamma scaling to use numeric floor (from GPT review)
-# - Strengthened VIF validation to require >= 1 (from GPT review)
+# - Added epsilon validation for robustness
+# - Added converged/iterations fields for A2 compatibility
+# - Fixed digamma scaling to use numeric floor
+# - Strengthened VIF validation to require >= 1
 # =============================================================================
 
 
@@ -120,7 +120,7 @@ compute_scaling_constant <- function(J, scaling = c("log", "harmonic", "digamma"
 #'   }
 #'
 #' @details
-#' ## Theory (RN-03)
+#' ## Theory (TSMM Stage 1)
 #'
 #' The A1 method uses a shifted Negative Binomial approximation:
 #' \deqn{K_J - 1 \mid \alpha \approx \text{Poisson}(\alpha \cdot c_J)}
@@ -141,6 +141,10 @@ compute_scaling_constant <- function(J, scaling = c("log", "harmonic", "digamma"
 #' The NegBin model requires overdispersion: \eqn{\sigma^2_K > \mu_K - 1}.
 #' High-confidence specifications (low variance) may violate this constraint
 #' under the A1 proxy, even though they may be feasible under the exact DP.
+#'
+#' @references
+#' Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+#' \emph{arXiv preprint} arXiv:2602.06301.
 #'
 #' @seealso
 #' \code{\link{vif_to_variance}} for VIF conversion,
@@ -165,6 +169,8 @@ compute_scaling_constant <- function(J, scaling = c("log", "harmonic", "digamma"
 #' # Compare scaling methods
 #' fit_log <- DPprior_a1(50, 5, 8, scaling = "log")
 #' fit_harm <- DPprior_a1(50, 5, 8, scaling = "harmonic")
+#'
+#' @family elicitation
 #'
 #' @export
 DPprior_a1 <- function(J, mu_K, var_K,
@@ -191,7 +197,7 @@ DPprior_a1 <- function(J, mu_K, var_K,
       var_K <= 0) {
     stop("var_K must be a positive finite numeric scalar", call. = FALSE)
   }
-  # Epsilon validation (added from GPT review)
+  # Epsilon validation
   if (!is.numeric(epsilon) || length(epsilon) != 1L ||
       !is.finite(epsilon) || epsilon <= 0) {
     stop("epsilon must be a finite numeric scalar > 0", call. = FALSE)
@@ -250,8 +256,8 @@ DPprior_a1 <- function(J, mu_K, var_K,
       scaling = scaling,
       cJ = cJ,
       var_K_used = var_K_used,
-      converged = TRUE,      # A2 compatibility (added from GPT review)
-      iterations = 0L,       # A2 compatibility (added from GPT review)
+      converged = TRUE,      # A2 compatibility
+      iterations = 0L,       # A2 compatibility
       fit = NULL,
       diagnostics = NULL,
       trace = NULL
@@ -305,7 +311,7 @@ vif_to_variance <- function(mu_K, vif) {
   if (any(mu_K <= 1)) {
     stop("mu_K must be > 1", call. = FALSE)
   }
-  # VIF >= 1 required for A1 feasibility (strengthened from GPT review)
+  # VIF >= 1 required for A1 feasibility
   if (any(vif < 1)) {
     stop("vif must be >= 1 (values < 1 imply infeasible underdispersion)",
          call. = FALSE)
@@ -348,7 +354,7 @@ vif_to_variance <- function(mu_K, vif) {
 #'
 #' @export
 confidence_to_vif <- function(confidence = c("low", "medium", "high")) {
-  # Use match.arg for standard R idiom (from GPT review)
+  # Use match.arg for standard R idiom
   confidence <- match.arg(confidence)
 
   switch(
@@ -407,96 +413,7 @@ cv_alpha_to_variance <- function(mu_K, cv_alpha) {
 # =============================================================================
 # S3 Methods for DPprior_fit
 # =============================================================================
-
-#' Print Method for DPprior_fit Objects
-#'
-#' @param x A \code{DPprior_fit} object.
-#' @param ... Additional arguments (ignored).
-#'
-#' @return Invisibly returns the input object.
-#'
-#' @examples
-#' fit <- DPprior_a1(J = 50, mu_K = 5, var_K = 8)
-#' print(fit)
-#'
-#' @export
-print.DPprior_fit <- function(x, ...) {
-  cat("DPprior Elicitation Result\n")
-  cat(paste0(rep("-", 40), collapse = ""), "\n")
-  cat(sprintf("Method: %s\n", x$method))
-  cat(sprintf("Status: %s\n", x$status))
-  cat("\n")
-
-  cat("Gamma Prior Parameters:\n")
-  cat(sprintf("  a (shape) = %.6f\n", x$a))
-  cat(sprintf("  b (rate)  = %.6f\n", x$b))
-  cat("\n")
-
-  cat("Implied Prior on alpha:\n")
-  cat(sprintf("  E[alpha]   = %.6f\n", x$a / x$b))
-  cat(sprintf("  Var(alpha) = %.6f\n", x$a / x$b^2))
-  cat(sprintf("  CV(alpha)  = %.6f\n", 1 / sqrt(x$a)))
-  cat("\n")
-
-  cat("Target Specification:\n")
-  cat(sprintf("  J = %d\n", x$J))
-  cat(sprintf("  mu_K (target)  = %.4f\n", x$target$mu_K))
-  cat(sprintf("  var_K (target) = %.4f\n", x$target$var_K))
-  if (!is.null(x$var_K_used) && x$var_K_used != x$target$var_K) {
-    cat(sprintf("  var_K (used)   = %.6f\n", x$var_K_used))
-  }
-  cat("\n")
-
-  if (!is.null(x$scaling)) {
-    cat("Settings:\n")
-    cat(sprintf("  Scaling: %s (cJ = %.6f)\n", x$scaling, x$cJ))
-  }
-
-  invisible(x)
-}
-
-
-#' Summary Method for DPprior_fit Objects
-#'
-#' @param object A \code{DPprior_fit} object.
-#' @param ... Additional arguments (ignored).
-#'
-#' @return A list with summary statistics.
-#'
-#' @examples
-#' fit <- DPprior_a1(J = 50, mu_K = 5, var_K = 8)
-#' summary(fit)
-#'
-#' @export
-summary.DPprior_fit <- function(object, ...) {
-  list(
-    method = object$method,
-    status = object$status,
-    gamma_prior = list(
-      a = object$a,
-      b = object$b
-    ),
-    alpha_summary = list(
-      mean = object$a / object$b,
-      var = object$a / object$b^2,
-      sd = sqrt(object$a) / object$b,
-      cv = 1 / sqrt(object$a)
-    ),
-    target = list(
-      J = object$J,
-      mu_K = object$target$mu_K,
-      var_K = object$target$var_K
-    ),
-    scaling = if (!is.null(object$scaling)) {
-      list(method = object$scaling, cJ = object$cJ)
-    } else {
-      NULL
-    },
-    converged = object$converged,
-    iterations = object$iterations
-  )
-}
-
+# Note: summary.DPprior_fit is defined in R/17_s3_methods.R (canonical location)
 
 #' Coerce DPprior_fit to Data Frame
 #'
@@ -553,11 +470,12 @@ as.data.frame.DPprior_fit <- function(x, row.names = NULL, optional = FALSE, ...
 #' where \eqn{p = b/(b + c_J)}.
 #'
 #' @examples
+#' \dontrun{
 #' fit <- DPprior_a1(J = 50, mu_K = 5, var_K = 8)
 #' verify_a1_roundtrip(fit)
 #'
+#' }
 #' @keywords internal
-#' @export
 verify_a1_roundtrip <- function(fit, tol = 1e-8, verbose = TRUE) {
   if (!inherits(fit, "DPprior_fit")) {
     stop("fit must be a DPprior_fit object", call. = FALSE)
@@ -614,9 +532,11 @@ verify_a1_roundtrip <- function(fit, tol = 1e-8, verbose = TRUE) {
 #' @return Logical; TRUE if all tests pass.
 #'
 #' @examples
+#' \dontrun{
 #' verify_a1_mapping_all()
 #'
-#' @export
+#' }
+#' @keywords internal
 verify_a1_mapping_all <- function(verbose = TRUE) {
   if (isTRUE(verbose)) {
     cat("=", rep("=", 69), "\n", sep = "")

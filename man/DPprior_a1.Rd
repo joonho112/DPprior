@@ -50,7 +50,7 @@ to Gamma hyperprior parameters \eqn{(a, b)} using the A1 closed-form
 approximation based on Negative Binomial moment matching.
 }
 \details{
-\subsection{Theory (RN-03)}{
+\subsection{Theory (TSMM Stage 1)}{
 
 The A1 method uses a shifted Negative Binomial approximation:
 \deqn{K_J - 1 \mid \alpha \approx \text{Poisson}(\alpha \cdot c_J)}
@@ -95,8 +95,19 @@ fit_log <- DPprior_a1(50, 5, 8, scaling = "log")
 fit_harm <- DPprior_a1(50, 5, 8, scaling = "harmonic")
 
 }
+\references{
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+\emph{arXiv preprint} arXiv:2602.06301.
+}
 \seealso{
 \code{\link{vif_to_variance}} for VIF conversion,
 \code{\link{confidence_to_vif}} for confidence mapping,
 \code{\link{print.DPprior_fit}} for print method
+
+Other elicitation: 
+\code{\link{DPprior_a2_kl}()},
+\code{\link{DPprior_a2_newton}()},
+\code{\link{DPprior_dual}()},
+\code{\link{DPprior_fit}()}
 }
+\concept{elicitation}

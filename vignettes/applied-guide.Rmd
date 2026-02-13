@@ -447,7 +447,7 @@ have a specific target distribution in mind, not just moments.
 
 + Useful for custom target distributions
 
-+ Faithful to the DORO (Discrepancy Optimization) philosophy (Dorazio, 2009)
++ Faithful to the Design-Conditional Elicitation (DCE) philosophy (Lee, 2026; Dorazio, 2009)
 
 **Cons:**
 

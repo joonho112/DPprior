@@ -26,4 +26,11 @@ cv_rho(a = 1.6, b = 1.22)
 }
 \seealso{
 \code{\link{mean_rho}}, \code{\link{var_rho}}
+
+Other co_clustering: 
+\code{\link{mean_rho}()},
+\code{\link{mean_rho_given_alpha}()},
+\code{\link{var_rho}()},
+\code{\link{var_rho_given_alpha}()}
 }
+\concept{co_clustering}

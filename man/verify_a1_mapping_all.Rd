@@ -16,6 +16,9 @@ Logical; TRUE if all tests pass.
 Comprehensive verification suite for the A1 closed-form mapping module.
 }
 \examples{
+\dontrun{
 verify_a1_mapping_all()
 
 }
+}
+\keyword{internal}

@@ -32,3 +32,22 @@ A gtable grob (for ggplot2) or invisible(NULL) for base.
 \description{
 4-Panel Prior Dashboard
 }
+\references{
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+\emph{arXiv preprint} arXiv:2602.06301.
+}
+\seealso{
+\code{\link{DPprior_fit}} for fitting, \code{\link{plot.DPprior_fit}} for S3 plot method
+
+Other visualization: 
+\code{\link{DPprior_colors}()},
+\code{\link{plot_K_prior}()},
+\code{\link{plot_alpha_prior}()},
+\code{\link{plot_dual_comparison}()},
+\code{\link{plot_dual_dashboard}()},
+\code{\link{plot_tradeoff_curve}()},
+\code{\link{plot_tradeoff_dashboard}()},
+\code{\link{plot_w1_prior}()},
+\code{\link{theme_DPprior}()}
+}
+\concept{visualization}

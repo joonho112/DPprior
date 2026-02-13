@@ -115,9 +115,20 @@ cat(sprintf("A2-MN: a=\%.4f, b=\%.4f\n", a2_mn$a, a2_mn$b))
 cat(sprintf("A2-KL: a=\%.4f, b=\%.4f, KL=\%.4e\n", a2_kl$a, a2_kl$b, a2_kl$fit$kl))
 
 }
+\references{
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+\emph{arXiv preprint} arXiv:2602.06301.
+}
 \seealso{
 \code{\link{DPprior_a2_newton}} for exact moment matching,
 \code{\link{DPprior_a1}} for closed-form initialization,
 \code{\link{kl_divergence_K}} for KL divergence computation,
 \code{\link{discretize_chisq}} for chi-square discretization
+
+Other elicitation: 
+\code{\link{DPprior_a1}()},
+\code{\link{DPprior_a2_newton}()},
+\code{\link{DPprior_dual}()},
+\code{\link{DPprior_fit}()}
 }
+\concept{elicitation}

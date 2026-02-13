@@ -1,45 +1,43 @@
 Package: DPprior
 Title: Principled Prior Elicitation for Dirichlet Process Mixture Models
 Version: 1.0.0
-Authors@R: 
+Authors@R:
     person("JoonHo", "Lee", , "jlee296@ua.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0009-0006-4019-8703"))
-Description: Tools for eliciting Gamma hyperpriors on the concentration 
-    parameter alpha in Dirichlet Process (DP) mixture models. Rather than 
-    requiring specification of the abstract parameter alpha directly, 
-    'DPprior' allows researchers to express prior beliefs through intuitive 
-    quantities: expected cluster counts and weight concentration. The package 
-    implements the DORO 2.0 methodology with closed-form approximations (A1) 
-    and exact Newton-based moment matching (A2), enabling principled prior 
-    specification in low-information settings such as multisite trials and 
-    meta-analyses. Features include dual-anchor elicitation for joint control 
-    of cluster counts and weight behavior, comprehensive diagnostics, and 
-    visualization tools. Based on methods described in Lee et al. (2025) 
-    <doi:10.3102/10769986241254286>.
+Description: Tools for eliciting Gamma hyperpriors on the concentration
+    parameter alpha in Dirichlet Process (DP) mixture models. Rather than
+    requiring specification of the abstract parameter alpha directly,
+    'DPprior' allows researchers to express prior beliefs through intuitive
+    quantities: expected cluster counts and weight concentration. The package
+    implements Two-Stage Moment Matching (TSMM) with closed-form
+    approximations (A1) and exact Newton-based moment matching (A2),
+    enabling principled prior specification in low-information settings such
+    as multisite trials and meta-analyses. Features include dual-anchor
+    elicitation for joint control of cluster counts and weight behavior,
+    comprehensive diagnostics, and visualization tools. Based on methods
+    described in Lee (2026) <arXiv:2602.06301> and Lee, Che, Rabe-Hesketh,
+    Feller, and Miratrix (2025) <doi:10.3102/10769986241254286>.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Language: en-US
-LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
-Depends: 
+Depends:
     R (>= 4.0.0)
-Imports: 
+Imports:
     stats,
-    graphics,
-    grDevices
-Suggests: 
+    graphics
+Suggests:
     ggplot2 (>= 3.4.0),
     gridExtra,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),
     gtable,
-    scales, 
+    scales,
     microbenchmark
 Config/testthat/edition: 3
 VignetteBuilder: knitr
-URL: https://joonho112.github.io/DPprior/, 
+URL: https://joonho112.github.io/DPprior/,
     https://github.com/joonho112/DPprior
 BugReports: https://github.com/joonho112/DPprior/issues
-Keywords: Bayesian, nonparametric, Dirichlet-process, clustering, prior-elicitation

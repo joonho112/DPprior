@@ -35,6 +35,7 @@ By Pinsker's inequality:
 Numerical safeguards handle edge cases where \eqn{\lambda} or \eqn{c_J} is zero.
 }
 \examples{
+\dontrun{
 # Linearization bound for J=50, alpha=1
 compute_linearization_bound(J = 50, alpha = 1)
 
@@ -43,9 +44,12 @@ sapply(c(25, 50, 100, 200), function(J)
   compute_linearization_bound(J, alpha = 2))
 
 }
+}
 \references{
-RN-05, Lemma 1: Poisson-Poisson TV bound via KL + Pinsker
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+\emph{arXiv preprint} arXiv:2602.06301.
 }
 \seealso{
 \code{\link{compute_poissonization_bound}}, \code{\link{compute_total_tv_bound}}
 }
+\keyword{internal}

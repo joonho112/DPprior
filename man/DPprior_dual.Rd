@@ -43,7 +43,7 @@ An S3 object of class \code{"DPprior_fit"}.
 }
 \description{
 Refines a K_J-calibrated prior to also satisfy weight constraints,
-implementing the dual-anchor framework from RN-06.
+implementing the dual-anchor framework from Lee (2026, Section 4).
 }
 \details{
 \subsection{Critical Fix (2025-12-29)}{
@@ -92,3 +92,15 @@ fit_adp <- DPprior_dual(
 cat("Adaptive P(w_1 > 0.5):", fit_adp$dual_anchor$w1_achieved$prob_gt_50, "\n")
 
 }
+\references{
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+\emph{arXiv preprint} arXiv:2602.06301.
+}
+\seealso{
+Other elicitation: 
+\code{\link{DPprior_a1}()},
+\code{\link{DPprior_a2_kl}()},
+\code{\link{DPprior_a2_newton}()},
+\code{\link{DPprior_fit}()}
+}
+\concept{elicitation}

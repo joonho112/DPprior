@@ -29,7 +29,7 @@ Compares exact marginal moments (via quadrature) to the Negative Binomial
 approximation from the A1 method for error analysis.
 }
 \details{
-The NegBin approximation (A1 method from RN-03) assumes:
+The NegBin approximation (A1 method from Lee, 2026, Section 3.1) assumes:
 \deqn{K_J - 1 | \alpha \approx \text{Poisson}(\alpha \cdot c_J)}
 
 where \eqn{c_J = \log(J)}. With \eqn{\alpha \sim \text{Gamma}(a, b)}:
@@ -40,11 +40,13 @@ This comparison helps diagnose when the A1 approximation is insufficient
 and exact A2 moment matching is needed.
 }
 \examples{
+\dontrun{
 # Large approximation error for small J
 compare_to_negbin(50, 1.5, 0.5)
 
 # Error decreases with J
 compare_to_negbin(300, 1.5, 0.5)
 
+}
 }
 \keyword{internal}

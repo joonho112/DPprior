@@ -31,6 +31,7 @@ This sum equals:
 using the identity for sums of squared reciprocals.
 }
 \examples{
+\dontrun{
 # Compute raw sum for J=50, alpha=1
 compute_sum_p_squared(J = 50, alpha = 1)
 
@@ -38,9 +39,12 @@ compute_sum_p_squared(J = 50, alpha = 1)
 compute_sum_p_squared(J = 50, alpha = c(0.5, 1, 2))
 
 }
+}
 \references{
-RN-05: Error Quantification & Guarantees for the A1 Large-J Approximation
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+\emph{arXiv preprint} arXiv:2602.06301.
 }
 \seealso{
 \code{\link{compute_poissonization_bound}} for the full Chen-Stein bound
 }
+\keyword{internal}

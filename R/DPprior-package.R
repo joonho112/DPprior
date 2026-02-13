@@ -1,3 +1,57 @@
+#' DPprior: Principled Prior Elicitation for Dirichlet Process Mixture Models
+#'
+#' @description
+#' The \pkg{DPprior} package implements Design-Conditional Elicitation (DCE)
+#' for calibrating the concentration parameter prior \eqn{\alpha \sim \text{Gamma}(a, b)}
+#' in Dirichlet Process (DP) mixture models. The core engine is Two-Stage Moment Matching
+#' (TSMM), which translates intuitive beliefs about the expected number of clusters
+#' \eqn{E[K_J]} and its variance \eqn{\text{Var}(K_J)} into the Gamma hyperprior
+#' parameters \eqn{(a, b)}.
+#'
+#' @details
+#' The package provides three elicitation algorithms:
+#' \describe{
+#'   \item{A1 (\code{\link{DPprior_a1}})}{Closed-form method using a shifted
+#'     Negative Binomial approximation. Fast and accurate for large sample sizes.}
+#'   \item{A2-MN (\code{\link{DPprior_a2_newton}})}{Modified Newton method that
+#'     matches exact marginal moments via Gauss-Laguerre quadrature and analytic
+#'     Jacobians from score function identities.}
+#'   \item{A2-KL (\code{\link{DPprior_a2_kl}})}{KL-divergence minimization between
+#'     the implied marginal PMF and a target distribution.}
+#' }
+#'
+#' Additionally, the \strong{Dual-Anchor} framework (\code{\link{DPprior_dual}})
+#' enables joint control of cluster count \eqn{K_J} and largest weight \eqn{w_1}
+#' targets.
+#'
+#' The unified interface \code{\link{DPprior_fit}} dispatches to the appropriate
+#' algorithm based on the user's specification.
+#'
+#' @section Key Function Groups:
+#' \describe{
+#'   \item{Elicitation}{\code{\link{DPprior_fit}}, \code{\link{DPprior_a1}},
+#'     \code{\link{DPprior_a2_newton}}, \code{\link{DPprior_a2_kl}},
+#'     \code{\link{DPprior_dual}}}
+#'   \item{Cluster Distribution}{\code{\link{pmf_K_given_alpha}},
+#'     \code{\link{pmf_K_marginal}}, \code{\link{exact_K_moments}}}
+#'   \item{Weight Distribution}{\code{\link{mean_w1}}, \code{\link{prob_w1_exceeds}},
+#'     \code{\link{density_w1}}, \code{\link{summary_w1}}}
+#'   \item{Diagnostics}{\code{\link{DPprior_diagnostics}},
+#'     \code{\link{DPprior_error_bounds}}}
+#'   \item{Visualization}{\code{\link{plot_prior_dashboard}},
+#'     \code{\link{plot_dual_dashboard}}}
+#' }
+#'
+#' @references
+#' Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+#' \emph{arXiv preprint} arXiv:2602.06301.
+#'
+#' Lee, J., Che, J., Rabe-Hesketh, S., Feller, A., and Miratrix, L. (2025).
+#' Improving the estimation of site-specific effects and their distribution
+#' in multisite trials.
+#' \emph{Journal of Educational and Behavioral Statistics}, 50(5), 731--764.
+#' \doi{10.3102/10769986241254286}
+#'
 #' @keywords internal
 "_PACKAGE"
 
@@ -15,10 +69,6 @@ utils::globalVariables(c(
   "density", "k", "pmf", "lambda", "mu_K", "var_K",
   "Method", "Metric", "Value", "Component", "Weight",
   "K_only", "Dual",
-
-
-  # Internal function references
-  "exact_K_pmf",
 
   # rlang .data pronoun
   ".data"

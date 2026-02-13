@@ -47,4 +47,13 @@ summary_w1(a = 1.6, b = 1.22)
 }
 \seealso{
 \code{\link{cdf_w1}}, \code{\link{quantile_w1}}, \code{\link{mean_w1}}
+
+Other weights_w1: 
+\code{\link{cdf_w1}()},
+\code{\link{density_w1}()},
+\code{\link{mean_w1}()},
+\code{\link{prob_w1_exceeds}()},
+\code{\link{quantile_w1}()},
+\code{\link{var_w1}()}
 }
+\concept{weights_w1}

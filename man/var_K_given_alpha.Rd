@@ -51,4 +51,16 @@ mean_K_given_alpha(J, alpha) > var_K_given_alpha(J, alpha)  # TRUE
 }
 \seealso{
 \code{\link{mean_K_given_alpha}}, \code{\link{moments_K_given_alpha}}
+
+Other conditional_K: 
+\code{\link{cdf_K_given_alpha}()},
+\code{\link{cv_K_given_alpha}()},
+\code{\link{dispersion_K_given_alpha}()},
+\code{\link{log_pmf_K_given_alpha}()},
+\code{\link{mean_K_given_alpha}()},
+\code{\link{mode_K_given_alpha}()},
+\code{\link{moments_K_given_alpha}()},
+\code{\link{pmf_K_given_alpha}()},
+\code{\link{quantile_K_given_alpha}()}
 }
+\concept{conditional_K}

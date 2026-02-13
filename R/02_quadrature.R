@@ -22,7 +22,7 @@
 # Author: JoonHo Lee
 # Date: December 2025
 # Part of: DPprior R Package
-# Reference: RN-01 Section 6.2-6.3
+# Reference: Lee (2026), Sections 2--3
 # =============================================================================
 
 
@@ -299,13 +299,15 @@ integrate_gamma <- function(f, a, b, M = .QUAD_NODES_DEFAULT) {
 #' }
 #'
 #' @examples
+#' \dontrun{
 #' # Should return TRUE
 #' verify_quadrature(2.5, 1.5, M = 80)
 #'
 #' # More challenging case
 #' verify_quadrature(0.5, 2.0, M = 100, verbose = TRUE)
 #'
-#' @export
+#' }
+#' @keywords internal
 verify_quadrature <- function(a, b, M, tol = 1e-10, verbose = TRUE) {
   assert_positive(a, "a")
   assert_positive(b, "b")
@@ -368,10 +370,11 @@ verify_quadrature <- function(a, b, M, tol = 1e-10, verbose = TRUE) {
 #'   }
 #'
 #' @examples
+#' \dontrun{
 #' summary_quadrature(2.5, 1.5, M = 80)
 #'
+#' }
 #' @keywords internal
-#' @export
 summary_quadrature <- function(a, b, M = .QUAD_NODES_DEFAULT) {
   quad <- build_gamma_quadrature(a, b, M)
 
@@ -406,13 +409,14 @@ summary_quadrature <- function(a, b, M = .QUAD_NODES_DEFAULT) {
 #' @return A data frame with columns: M, estimate, change, relative_change.
 #'
 #' @examples
+#' \dontrun{
 #' # Check convergence for E[alpha]
 #' convergence_quadrature(identity, 2.5, 1.5,
 #'                        M_values = c(10, 20, 50, 80, 100),
 #'                        true_value = 2.5/1.5)
 #'
+#' }
 #' @keywords internal
-#' @export
 convergence_quadrature <- function(f, a, b, M_values = c(10, 20, 50, 80, 100),
                                    true_value = NULL) {
   estimates <- sapply(M_values, function(M) integrate_gamma(f, a, b, M))

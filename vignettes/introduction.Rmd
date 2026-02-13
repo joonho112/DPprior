@@ -382,7 +382,7 @@ hyperparameters $\alpha \sim \text{Gamma}(a, b)$ through a two-step process:
    distribution, we refine $(a, b)$ to precisely match the target 
    $(\mu_K, \sigma_K^2)$.
 
-This approach---which we call *DORO 2.0*---extends the original DORO method 
+This approach---which we call *Design-Conditional Elicitation (DCE)*---extends the original DORO method 
 (Dorazio, 2009; Lee et al., 2025) by replacing computationally expensive 
 grid search with near-instantaneous closed-form solutions backed by 
 Newton iteration for guaranteed accuracy. The optional dual-anchor extension 
@@ -578,7 +578,7 @@ features include:
    counts and weight concentration, rather than abstract parameters
    
 2. **Fast computation**: Closed-form approximations with Newton refinement, 
-   eliminating the need for grid search (DORO 2.0)
+   eliminating the need for grid search (DCE via TSMM)
    
 3. **Comprehensive control**: Dual-anchor framework for joint control of 
    cluster counts and weight behavior, addressing the "unintended prior" 

@@ -23,3 +23,4 @@ Logical; \code{TRUE} if verification passes.
 \description{
 Verifies that the PMF sums to 1.
 }
+\keyword{internal}

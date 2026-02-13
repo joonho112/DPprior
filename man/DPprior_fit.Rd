@@ -78,7 +78,7 @@ confidence level (if used), and target type.}
 \item{converged}{Logical; whether the calibration converged.}
 \item{iterations}{Integer; number of iterations (for iterative methods).}
 \item{fit}{List; achieved moments (mu_K, var_K) and residual.}
-\item{diagnostics}{List; comprehensive RN-07 diagnostics (if requested).}
+\item{diagnostics}{List; comprehensive diagnostics (if requested).}
 \item{solver_diagnostics}{List; backend solver details (if applicable).}
 \item{trace}{Data frame; iteration history (for iterative methods).}
 }
@@ -91,6 +91,11 @@ cluster count expectations and returns calibrated Gamma(a, b) parameters.
 This function provides a convenient interface for specifying beliefs about
 the number of clusters and uncertainty, then calibrates a Gamma hyperprior
 for the Dirichlet Process concentration parameter alpha.
+
+This function is the primary interface for Design-Conditional Elicitation
+(DCE) as described in Lee (2026). The underlying engine is Two-Stage Moment
+Matching (TSMM): Stage 1 (A1) provides a closed-form initialization, and
+Stage 2 (A2-MN) refines to exact moments via Newton iteration.
 
 \subsection{Variance Constraints}{
 The target variance must satisfy two constraints:
@@ -137,12 +142,8 @@ fit$diagnostics$weights$dominance_risk  # Dominance risk level
 
 }
 \references{
-Lee, J. (2025). Prior Elicitation for the Dirichlet Process Concentration
-Parameter in Low-Information Settings. \emph{Working Paper}.
-
-RN-03: Closed-Form Mapping for the Gamma Hyperprior.
-RN-04: Small-J Correction via Newton Refinement.
-RN-07: Unintended Prior Diagnostic.
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+\emph{arXiv preprint} arXiv:2602.06301.
 }
 \seealso{
 \code{\link{DPprior_a1}} for A1 closed-form approximation,
@@ -150,4 +151,11 @@ RN-07: Unintended Prior Diagnostic.
 \code{\link{DPprior_a2_kl}} for A2-KL divergence minimization,
 \code{\link{DPprior_diagnostics}} for detailed diagnostics,
 \code{\link{DPprior_dual}} for dual-anchor calibration with weight constraints.
+
+Other elicitation: 
+\code{\link{DPprior_a1}()},
+\code{\link{DPprior_a2_kl}()},
+\code{\link{DPprior_a2_newton}()},
+\code{\link{DPprior_dual}()}
 }
+\concept{elicitation}

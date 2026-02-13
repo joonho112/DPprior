@@ -6,7 +6,7 @@
 # and variance of K_J given alpha, where K_J is the number of occupied clusters
 # induced by a Dirichlet process (DP) prior with concentration parameter alpha.
 #
-# Theory (RN-01):
+# Theory (Lee, 2026, Sections 2--3):
 #   mu_J(alpha) = E[K_J | alpha] = alpha * (psi(alpha + J) - psi(alpha))
 #   v_J(alpha)  = Var(K_J | alpha) =
 #                   mu_J(alpha) - alpha^2 * (psi1(alpha) - psi1(alpha + J))
@@ -22,7 +22,7 @@
 # Author: JoonHo Lee
 # Date: December 2025
 # Part of: DPprior R Package
-# Reference: RN-01 Corollary 1, Proposition 1
+# Reference: Lee (2026), Sections 2--3
 # =============================================================================
 
 
@@ -34,7 +34,7 @@
 #' @description Below this value, we use limiting behavior directly to avoid
 #'   numerical cancellation in digamma/trigamma expressions.
 #' @keywords internal
-.ALPHA_SMALL_MOMENTS <- 1e-10
+.ALPHA_SMALL_MOMENTS <- .ALPHA_SMALL  # Uses global constant from R/00
 
 
 # =============================================================================
@@ -75,6 +75,8 @@
 #' mean_K_given_alpha(50, 1e6)    # Returns ~50
 #'
 #' @seealso \code{\link{var_K_given_alpha}}, \code{\link{moments_K_given_alpha}}
+#'
+#' @family conditional_K
 #'
 #' @export
 mean_K_given_alpha <- function(J, alpha) {
@@ -140,6 +142,8 @@ mean_K_given_alpha <- function(J, alpha) {
 #'
 #' @seealso \code{\link{mean_K_given_alpha}}, \code{\link{moments_K_given_alpha}}
 #'
+#' @family conditional_K
+#'
 #' @export
 var_K_given_alpha <- function(J, alpha) {
   assert_valid_J(J)
@@ -188,6 +192,7 @@ var_K_given_alpha <- function(J, alpha) {
 #' \eqn{E[K_J | \alpha]} is strictly increasing in \eqn{\alpha}.
 #'
 #' @examples
+#' \dontrun{
 #' dmean_dalpha(50, 2.0)
 #'
 #' # Verify with finite difference
@@ -196,8 +201,8 @@ var_K_given_alpha <- function(J, alpha) {
 #'        mean_K_given_alpha(J, alpha - eps)) / (2 * eps)
 #' abs(fd - dmean_dalpha(J, alpha)) < 1e-5  # TRUE
 #'
+#' }
 #' @keywords internal
-#' @export
 dmean_dalpha <- function(J, alpha) {
   assert_valid_J(J)
   assert_positive(alpha, "alpha")
@@ -237,7 +242,6 @@ dmean_dalpha <- function(J, alpha) {
 #' This derivative can be positive or negative depending on \eqn{\alpha}.
 #'
 #' @keywords internal
-#' @export
 dvar_dalpha <- function(J, alpha) {
   assert_valid_J(J)
   assert_positive(alpha, "alpha")
@@ -286,6 +290,8 @@ dvar_dalpha <- function(J, alpha) {
 #'
 #' @seealso \code{\link{mean_K_given_alpha}}, \code{\link{var_K_given_alpha}}
 #'
+#' @family conditional_K
+#'
 #' @export
 moments_K_given_alpha <- function(J, alpha) {
   mu <- mean_K_given_alpha(J, alpha)
@@ -311,6 +317,8 @@ moments_K_given_alpha <- function(J, alpha) {
 #'
 #' @return Numeric vector of coefficients of variation.
 #'
+#' @family conditional_K
+#'
 #' @export
 cv_K_given_alpha <- function(J, alpha) {
   mu <- mean_K_given_alpha(J, alpha)
@@ -329,6 +337,8 @@ cv_K_given_alpha <- function(J, alpha) {
 #'
 #' @return Numeric vector of dispersion indices.
 #'
+#' @family conditional_K
+#'
 #' @export
 dispersion_K_given_alpha <- function(J, alpha) {
   var_K_given_alpha(J, alpha) / mean_K_given_alpha(J, alpha)
@@ -345,9 +355,11 @@ dispersion_K_given_alpha <- function(J, alpha) {
 #' @return A list with components: J, alpha, mean, var, sd, cv, dispersion, dmean_dalpha.
 #'
 #' @examples
+#' \dontrun{
 #' summary_K_given_alpha(50, 2.0)
 #'
-#' @export
+#' }
+#' @keywords internal
 summary_K_given_alpha <- function(J, alpha) {
   if (length(alpha) != 1L) {
     stop("alpha must be a scalar for summary_K_given_alpha()", call. = FALSE)
@@ -419,7 +431,7 @@ var_K_given_alpha_sum <- function(J, alpha) {
 #'
 #' @return Logical; TRUE if validation passes.
 #'
-#' @export
+#' @keywords internal
 validate_moments_conditional <- function(J, alpha, tol = 1e-10, verbose = TRUE) {
   mean_poly <- mean_K_given_alpha(J, alpha)
   mean_sum <- mean_K_given_alpha_sum(J, alpha)
@@ -499,9 +511,11 @@ verify_underdispersion <- function(J, alpha_values = c(0.1, 0.5, 1, 2, 5, 10),
 #' @return Logical; TRUE if derivative matches finite difference.
 #'
 #' @examples
+#' \dontrun{
 #' verify_derivative(50, 2.0)
 #'
-#' @export
+#' }
+#' @keywords internal
 verify_derivative <- function(J, alpha, eps = 1e-6, tol = 1e-5, verbose = TRUE) {
   deriv_analytic <- dmean_dalpha(J, alpha)
   deriv_fd <- (mean_K_given_alpha(J, alpha + eps) -

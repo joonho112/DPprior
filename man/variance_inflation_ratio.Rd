@@ -34,6 +34,7 @@ This ratio is useful for:
 }
 }
 \examples{
+\dontrun{
 # Typical overdispersion
 vir <- variance_inflation_ratio(50, 2.0, 1.0)
 vir > 1  # TRUE: overdispersed
@@ -42,5 +43,6 @@ vir > 1  # TRUE: overdispersed
 variance_inflation_ratio(50, 2.0, 0.5)  # Higher uncertainty in alpha
 variance_inflation_ratio(50, 8.0, 4.0)  # Same mean, lower variance in alpha
 
+}
 }
 \keyword{internal}

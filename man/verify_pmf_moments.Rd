@@ -25,7 +25,10 @@ Verifies that moments computed from the PMF match the closed-form
 digamma/trigamma formulas.
 }
 \examples{
+\dontrun{
 logS <- compute_log_stirling(50)
 verify_pmf_moments(50, 2.0, logS)
 
 }
+}
+\keyword{internal}

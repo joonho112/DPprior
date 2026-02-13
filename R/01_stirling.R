@@ -26,7 +26,7 @@
 # Author: JoonHo Lee
 # Date: December 2025
 # Part of: DPprior R Package
-# Reference: RN-01 Section 4-5
+# Reference: Lee (2026), Sections 2--3
 # =============================================================================
 
 
@@ -142,6 +142,7 @@ compute_log_stirling <- function(J_max) {
 #' @return The value \eqn{\log|s(J,k)|}, or \code{-Inf} if k > J or k < 1.
 #'
 #' @examples
+#' \dontrun{
 #' logS <- compute_log_stirling(10)
 #'
 #' # Valid access
@@ -151,10 +152,10 @@ compute_log_stirling <- function(J_max) {
 #' get_log_stirling(4, 5, logS)
 #' get_log_stirling(4, 0, logS)
 #'
+#' }
 #' @seealso \code{\link{compute_log_stirling}} for matrix computation
 #'
 #' @keywords internal
-#' @export
 get_log_stirling <- function(J, k, logS) {
   # Validate logS
   if (!is.matrix(logS) || nrow(logS) != ncol(logS)) {
@@ -277,11 +278,13 @@ validate_stirling <- function(logS, verbose = TRUE) {
 #' is J!.
 #'
 #' @examples
+#' \dontrun{
 #' logS <- compute_log_stirling(15)
 #' verify_stirling_row_sum(logS, J_values = 2:10)
 #'
-#' @export
-verify_stirling_row_sum <- function(logS, J_values = 2:10, 
+#' }
+#' @keywords internal
+verify_stirling_row_sum <- function(logS, J_values = 2:10,
                                      tolerance = 1e-10, verbose = TRUE) {
   if (!is.matrix(logS) || nrow(logS) != ncol(logS)) {
     stop("logS must be a square matrix returned by compute_log_stirling()",
@@ -330,12 +333,13 @@ verify_stirling_row_sum <- function(logS, J_values = 2:10,
 #' @return Numeric vector of length J containing \eqn{\log|s(J,k)|} for \eqn{k = 1, \ldots, J}.
 #'
 #' @examples
+#' \dontrun{
 #' logS <- compute_log_stirling(10)
 #' log_s_row <- get_stirling_row(5, logS)
 #' exp(log_s_row)
 #'
+#' }
 #' @keywords internal
-#' @export
 get_stirling_row <- function(J, logS) {
   if (!is.matrix(logS) || nrow(logS) != ncol(logS)) {
     stop("logS must be a square matrix returned by compute_log_stirling()",

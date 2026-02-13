@@ -4,7 +4,7 @@
 #
 # This module provides functions for quantifying approximation errors in the
 # A1 large-J approximation, implementing the error quantification framework
-# from RN-05.
+# from Lee (2026, Section 3.3).
 #
 # The A1 approximation (shifted NegBin) differs from the exact K_J distribution
 # due to three error sources:
@@ -15,7 +15,7 @@
 # Author: JoonHo Lee
 # Date: December 2025
 # Part of: DPprior R Package
-# Reference: RN-05 (Error Quantification & Guarantees for the A1 Large-J Approximation)
+# Reference: Lee (2026), Section 3.3
 # =============================================================================
 
 
@@ -48,16 +48,19 @@
 #' @seealso \code{\link{compute_poissonization_bound}} for the full Chen-Stein bound
 #'
 #' @references
-#' RN-05: Error Quantification & Guarantees for the A1 Large-J Approximation
+#' Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+#' \emph{arXiv preprint} arXiv:2602.06301.
 #'
 #' @examples
+#' \dontrun{
 #' # Compute raw sum for J=50, alpha=1
 #' compute_sum_p_squared(J = 50, alpha = 1)
 #'
 #' # Vectorized over alpha
 #' compute_sum_p_squared(J = 50, alpha = c(0.5, 1, 2))
 #'
-#' @export
+#' }
+#' @keywords internal
 compute_sum_p_squared <- function(J, alpha) {
   assert_valid_J(J)
   assert_positive(alpha, "alpha")
@@ -105,9 +108,11 @@ compute_sum_p_squared <- function(J, alpha) {
 #' Chen, L. H. Y. (1975). Poisson approximation for dependent trials.
 #' \emph{The Annals of Probability}, 3(3), 534-545.
 #'
-#' RN-05 (Theorem 1) and references therein.
+#' Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+#' \emph{arXiv preprint} arXiv:2602.06301.
 #'
 #' @examples
+#' \dontrun{
 #' # Full Chen-Stein bound
 #' compute_poissonization_bound(J = 50, alpha = 1)
 #'
@@ -117,7 +122,8 @@ compute_sum_p_squared <- function(J, alpha) {
 #' # Vectorized
 #' compute_poissonization_bound(J = 50, alpha = c(0.5, 1, 2, 5))
 #'
-#' @export
+#' }
+#' @keywords internal
 compute_poissonization_bound <- function(J, alpha, raw = FALSE) {
   assert_valid_J(J)
   assert_positive(alpha, "alpha")
@@ -218,9 +224,11 @@ poisson_kl_divergence <- function(lambda, lambda_prime) {
 #' @seealso \code{\link{compute_poissonization_bound}}, \code{\link{compute_total_tv_bound}}
 #'
 #' @references
-#' RN-05, Lemma 1: Poisson-Poisson TV bound via KL + Pinsker
+#' Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+#' \emph{arXiv preprint} arXiv:2602.06301.
 #'
 #' @examples
+#' \dontrun{
 #' # Linearization bound for J=50, alpha=1
 #' compute_linearization_bound(J = 50, alpha = 1)
 #'
@@ -228,7 +236,8 @@ poisson_kl_divergence <- function(lambda, lambda_prime) {
 #' sapply(c(25, 50, 100, 200), function(J)
 #'   compute_linearization_bound(J, alpha = 2))
 #'
-#' @export
+#' }
+#' @keywords internal
 compute_linearization_bound <- function(J, alpha, cJ = log(J)) {
   assert_valid_J(J)
   assert_positive(alpha, "alpha")
@@ -277,7 +286,7 @@ compute_linearization_bound <- function(J, alpha, cJ = log(J)) {
 #' @return Numeric; upper bound on total TV error (capped at 1).
 #'
 #' @details
-#' From RN-05, Theorem 1, the total conditional TV error decomposes as:
+#' From Lee (2026, Section 3.3, Theorem 1), the total conditional TV error decomposes as:
 #' \enumerate{
 #'   \item Poissonization error: \eqn{S_J | \alpha} vs \eqn{\text{Poisson}(\lambda_J(\alpha))}
 #'   \item Linearization error: \eqn{\text{Poisson}(\lambda_J(\alpha))} vs \eqn{\text{Poisson}(\alpha c_J)}
@@ -287,13 +296,15 @@ compute_linearization_bound <- function(J, alpha, cJ = log(J)) {
 #'   \code{\link{expected_tv_bound}}
 #'
 #' @examples
+#' \dontrun{
 #' # Total bound at alpha = E[alpha] under Gamma(2, 1)
 #' compute_total_tv_bound(J = 50, alpha = 2)
 #'
 #' # Vectorized
 #' compute_total_tv_bound(J = 50, alpha = c(0.5, 1, 2, 5))
 #'
-#' @export
+#' }
+#' @keywords internal
 compute_total_tv_bound <- function(J, alpha, cJ = log(J)) {
   assert_valid_J(J)
   assert_positive(alpha, "alpha")
@@ -383,8 +394,12 @@ a1_moment_error <- function(J, a, b, cJ = log(J), M = .QUAD_NODES_DEFAULT) {
   # Compute errors
   error_mean_abs <- abs(exact$mean - a1_mean)
   error_var_abs <- abs(exact$var - a1_var)
-  error_mean_rel <- 100 * error_mean_abs / exact$mean
-  error_var_rel <- 100 * error_var_abs / exact$var
+  error_mean_rel <- if (exact$mean > .Machine$double.eps) {
+    100 * error_mean_abs / exact$mean
+  } else NA_real_
+  error_var_rel <- if (exact$var > .Machine$double.eps) {
+    100 * error_var_abs / exact$var
+  } else NA_real_
 
   list(
     exact_mean = exact$mean,
@@ -416,7 +431,7 @@ a1_moment_error <- function(J, a, b, cJ = log(J), M = .QUAD_NODES_DEFAULT) {
 #' @return Numeric; \eqn{E[d_{TV} \text{ bound} | a, b]}.
 #'
 #' @details
-#' From Corollary 1 of RN-05, the TV error between the exact prior predictive
+#' From Lee (2026, Section 3.3, Corollary 1), the TV error between the exact prior predictive
 #' \eqn{p(S_J | a, b)} and the A1 shifted NegBin proxy is bounded by:
 #' \deqn{d_{TV}(P^{\text{exact}}, Q^{A1}) \le E_{\alpha \sim \Gamma(a,b)}[B_{\text{Pois}} + B_{\text{lin}}]}
 #'
@@ -425,10 +440,12 @@ a1_moment_error <- function(J, a, b, cJ = log(J), M = .QUAD_NODES_DEFAULT) {
 #' @seealso \code{\link{compute_total_tv_bound}}, \code{\link{integrate_gamma}}
 #'
 #' @examples
+#' \dontrun{
 #' # Marginal TV bound for J=100, Gamma(1, 1)
 #' expected_tv_bound(J = 100, a = 1, b = 1)
 #'
-#' @export
+#' }
+#' @keywords internal
 expected_tv_bound <- function(J, a, b, cJ = log(J), M = .QUAD_NODES_DEFAULT) {
   assert_valid_J(J)
   assert_positive(a, "a")
@@ -495,7 +512,8 @@ find_a1_threshold_J <- function(a, b, target_error = 0.05,
 
   for (J in seq(J_min, J_max, by = step)) {
     errors <- a1_moment_error(J, a, b)
-    if (errors$error_mean_rel / 100 < target_error &&
+    if (!is.na(errors$error_mean_rel) && !is.na(errors$error_var_rel) &&
+        errors$error_mean_rel / 100 < target_error &&
         errors$error_var_rel / 100 < target_var_error) {
       return(as.integer(J))
     }
@@ -512,7 +530,7 @@ find_a1_threshold_J <- function(a, b, target_error = 0.05,
 #' Compute A1 Approximation Error Bounds
 #'
 #' Comprehensive error analysis for the A1 large-J approximation.
-#' Implements the error quantification framework from RN-05.
+#' Implements the error quantification framework from Lee (2026, Section 3.3).
 #'
 #' @param J Integer; sample size.
 #' @param a,b Numeric; Gamma hyperparameters (shape, rate).
@@ -547,7 +565,10 @@ find_a1_threshold_J <- function(a, b, target_error = 0.05,
 #'   \code{\link{DPprior_a1}}, \code{\link{DPprior_a2_newton}}
 #'
 #' @references
-#' RN-05: Error Quantification & Guarantees for the A1 Large-J Approximation
+#' Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+#' \emph{arXiv preprint} arXiv:2602.06301.
+#'
+#' @family diagnostics
 #'
 #' @examples
 #' # Check A1 adequacy for J=50, typical prior
@@ -595,7 +616,9 @@ DPprior_error_bounds <- function(J, a, b, cJ = log(J), M = .QUAD_NODES_DEFAULT) 
   marginal_bound <- expected_tv_bound(J, a, b, cJ, M)
 
   # Recommendation based on moment errors
-  a1_sufficient <- moment_errors$error_mean_rel < 5 &&
+  a1_sufficient <- !is.na(moment_errors$error_mean_rel) &&
+    !is.na(moment_errors$error_var_rel) &&
+    moment_errors$error_mean_rel < 5 &&
     moment_errors$error_var_rel < 10
   recommendation <- if (a1_sufficient) "A1_sufficient" else "A2_recommended"
 
@@ -730,7 +753,7 @@ summary.DPprior_error_bounds <- function(object, ...) {
 #'
 #' @details
 #' This function is useful for creating error landscape visualizations
-#' as shown in RN-05, Figures 1-3.
+#' as shown in Lee (2026, Section 3.3).
 #'
 #' @examples
 #' # Create error landscape
@@ -739,6 +762,8 @@ summary.DPprior_error_bounds <- function(object, ...) {
 #'   alpha_seq = c(0.5, 1, 2, 5)
 #' )
 #' print(landscape)
+#'
+#' @family diagnostics
 #'
 #' @export
 compute_error_landscape <- function(J_seq, alpha_seq, cJ_fun = log) {

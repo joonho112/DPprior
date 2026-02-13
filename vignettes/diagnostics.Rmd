@@ -273,8 +273,8 @@ cat("\nDominance risk level:", toupper(diag$weights$dominance_risk), "\n")
 
 ### 4.3 Closed-Form Calculations
 
-All $w_1$ diagnostics are computed using closed-form expressions (derived 
-in RN-06 and following [Vicentini & Jermyn, 2025](https://doi.org/10.48550/arXiv.2502.00864)):
+All $w_1$ diagnostics are computed using closed-form expressions (derived
+in [Lee, 2026](https://arxiv.org/abs/2602.06301), following [Vicentini & Jermyn, 2025](https://doi.org/10.48550/arXiv.2502.00864)):
 
 **CDF:**
 $$

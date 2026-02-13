@@ -122,7 +122,7 @@ fit4 <- DPprior_fit(J = 50, mu_K = 5, var_K = 8, check_diagnostics = TRUE)
 **Dual-Anchor Elicitation with Weight Control**
   
 Extends moment-based elicitation to incorporate constraints on the stick-breaking 
-weight distribution, addressing the "unintended prior" problem identified in RN-07.
+weight distribution, addressing the "unintended prior" problem identified in Lee (2026, Section 4).
 
 ```r
 DPprior_dual(
@@ -740,8 +740,8 @@ var_rho_given_alpha(alpha)    # Returns 2*alpha / ((1+alpha)^2 * (2+alpha) * (3+
 ### 5.1 `DPprior_diagnostics()`
 **Comprehensive Prior Diagnostics**
 
-Computes a full diagnostic report implementing the "unintended prior" checks 
-from RN-07.
+Computes a full diagnostic report implementing the "unintended prior" checks
+from Lee (2026, Section 4).
 
 ```r
 DPprior_diagnostics(fit, thresholds = c(0.5, 0.9))
@@ -1184,7 +1184,8 @@ Bayesian nonparametric problems. *The Annals of Statistics*, 2(6), 1152-1174.
 Golub, G. H., & Welsch, J. H. (1969). Calculation of Gauss quadrature rules. 
 *Mathematics of Computation*, 23(106), 221-230.
 
-Lee, J. (2025). RN-01 through RN-07: Research Notes for DPprior Package Development.
+Lee, J. (2026). Design-conditional prior elicitation for Dirichlet process
+mixtures. *arXiv preprint* arXiv:2602.06301.
 
 Lee, J., Che, J., Rabe-Hesketh, S., Feller, A., & Miratrix, L. (2025). 
 Improving the estimation of site-specific effects and their distribution in 

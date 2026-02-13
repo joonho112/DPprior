@@ -15,3 +15,4 @@ Invisibly returns TRUE if all tests pass.
 \description{
 Runs comprehensive tests on the diagnostics module.
 }
+\keyword{internal}

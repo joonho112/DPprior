@@ -40,6 +40,7 @@ chi-square distribution matching these moments is constructed using:
 \deqn{\text{scale} = \sigma^2_K / (2\mu_K), \quad \text{df} = 2\mu_K^2 / \sigma^2_K}
 }
 \examples{
+\dontrun{
 # Direct PMF
 result <- construct_target_pmf(50, rep(1, 50))  # Uniform on 1:50
 
@@ -49,6 +50,8 @@ result$mu_K  # 5
 result$df    # 6.25
 
 }
+}
 \seealso{
 \code{\link{discretize_chisq}}, \code{\link{DPprior_a2_kl}}
 }
+\keyword{internal}

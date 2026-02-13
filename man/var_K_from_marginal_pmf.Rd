@@ -24,8 +24,10 @@ Numeric; marginal variance.
 Computes \eqn{Var(K_J \mid a, b)} from the marginal PMF.
 }
 \examples{
+\dontrun{
 logS <- compute_log_stirling(50)
 var_K_from_marginal_pmf(50, 1.5, 0.5, logS)
 
+}
 }
 \keyword{internal}

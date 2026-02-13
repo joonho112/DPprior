@@ -36,7 +36,10 @@ of J elements with exactly k cycles, and the total number of permutations
 is J!.
 }
 \examples{
+\dontrun{
 logS <- compute_log_stirling(15)
 verify_stirling_row_sum(logS, J_values = 2:10)
 
 }
+}
+\keyword{internal}

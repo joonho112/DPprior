@@ -48,4 +48,16 @@ quantile_K_given_alpha(0, 50, 2.0, logS)  # Returns 0
 quantile_K_given_alpha(1, 50, 2.0, logS)  # Returns 50
 
 }
-\keyword{internal}
+\seealso{
+Other conditional_K: 
+\code{\link{cdf_K_given_alpha}()},
+\code{\link{cv_K_given_alpha}()},
+\code{\link{dispersion_K_given_alpha}()},
+\code{\link{log_pmf_K_given_alpha}()},
+\code{\link{mean_K_given_alpha}()},
+\code{\link{mode_K_given_alpha}()},
+\code{\link{moments_K_given_alpha}()},
+\code{\link{pmf_K_given_alpha}()},
+\code{\link{var_K_given_alpha}()}
+}
+\concept{conditional_K}

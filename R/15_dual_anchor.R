@@ -26,7 +26,7 @@
 #' Dual-Anchor Loss Function
 #'
 #' Computes the combined loss for K_J and first-weight targets used in the dual-anchor
-#' calibration framework (RN-06, Algorithm 2).
+#' calibration framework.
 #'
 #' @param a Numeric; shape parameter of the Gamma prior (a > 0).
 #' @param b Numeric; rate parameter of the Gamma prior (b > 0).
@@ -66,7 +66,6 @@
 #' @seealso \code{\link{DPprior_dual}}, \code{\link{compute_tradeoff_curve}}
 #'
 #' @keywords internal
-#' @export
 dual_anchor_loss <- function(a, b, J, K_target, w1_target, lambda,
                              M = .QUAD_NODES_DEFAULT,
                              loss_type = c("relative", "adaptive", "absolute"),
@@ -76,7 +75,7 @@ dual_anchor_loss <- function(a, b, J, K_target, w1_target, lambda,
 
   # Boundary check
   if (a <= 0 || b <= 0 || !is.finite(a) || !is.finite(b)) {
-    return(1e10)
+    return(.PENALTY_INF)
   }
 
   # -------------------------------------------------------------------------
@@ -88,7 +87,7 @@ dual_anchor_loss <- function(a, b, J, K_target, w1_target, lambda,
   )
 
   if (is.null(moments)) {
-    return(1e10)
+    return(.PENALTY_INF)
   }
 
   if (loss_type == "absolute") {
@@ -125,10 +124,10 @@ dual_anchor_loss <- function(a, b, J, K_target, w1_target, lambda,
     } else {
       stop("w1_target must specify quantile, prob, or mean")
     }
-  }, error = function(e) 1e10)
+  }, error = function(e) .PENALTY_INF)
 
   if (!is.finite(L_w)) {
-    return(1e10)
+    return(.PENALTY_INF)
   }
 
   # -------------------------------------------------------------------------
@@ -157,7 +156,7 @@ dual_anchor_loss <- function(a, b, J, K_target, w1_target, lambda,
 #' Dual-Anchor Prior Calibration
 #'
 #' Refines a K_J-calibrated prior to also satisfy weight constraints,
-#' implementing the dual-anchor framework from RN-06.
+#' implementing the dual-anchor framework from Lee (2026, Section 4).
 #'
 #' @param fit A \code{DPprior_fit} object from any K-based calibration method.
 #' @param w1_target List specifying the first-weight target. Options:
@@ -198,6 +197,10 @@ dual_anchor_loss <- function(a, b, J, K_target, w1_target, lambda,
 #'   \item \strong{"absolute"}: Legacy, not recommended.
 #' }
 #'
+#' @references
+#' Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+#' \emph{arXiv preprint} arXiv:2602.06301.
+#'
 #' @examples
 #' # K-only fit
 #' fit_K <- DPprior_a2_newton(J = 50, mu_K = 5, var_K = 8)
@@ -220,6 +223,8 @@ dual_anchor_loss <- function(a, b, J, K_target, w1_target, lambda,
 #'   loss_type = "adaptive"
 #' )
 #' cat("Adaptive P(w_1 > 0.5):", fit_adp$dual_anchor$w1_achieved$prob_gt_50, "\n")
+#'
+#' @family elicitation
 #'
 #' @export
 DPprior_dual <- function(fit, w1_target, lambda = 0.5,
@@ -356,6 +361,7 @@ DPprior_dual <- function(fit, w1_target, lambda = 0.5,
   # Optimization
   # -------------------------------------------------------------------------
   objective <- function(eta) {
+    eta <- pmin(pmax(eta, -.EXP_MAX), .EXP_MAX)
     a_curr <- exp(eta[1L])
     b_curr <- exp(eta[2L])
     dual_anchor_loss(a_curr, b_curr, J, K_target, w1_target, lambda, M,
@@ -472,6 +478,10 @@ DPprior_dual <- function(fit, w1_target, lambda = 0.5,
 #' @return Data frame with columns: lambda, a, b, mu_K, var_K, K_loss, w_loss,
 #'   w1_prob_gt_50, E_w1.
 #'
+#' @references
+#' Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+#' \emph{arXiv preprint} arXiv:2602.06301.
+#'
 #' @examples
 #' curve <- compute_tradeoff_curve(
 #'   J = 50,
@@ -563,6 +573,12 @@ compute_tradeoff_curve <- function(J, K_target, w1_target,
 #'
 #' @return Data frame comparing metrics.
 #'
+#' @references
+#' Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+#' \emph{arXiv preprint} arXiv:2602.06301.
+#'
+#' @family diagnostics
+#'
 #' @export
 dual_anchor_diagnostics <- function(fit_dual, fit_K_only = NULL,
                                     M = .QUAD_NODES_DEFAULT) {
@@ -616,9 +632,11 @@ dual_anchor_diagnostics <- function(fit_dual, fit_K_only = NULL,
 #' @return Invisible TRUE if all tests pass.
 #'
 #' @examples
+#' \dontrun{
 #' verify_dual_anchor(verbose = TRUE)
 #'
-#' @export
+#' }
+#' @keywords internal
 verify_dual_anchor <- function(verbose = TRUE) {
 
   if (isTRUE(verbose)) {

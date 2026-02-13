@@ -37,8 +37,16 @@ mean_rho(a = 1.6, b = 1.22)
 
 }
 \references{
-Lee, J. (2025). RN-06: Dual-Anchor Design II, Section 3.3.
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+\emph{arXiv preprint} arXiv:2602.06301.
 }
 \seealso{
 \code{\link{var_rho}}, \code{\link{cv_rho}}, \code{\link{mean_w1}}
+
+Other co_clustering: 
+\code{\link{cv_rho}()},
+\code{\link{mean_rho_given_alpha}()},
+\code{\link{var_rho}()},
+\code{\link{var_rho_given_alpha}()}
 }
+\concept{co_clustering}

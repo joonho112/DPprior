@@ -21,11 +21,13 @@ Computes \eqn{Var(K_J \mid \alpha)} by summing over the PMF.
 This is primarily for verification against the closed-form trigamma formula.
 }
 \examples{
+\dontrun{
 logS <- compute_log_stirling(50)
 
 # Should match var_K_given_alpha(50, 2.0)
 var_K_from_pmf(50, 2.0, logS)
 var_K_given_alpha(50, 2.0)
 
+}
 }
 \keyword{internal}

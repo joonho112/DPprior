@@ -26,17 +26,17 @@
 #
 # Important Warning:
 # ------------------
-# Some older drafts of RN-01 report E[K_J] ~ 10.23 for J=50 and
+# Some older drafts report E[K_J] ~ 10.23 for J=50 and
 # alpha ~ Gamma(1.5, 0.5) under the shape-rate parameterization.
 # Direct numerical integration of the conditional mean returns
-# E[K_50] ~ 8.3555. If you see a mismatch with any hard-coded RN-01
+# E[K_50] ~ 8.3555. If you see a mismatch with any hard-coded
 # numbers, treat those as potentially stale and rely on the internal
 # consistency checks (PMF <-> moments) implemented in Modules 05-06.
 #
 # Author: JoonHo Lee
 # Date: December 2025
 # Part of: DPprior R Package
-# Reference: RN-01 Section 6.5
+# Reference: Lee (2026), Sections 2--3
 # Dependencies: Module 00 (constants, logsumexp),
 #               Module 02 (quadrature),
 #               Module 04 (conditional PMF)
@@ -201,6 +201,8 @@ log_pmf_K_marginal <- function(J, a, b, logS, M = .QUAD_NODES_DEFAULT) {
 #' to Bayesian Nonparametric Problems. \emph{The Annals of Statistics},
 #' 2(6), 1152-1174.
 #'
+#' @family marginal_K
+#'
 #' @export
 pmf_K_marginal <- function(J, a, b, logS, M = .QUAD_NODES_DEFAULT) {
   # Compute in log-space for numerical stability
@@ -254,6 +256,8 @@ pmf_K_marginal <- function(J, a, b, logS, M = .QUAD_NODES_DEFAULT) {
 #'
 #' @seealso \code{\link{pmf_K_marginal}}, \code{\link{quantile_K_marginal}}
 #'
+#' @family marginal_K
+#'
 #' @export
 cdf_K_marginal <- function(J, a, b, logS, M = .QUAD_NODES_DEFAULT) {
   pmf <- pmf_K_marginal(J, a, b, logS, M)
@@ -297,6 +301,8 @@ cdf_K_marginal <- function(J, a, b, logS, M = .QUAD_NODES_DEFAULT) {
 #'
 #' @seealso \code{\link{cdf_K_marginal}}, \code{\link{pmf_K_marginal}}
 #'
+#' @family marginal_K
+#'
 #' @export
 quantile_K_marginal <- function(p, J, a, b, logS, M = .QUAD_NODES_DEFAULT) {
   # Input validation
@@ -338,6 +344,8 @@ quantile_K_marginal <- function(p, J, a, b, logS, M = .QUAD_NODES_DEFAULT) {
 #' mode_K_marginal(50, 1.5, 0.5, logS)
 #'
 #' @seealso \code{\link{pmf_K_marginal}}, \code{\link{summary_K_marginal}}
+#'
+#' @family marginal_K
 #'
 #' @export
 mode_K_marginal <- function(J, a, b, logS, M = .QUAD_NODES_DEFAULT) {
@@ -405,6 +413,8 @@ mode_K_marginal <- function(J, a, b, logS, M = .QUAD_NODES_DEFAULT) {
 #'
 #' @seealso \code{\link{pmf_K_marginal}}, \code{\link{exact_K_moments}}
 #'
+#' @family marginal_K
+#'
 #' @export
 summary_K_marginal <- function(J, a, b, logS, M = .QUAD_NODES_DEFAULT,
                                probs = c(0.05, 0.25, 0.5, 0.75, 0.95)) {
@@ -468,11 +478,12 @@ summary_K_marginal <- function(J, a, b, logS, M = .QUAD_NODES_DEFAULT,
 #' @return Numeric; marginal mean.
 #'
 #' @examples
+#' \dontrun{
 #' logS <- compute_log_stirling(50)
 #' mean_K_from_marginal_pmf(50, 1.5, 0.5, logS)
 #'
+#' }
 #' @keywords internal
-#' @export
 mean_K_from_marginal_pmf <- function(J, a, b, logS, M = .QUAD_NODES_DEFAULT) {
   pmf <- pmf_K_marginal(J, a, b, logS, M)
   sum((0:J) * pmf)
@@ -492,11 +503,12 @@ mean_K_from_marginal_pmf <- function(J, a, b, logS, M = .QUAD_NODES_DEFAULT) {
 #' @return Numeric; marginal variance.
 #'
 #' @examples
+#' \dontrun{
 #' logS <- compute_log_stirling(50)
 #' var_K_from_marginal_pmf(50, 1.5, 0.5, logS)
 #'
+#' }
 #' @keywords internal
-#' @export
 var_K_from_marginal_pmf <- function(J, a, b, logS, M = .QUAD_NODES_DEFAULT) {
   pmf <- pmf_K_marginal(J, a, b, logS, M)
   k_vals <- 0:J
@@ -524,10 +536,12 @@ var_K_from_marginal_pmf <- function(J, a, b, logS, M = .QUAD_NODES_DEFAULT) {
 #' @return Logical; TRUE if all verifications pass.
 #'
 #' @examples
+#' \dontrun{
 #' logS <- compute_log_stirling(50)
 #' verify_pmf_marginal_properties(50, 1.5, 0.5, logS)
 #'
-#' @export
+#' }
+#' @keywords internal
 verify_pmf_marginal_properties <- function(J, a, b, logS, M = .QUAD_NODES_DEFAULT,
                                            tol = 1e-10, verbose = TRUE) {
   pmf <- pmf_K_marginal(J, a, b, logS, M)
@@ -585,10 +599,12 @@ verify_pmf_marginal_properties <- function(J, a, b, logS, M = .QUAD_NODES_DEFAUL
 #' @return Logical; TRUE if moments match within tolerance.
 #'
 #' @examples
+#' \dontrun{
 #' logS <- compute_log_stirling(50)
 #' verify_pmf_marginal_moments(50, 1.5, 0.5, logS)
 #'
-#' @export
+#' }
+#' @keywords internal
 verify_pmf_marginal_moments <- function(J, a, b, logS, M = .QUAD_NODES_DEFAULT,
                                         tol = 1e-6, verbose = TRUE) {
   # Moments from PMF
@@ -637,10 +653,12 @@ verify_pmf_marginal_moments <- function(J, a, b, logS, M = .QUAD_NODES_DEFAULT,
 #' @return Data frame with convergence results.
 #'
 #' @examples
+#' \dontrun{
 #' logS <- compute_log_stirling(50)
 #' verify_pmf_marginal_convergence(50, 1.5, 0.5, logS)
 #'
-#' @export
+#' }
+#' @keywords internal
 verify_pmf_marginal_convergence <- function(J, a, b, logS,
                                             M_values = c(20L, 40L, 80L, 120L),
                                             verbose = TRUE) {
@@ -698,9 +716,11 @@ verify_pmf_marginal_convergence <- function(J, a, b, logS,
 #' @return Logical; TRUE if all tests pass.
 #'
 #' @examples
+#' \dontrun{
 #' verify_pmf_marginal_all()
 #'
-#' @export
+#' }
+#' @keywords internal
 verify_pmf_marginal_all <- function(verbose = TRUE) {
   if (isTRUE(verbose)) {
     cat("=", rep("=", 69), "\n", sep = "")

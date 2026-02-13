@@ -16,6 +16,9 @@ Logical; TRUE if all tests pass.
 Runs verification tests on KL divergence computations.
 }
 \examples{
+\dontrun{
 verify_kl_divergence()
 
 }
+}
+\keyword{internal}

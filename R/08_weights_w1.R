@@ -6,7 +6,7 @@
 # stick-breaking weight in the GEM(α) representation of a Dirichlet Process,
 # when α ~ Gamma(a, b).
 #
-# Key Results (RN-06 §2, Vicentini & Jermyn 2025):
+# Key Results (Lee, 2026, Section 4; Vicentini & Jermyn, 2025):
 #   Conditional: w₁ | α ~ Beta(1, α)
 #   Unconditional CDF: F(x | a, b) = 1 - (b / (b - log(1-x)))^a
 #   Quantile: Q(u | a, b) = 1 - exp(b × [1 - (1-u)^{-1/a}])
@@ -52,7 +52,7 @@
 #' @section Interpretation:
 #' The weight w₁ is in **GEM (size-biased) order**, not ranked by size.
 #' It represents the asymptotic cluster share of a randomly chosen unit,
-#' **not** the largest cluster proportion. See RN-06 §1 for details.
+#' **not** the largest cluster proportion. See Lee (2026, Section 4) for details.
 #'
 #' @examples
 #' # P(w₁ ≤ 0.3) under standard prior
@@ -62,13 +62,16 @@
 #' cdf_w1(c(0.1, 0.3, 0.5, 0.7), a = 1.6, b = 1.22)
 #'
 #' @references
-#' Lee, J. (2025). RN-06: Dual-Anchor Design II.
+#' Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+#' \emph{arXiv preprint} arXiv:2602.06301.
 #'
 #' Vicentini, C. and Jermyn, I. H. (2025). Prior selection for the precision
 #'   parameter of Dirichlet Process Mixtures. arXiv:2502.00864.
 #'
 #' @seealso \code{\link{quantile_w1}}, \code{\link{density_w1}},
 #'   \code{\link{prob_w1_exceeds}}
+#'
+#' @family weights_w1
 #'
 #' @export
 cdf_w1 <- function(x, a, b) {
@@ -141,9 +144,12 @@ cdf_w1 <- function(x, a, b) {
 #' quantile_w1(0.9, a = 2, b = 1)  # ~0.732
 #'
 #' @references
-#' Lee, J. (2025). RN-06: Dual-Anchor Design II, Corollary 2.
+#' Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+#' \emph{arXiv preprint} arXiv:2602.06301.
 #'
 #' @seealso \code{\link{cdf_w1}}, \code{\link{summary_w1}}
+#'
+#' @family weights_w1
 #'
 #' @export
 quantile_w1 <- function(u, a, b) {
@@ -199,7 +205,7 @@ quantile_w1 <- function(u, a, b) {
 #' The survival function has the closed form:
 #' \deqn{P(w_1 > t | a, b) = \left(\frac{b}{b - \log(1-t)}\right)^a}
 #'
-#' This is a \strong{key quantity for dominance risk assessment} (RN-07).
+#' This is a \strong{key quantity for dominance risk assessment} (Lee, 2026, Section 4).
 #' A large P(w₁ > 0.5) indicates high prior probability that a single
 #' cluster dominates the mixture.
 #'
@@ -215,10 +221,12 @@ quantile_w1 <- function(u, a, b) {
 #' prob_w1_exceeds(0.5, a = 2, b = 1)       # ~0.349
 #'
 #' @references
-#' Lee, J. (2025). RN-06: Dual-Anchor Design II, Corollary 1.
-#' Lee, J. (2025). RN-07: Unintended Prior Consequences.
+#' Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+#' \emph{arXiv preprint} arXiv:2602.06301.
 #'
 #' @seealso \code{\link{cdf_w1}}, \code{\link{summary_w1}}
+#'
+#' @family weights_w1
 #'
 #' @export
 prob_w1_exceeds <- function(t, a, b) {
@@ -284,6 +292,8 @@ prob_w1_exceeds <- function(t, a, b) {
 #' density_w1(0.5, a = 2, b = 1, log = TRUE)
 #'
 #' @seealso \code{\link{cdf_w1}}, \code{\link{quantile_w1}}
+#'
+#' @family weights_w1
 #'
 #' @export
 density_w1 <- function(x, a, b, log = FALSE) {
@@ -356,9 +366,12 @@ density_w1 <- function(x, a, b, log = FALSE) {
 #' mean_w1(a = 1.6, b = 1.22)  # ~0.508
 #'
 #' @references
-#' Lee, J. (2025). RN-06: Dual-Anchor Design II, §2.3.
+#' Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+#' \emph{arXiv preprint} arXiv:2602.06301.
 #'
 #' @seealso \code{\link{var_w1}}, \code{\link{summary_w1}}
+#'
+#' @family weights_w1
 #'
 #' @export
 mean_w1 <- function(a, b, M = .QUAD_NODES_DEFAULT) {
@@ -396,9 +409,12 @@ mean_w1 <- function(a, b, M = .QUAD_NODES_DEFAULT) {
 #' var_w1(a = 1.6, b = 1.22)  # ~0.105
 #'
 #' @references
-#' Lee, J. (2025). RN-06: Dual-Anchor Design II.
+#' Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+#' \emph{arXiv preprint} arXiv:2602.06301.
 #'
 #' @seealso \code{\link{mean_w1}}, \code{\link{summary_w1}}
+#'
+#' @family weights_w1
 #'
 #' @export
 var_w1 <- function(a, b, M = .QUAD_NODES_DEFAULT) {
@@ -458,6 +474,8 @@ var_w1 <- function(a, b, M = .QUAD_NODES_DEFAULT) {
 #' summary_w1(a = 1.6, b = 1.22)
 #'
 #' @seealso \code{\link{cdf_w1}}, \code{\link{quantile_w1}}, \code{\link{mean_w1}}
+#'
+#' @family weights_w1
 #'
 #' @export
 summary_w1 <- function(a, b, probs = c(0.05, 0.25, 0.5, 0.75, 0.95),

@@ -34,3 +34,22 @@ Creates an extended dashboard for dual-anchor results with 6 panels:
 (A) Alpha comparison, (B) K comparison, (C) w1 comparison,
 (D) Summary table, (E) Loss decomposition, (F) Parameter trajectory.
 }
+\references{
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+\emph{arXiv preprint} arXiv:2602.06301.
+}
+\seealso{
+\code{\link{DPprior_fit}} for fitting, \code{\link{plot.DPprior_fit}} for S3 plot method
+
+Other visualization: 
+\code{\link{DPprior_colors}()},
+\code{\link{plot_K_prior}()},
+\code{\link{plot_alpha_prior}()},
+\code{\link{plot_dual_comparison}()},
+\code{\link{plot_prior_dashboard}()},
+\code{\link{plot_tradeoff_curve}()},
+\code{\link{plot_tradeoff_dashboard}()},
+\code{\link{plot_w1_prior}()},
+\code{\link{theme_DPprior}()}
+}
+\concept{visualization}

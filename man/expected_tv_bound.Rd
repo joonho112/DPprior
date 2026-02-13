@@ -23,17 +23,20 @@ Integrates the conditional TV bound over \eqn{\alpha \sim \text{Gamma}(a, b)}
 to obtain the marginal error bound.
 }
 \details{
-From Corollary 1 of RN-05, the TV error between the exact prior predictive
+From Lee (2026, Section 3.3, Corollary 1), the TV error between the exact prior predictive
 \eqn{p(S_J | a, b)} and the A1 shifted NegBin proxy is bounded by:
 \deqn{d_{TV}(P^{\text{exact}}, Q^{A1}) \le E_{\alpha \sim \Gamma(a,b)}[B_{\text{Pois}} + B_{\text{lin}}]}
 
 This follows from the mixture contraction property of TV distance.
 }
 \examples{
+\dontrun{
 # Marginal TV bound for J=100, Gamma(1, 1)
 expected_tv_bound(J = 100, a = 1, b = 1)
 
 }
+}
 \seealso{
 \code{\link{compute_total_tv_bound}}, \code{\link{integrate_gamma}}
 }
+\keyword{internal}

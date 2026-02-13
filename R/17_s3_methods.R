@@ -571,28 +571,28 @@ plot.DPprior_fit <- function(x, type = c("auto", "dashboard", "alpha", "K", "w1"
       if (exists("plot_prior_dashboard", mode = "function")) {
         plot_prior_dashboard(x, engine = engine, ...)
       } else {
-        stop("plot_prior_dashboard() not available. Ensure Module 16 is loaded.", call. = FALSE)
+        stop("plot_prior_dashboard() not available. Required visualization function not found. Please reinstall DPprior.", call. = FALSE)
       }
     },
     "alpha" = {
       if (exists("plot_alpha_prior", mode = "function")) {
         plot_alpha_prior(x, engine = engine, ...)
       } else {
-        stop("plot_alpha_prior() not available. Ensure Module 16 is loaded.", call. = FALSE)
+        stop("plot_alpha_prior() not available. Required visualization function not found. Please reinstall DPprior.", call. = FALSE)
       }
     },
     "K" = {
       if (exists("plot_K_prior", mode = "function")) {
         plot_K_prior(x, engine = engine, ...)
       } else {
-        stop("plot_K_prior() not available. Ensure Module 16 is loaded.", call. = FALSE)
+        stop("plot_K_prior() not available. Required visualization function not found. Please reinstall DPprior.", call. = FALSE)
       }
     },
     "w1" = {
       if (exists("plot_w1_prior", mode = "function")) {
         plot_w1_prior(x, engine = engine, ...)
       } else {
-        stop("plot_w1_prior() not available. Ensure Module 16 is loaded.", call. = FALSE)
+        stop("plot_w1_prior() not available. Required visualization function not found. Please reinstall DPprior.", call. = FALSE)
       }
     },
     "dual" = {
@@ -604,7 +604,7 @@ plot.DPprior_fit <- function(x, type = c("auto", "dashboard", "alpha", "K", "w1"
         }
         plot_prior_dashboard(x, engine = engine, ...)
       } else {
-        stop("No plotting functions available. Ensure Module 16 is loaded.", call. = FALSE)
+        stop("No plotting functions available. Required visualization function not found. Please reinstall DPprior.", call. = FALSE)
       }
     },
     "comparison" = {
@@ -616,7 +616,7 @@ plot.DPprior_fit <- function(x, type = c("auto", "dashboard", "alpha", "K", "w1"
         if (exists("plot_prior_dashboard", mode = "function")) {
           plot_prior_dashboard(x, engine = engine, ...)
         } else {
-          stop("No plotting functions available. Ensure Module 16 is loaded.", call. = FALSE)
+          stop("No plotting functions available. Required visualization function not found. Please reinstall DPprior.", call. = FALSE)
         }
       }
     }
@@ -644,18 +644,6 @@ plot.DPprior_fit <- function(x, type = c("auto", "dashboard", "alpha", "K", "w1"
 }
 
 
-#' Null-Coalescing Operator
-#'
-#' @param x Value to check
-#' @param y Default value if x is NULL
-#' @return x if not NULL, otherwise y
-#'
-#' @keywords internal
-`%||%` <- function(x, y) {
-  if (is.null(x)) y else x
-}
-
-
 # =============================================================================
 # Verification Function
 # =============================================================================
@@ -669,9 +657,11 @@ plot.DPprior_fit <- function(x, type = c("auto", "dashboard", "alpha", "K", "w1"
 #' @return Invisibly returns TRUE if all tests pass.
 #'
 #' @examples
+#' \dontrun{
 #' verify_s3_methods()
 #'
-#' @export
+#' }
+#' @keywords internal
 verify_s3_methods <- function(verbose = TRUE) {
 
   if (isTRUE(verbose)) {

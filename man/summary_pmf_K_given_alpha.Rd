@@ -33,8 +33,11 @@ Returns a comprehensive summary of the conditional distribution
 \eqn{K_J \mid \alpha}.
 }
 \examples{
+\dontrun{
 logS <- compute_log_stirling(50)
 summary <- summary_pmf_K_given_alpha(50, 2.0, logS)
 print(summary)
 
 }
+}
+\keyword{internal}

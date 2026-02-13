@@ -5,7 +5,7 @@
 # This module provides computation of marginal moments E[K_J] and Var(K_J)
 # when the concentration parameter alpha has a Gamma(a, b) prior distribution.
 #
-# Theory Background (RN-04 Section 3):
+# Theory Background (Lee, 2026, Section 3.2):
 # ------------------------------------
 # Using the Law of Total Expectation and Variance:
 #
@@ -29,7 +29,7 @@
 # Author: JoonHo Lee
 # Date: December 2025
 # Part of: DPprior R Package
-# Reference: RN-01 Corollary 1, RN-04 Section 3
+# Reference: Lee (2026), Sections 2--3 and Section 3.2
 # Dependencies: Module 02 (quadrature), Module 03 (conditional moments)
 # =============================================================================
 
@@ -79,7 +79,7 @@
 #' }
 #'
 #' @examples
-#' # Example from RN-01: J=50, Gamma(1.5, 0.5) prior
+#' # Example: J=50, Gamma(1.5, 0.5) prior
 #' result <- exact_K_moments(50, 1.5, 0.5)
 #' print(result)
 #'
@@ -96,6 +96,8 @@
 #' @references
 #' Antoniak, C. E. (1974). Mixtures of Dirichlet Processes.
 #' \emph{The Annals of Statistics}, 2(6), 1152-1174.
+#'
+#' @family marginal_K
 #'
 #' @export
 exact_K_moments <- function(J, a, b, M = .QUAD_NODES_DEFAULT) {
@@ -161,6 +163,8 @@ exact_K_moments <- function(J, a, b, M = .QUAD_NODES_DEFAULT) {
 #'
 #' @seealso \code{\link{exact_K_moments}} for full output
 #'
+#' @family marginal_K
+#'
 #' @export
 K_moments <- function(J, a, b, M = .QUAD_NODES_DEFAULT) {
   result <- exact_K_moments(J, a, b, M)
@@ -196,6 +200,7 @@ K_moments <- function(J, a, b, M = .QUAD_NODES_DEFAULT) {
 #' }
 #'
 #' @examples
+#' \dontrun{
 #' # Typical overdispersion
 #' vir <- variance_inflation_ratio(50, 2.0, 1.0)
 #' vir > 1  # TRUE: overdispersed
@@ -204,8 +209,8 @@ K_moments <- function(J, a, b, M = .QUAD_NODES_DEFAULT) {
 #' variance_inflation_ratio(50, 2.0, 0.5)  # Higher uncertainty in alpha
 #' variance_inflation_ratio(50, 8.0, 4.0)  # Same mean, lower variance in alpha
 #'
+#' }
 #' @keywords internal
-#' @export
 variance_inflation_ratio <- function(J, a, b, M = .QUAD_NODES_DEFAULT) {
   result <- exact_K_moments(J, a, b, M)
   if (result$mean > 0) {
@@ -235,7 +240,7 @@ variance_inflation_ratio <- function(J, a, b, M = .QUAD_NODES_DEFAULT) {
 #'   }
 #'
 #' @details
-#' The NegBin approximation (A1 method from RN-03) assumes:
+#' The NegBin approximation (A1 method from Lee, 2026, Section 3.1) assumes:
 #' \deqn{K_J - 1 | \alpha \approx \text{Poisson}(\alpha \cdot c_J)}
 #'
 #' where \eqn{c_J = \log(J)}. With \eqn{\alpha \sim \text{Gamma}(a, b)}:
@@ -246,14 +251,15 @@ variance_inflation_ratio <- function(J, a, b, M = .QUAD_NODES_DEFAULT) {
 #' and exact A2 moment matching is needed.
 #'
 #' @examples
+#' \dontrun{
 #' # Large approximation error for small J
 #' compare_to_negbin(50, 1.5, 0.5)
 #'
 #' # Error decreases with J
 #' compare_to_negbin(300, 1.5, 0.5)
 #'
+#' }
 #' @keywords internal
-#' @export
 compare_to_negbin <- function(J, a, b, M = .QUAD_NODES_DEFAULT) {
   # Exact moments via quadrature
   exact <- exact_K_moments(J, a, b, M)
@@ -321,13 +327,14 @@ compare_to_negbin <- function(J, a, b, M = .QUAD_NODES_DEFAULT) {
 #' }
 #'
 #' @examples
+#' \dontrun{
 #' result <- marginal_moments_with_jacobian(50, 2.0, 1.0)
 #' result$jacobian
 #'
+#' }
 #' @seealso \code{\link{exact_K_moments}}, Module 07 (Jacobian)
 #'
 #' @keywords internal
-#' @export
 marginal_moments_with_jacobian <- function(J, a, b, M = .QUAD_NODES_DEFAULT) {
   # Input validation
   assert_valid_J(J)
@@ -406,9 +413,11 @@ marginal_moments_with_jacobian <- function(J, a, b, M = .QUAD_NODES_DEFAULT) {
 #' @return Logical; \code{TRUE} if all verifications pass.
 #'
 #' @examples
+#' \dontrun{
 #' verify_marginal_moments(50, 2.0, 1.0)
 #'
-#' @export
+#' }
+#' @keywords internal
 verify_marginal_moments <- function(J, a, b, verbose = TRUE) {
   all_pass <- TRUE
 
@@ -479,10 +488,11 @@ verify_marginal_moments <- function(J, a, b, verbose = TRUE) {
 #' @return Data frame with convergence results.
 #'
 #' @examples
+#' \dontrun{
 #' verify_quadrature_convergence(50, 1.5, 0.5)
 #'
+#' }
 #' @keywords internal
-#' @export
 verify_quadrature_convergence <- function(J, a, b,
                                           M_values = c(20, 40, 60, 80, 100, 120),
                                           verbose = TRUE) {
@@ -539,9 +549,11 @@ verify_quadrature_convergence <- function(J, a, b,
 #' @return Logical; \code{TRUE} if all tests pass.
 #'
 #' @examples
+#' \dontrun{
 #' verify_moments_marginal_all()
 #'
-#' @export
+#' }
+#' @keywords internal
 verify_moments_marginal_all <- function(verbose = TRUE) {
   if (isTRUE(verbose)) {
     cat("=" , rep("=", 69), "\n", sep = "")

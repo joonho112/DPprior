@@ -31,7 +31,7 @@ along with the Jacobian matrix of the moment map \eqn{F(a,b) = (M_1, V)}
 using score function identities.
 }
 \details{
-This function uses the score identity (RN-04 Corollary 1) to compute exact
+This function uses the score identity (Lee, 2026, Section 3.2, Corollary 1) to compute exact
 derivatives without finite differences:
 \deqn{\frac{\partial}{\partial\theta} E[f(\alpha)] = E[f(\alpha) \cdot s_\theta(\alpha)]}
 
@@ -65,7 +65,8 @@ delta <- solve(result$jacobian, -residual)
 
 }
 \references{
-RN-04, Corollary 1: Closed Jacobian formula via score identities
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+\emph{arXiv preprint} arXiv:2602.06301.
 }
 \seealso{
 \code{\link{exact_K_moments}} for moments only,

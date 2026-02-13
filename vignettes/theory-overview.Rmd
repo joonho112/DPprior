@@ -690,7 +690,7 @@ The A1 closed-form approximation introduces two sources of error:
 2. **Linearization error**: The exact mean $\mu_J(\alpha) = \alpha(\psi(\alpha + J) - \psi(\alpha))$ 
    is only approximately linear in $\alpha$.
 
-**Novel Contribution.** Analysis in our research notes (RN-02) shows that the 
+**Novel Contribution.** Analysis in [Lee (2026, arXiv:2602.06301)](https://arxiv.org/abs/2602.06301) shows that the
 Poisson proxy with $c_J = \log J$ provides:
 
 - Mean approximation error $|\mu_J(\alpha) - \alpha \log J| = O(\alpha)$ for 

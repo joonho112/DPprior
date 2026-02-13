@@ -27,7 +27,7 @@ An S3 object of class "DPprior_error_bounds" with components:
 }
 \description{
 Comprehensive error analysis for the A1 large-J approximation.
-Implements the error quantification framework from RN-05.
+Implements the error quantification framework from Lee (2026, Section 3.3).
 }
 \details{
 The recommendation is based on:
@@ -55,9 +55,17 @@ print(bounds_200)
 
 }
 \references{
-RN-05: Error Quantification & Guarantees for the A1 Large-J Approximation
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+\emph{arXiv preprint} arXiv:2602.06301.
 }
 \seealso{
 \code{\link{a1_moment_error}}, \code{\link{compute_total_tv_bound}},
 \code{\link{DPprior_a1}}, \code{\link{DPprior_a2_newton}}
+
+Other diagnostics: 
+\code{\link{DPprior_diagnostics}()},
+\code{\link{compute_error_landscape}()},
+\code{\link{compute_weight_diagnostics}()},
+\code{\link{dual_anchor_diagnostics}()}
 }
+\concept{diagnostics}

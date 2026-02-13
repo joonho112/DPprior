@@ -3,9 +3,9 @@
 # =============================================================================
 #
 # This module implements prior validation and dominance risk assessment
-# following RN-07: "Unintended Prior Diagnostic."
+# following the dual-anchor diagnostic framework (Lee, 2026, Section 4).
 #
-# Key insight from RN-07: matching K_J does NOT automatically calibrate weight
+# Key insight (Lee, 2026, Section 4): matching K_J does NOT automatically calibrate weight
 # behavior. A prior that achieves excellent fit to target K_J may still induce:
 # - High probability of weight dominance (P(w1 > 0.5) >> expected)
 # - Extreme co-clustering probability
@@ -14,7 +14,7 @@
 # Author: JoonHo Lee
 # Date: December 2025
 # Part of: DPprior R Package
-# References: RN-07 (Unintended Prior Diagnostic)
+# References: Lee (2026), Section 4
 # =============================================================================
 
 
@@ -65,10 +65,10 @@ compute_alpha_diagnostics <- function(a, b) {
 # K_J PMF Helper (with fallback logic)
 # =============================================================================
 
-#' Get K_J PMF with Fallback
+#' Get K_J PMF via pmf_K_marginal
 #'
-#' Internal helper that tries exact_K_pmf() first, then falls back to
-#' pmf_K_marginal() if needed.
+#' Internal helper that computes the marginal PMF of K_J using
+#' pmf_K_marginal() and Stirling numbers.
 #'
 #' @param J Integer; sample size.
 #' @param a,b Numeric; Gamma hyperparameters.
@@ -84,27 +84,8 @@ compute_alpha_diagnostics <- function(a, b) {
 
   J <- as.integer(J)
 
-  # Try exact_K_pmf first (if available in package)
-  if (exists("exact_K_pmf", mode = "function")) {
-    pmf <- exact_K_pmf(J, a, b, M)
-    pmf <- as.numeric(pmf)
-
-    # Handle length J+1 (includes k=0) vs length J
-    if (length(pmf) == J + 1L) {
-      pmf <- pmf[-1L]  # Drop P(K=0)
-    }
-
-    if (length(pmf) != J) {
-      stop("exact_K_pmf() must return length J (or J+1 including k=0).", call. = FALSE)
-    }
-
-    pmf <- pmf / sum(pmf)
-    return(list(pmf = pmf, support = seq_len(J)))
-  }
-
-  # Fallback to pmf_K_marginal
   if (!exists("pmf_K_marginal", mode = "function")) {
-    stop("Neither exact_K_pmf() nor pmf_K_marginal() is available.", call. = FALSE)
+    stop("pmf_K_marginal() is not available.", call. = FALSE)
   }
   if (!exists("compute_log_stirling", mode = "function")) {
     stop("compute_log_stirling() is required to compute K_J PMF.", call. = FALSE)
@@ -119,7 +100,13 @@ compute_alpha_diagnostics <- function(a, b) {
   }
 
   pmf <- as.numeric(pmf0[-1L])  # Drop P(K=0)
-  pmf <- pmf / sum(pmf)
+  pmf_sum <- sum(pmf)
+  if (!is.finite(pmf_sum) || pmf_sum <= 0) {
+    warning("PMF normalization failed: sum is zero or non-finite. Using uniform PMF.", call. = FALSE)
+    pmf <- rep(1 / length(pmf), length(pmf))
+  } else {
+    pmf <- pmf / pmf_sum
+  }
 
   list(pmf = pmf, support = seq_len(J))
 }
@@ -187,13 +174,13 @@ compute_K_diagnostics <- function(J, a, b, M = .QUAD_NODES_DEFAULT) {
 
 
 # =============================================================================
-# Weight Distribution Diagnostics (Critical for RN-07)
+# Weight Distribution Diagnostics (Lee, 2026, Section 4)
 # =============================================================================
 
 #' Weight Distribution Diagnostics (w1)
 #'
 #' Computes comprehensive diagnostics for the first stick-breaking weight.
-#' This is the KEY diagnostic for RN-07 concerns about unintended prior behavior.
+#' This is the KEY diagnostic for concerns about unintended prior behavior (Lee, 2026, Section 4).
 #'
 #' @param a Numeric; shape parameter of the Gamma prior (> 0).
 #' @param b Numeric; rate parameter of the Gamma prior (> 0).
@@ -226,7 +213,10 @@ compute_K_diagnostics <- function(J, a, b, M = .QUAD_NODES_DEFAULT) {
 #' compute_weight_diagnostics(5, 1)
 #'
 #' @references
-#' Lee, J. (2025). RN-07: Unintended Prior Diagnostic.
+#' Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+#' \emph{arXiv preprint} arXiv:2602.06301.
+#'
+#' @family diagnostics
 #'
 #' @export
 compute_weight_diagnostics <- function(a, b,
@@ -286,7 +276,7 @@ compute_weight_diagnostics <- function(a, b,
 #'   co-clustering level).
 #'
 #' @details
-#' Key identity from RN-06: the expected co-clustering probability equals the
+#' Key identity from Lee (2026, Section 4): the expected co-clustering probability equals the
 #' expected first stick-breaking weight.
 #'
 #' @keywords internal
@@ -352,7 +342,7 @@ check_dominance_risk <- function(a, b, threshold = 0.5, risk_level = 0.3) {
 #' Comprehensive Prior Diagnostics
 #'
 #' Computes a full diagnostic report for a fitted DPprior object, implementing
-#' the "unintended prior" checks from RN-07.
+#' the "unintended prior" checks from Lee (2026, Section 4).
 #'
 #' @param fit A DPprior_fit object from any calibration method
 #'   (e.g., DPprior_a1, DPprior_a2_newton, DPprior_dual).
@@ -379,7 +369,10 @@ check_dominance_risk <- function(a, b, threshold = 0.5, risk_level = 0.3) {
 #' print(diag)
 #'
 #' @references
-#' Lee, J. (2025). RN-07: Unintended Prior Diagnostic.
+#' Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+#' \emph{arXiv preprint} arXiv:2602.06301.
+#'
+#' @family diagnostics
 #'
 #' @export
 DPprior_diagnostics <- function(fit, thresholds = c(0.5, 0.9)) {
@@ -576,12 +569,14 @@ summary.DPprior_diagnostics <- function(object, ...) {
 #' @return A data frame with diagnostic metrics for each fit.
 #'
 #' @examples
+#' \dontrun{
 #' fit_K <- DPprior_a2_newton(J = 50, mu_K = 5, var_K = 8)
 #' fit_dual <- DPprior_dual(fit_K,
 #'                          w1_target = list(prob = list(threshold = 0.5, value = 0.3)))
 #' compare_diagnostics(K_only = fit_K, Dual_anchor = fit_dual)
 #'
-#' @export
+#' }
+#' @keywords internal
 compare_diagnostics <- function(..., M = .QUAD_NODES_DEFAULT) {
   fits <- list(...)
 
@@ -630,7 +625,7 @@ compare_diagnostics <- function(..., M = .QUAD_NODES_DEFAULT) {
 #'
 #' @return Invisibly returns TRUE if all tests pass.
 #'
-#' @export
+#' @keywords internal
 verify_diagnostics <- function(verbose = TRUE) {
 
   if (isTRUE(verbose)) {
