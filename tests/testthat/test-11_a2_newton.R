@@ -179,14 +179,23 @@ test_that("A2-MN validates input parameters", {
   # Invalid mu_K
   expect_error(DPprior_a2_newton(J = 50, mu_K = 0.5, var_K = 8))
   expect_error(DPprior_a2_newton(J = 50, mu_K = 100, var_K = 8))
+  expect_error(DPprior_a2_newton(J = 50, mu_K = 50, var_K = 1),
+               "mu_K must be < J")
 
   # Invalid var_K
   expect_error(DPprior_a2_newton(J = 50, mu_K = 5, var_K = -1))
   expect_error(DPprior_a2_newton(J = 50, mu_K = 5, var_K = 0))
+  expect_error(
+    DPprior_a2_newton(J = 10, mu_K = 9, var_K = 9),
+    "var_K = 9.*maximum possible variance 8.*K in \\{1,...,10\\}.*mu_K = 9"
+  )
 
   # Invalid tolerances
   expect_error(DPprior_a2_newton(J = 50, mu_K = 5, var_K = 8, tol_F = -1))
+  expect_error(DPprior_a2_newton(J = 50, mu_K = 5, var_K = 8, tol_F = NA))
   expect_error(DPprior_a2_newton(J = 50, mu_K = 5, var_K = 8, tol_step = 0))
+  expect_error(DPprior_a2_newton(J = 50, mu_K = 5, var_K = 8, max_iter = "x"))
+  expect_error(DPprior_a2_newton(J = 50, mu_K = 5, var_K = 8, M = NA))
 })
 
 test_that("A2-MN accepts custom initial values", {

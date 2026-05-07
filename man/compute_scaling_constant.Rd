@@ -51,4 +51,3 @@ compute_scaling_constant(50, "digamma", mu_K = 5)
 \seealso{
 \code{\link{DPprior_a1}} for the main elicitation function
 }
-\keyword{internal}

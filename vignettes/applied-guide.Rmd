@@ -412,9 +412,10 @@ method for most applications.
 
 + Machine-precision accuracy
 
-+ Guaranteed exact moment matching
++ Targets exact moment matching and reaches machine precision for feasible,
+  well-conditioned targets
 
-+ Fast convergence (typically 5-10 iterations)
++ Often single-digit convergence; challenging targets may take more iterations
 
 **Cons:**
 
@@ -437,9 +438,10 @@ cat("  Iterations:", fit_a2$iterations, "\n")
 
 ### Method A2-KL: KL Divergence Minimization
 
-The A2-KL method minimizes the Kullback-Leibler divergence between a 
-target PMF and the induced distribution of $K$. This is useful when you 
-have a specific target distribution in mind, not just moments.
+The A2-KL method minimizes the Kullback-Leibler divergence between a target
+distribution and the induced distribution of $K$. It can use a discretized
+moment-based target or a custom PMF when you have a specific distributional
+shape in mind.
 
 **Pros:**
 
@@ -451,7 +453,7 @@ have a specific target distribution in mind, not just moments.
 
 **Cons:**
 
-+ Requires specifying a target PMF
++ More natural when a target PMF or distributional shape is available
 
 + Computationally more intensive than moment matching
 
@@ -518,20 +520,22 @@ Based on the comparison:
 
 ## 6. Feasibility Constraints
 
-Not all combinations of $(\mu_K, \sigma^2_K)$ are achievable with a 
-Gamma hyperprior. Understanding these constraints helps you specify 
+Not all combinations of $(\mu_K, \sigma^2_K)$ are achievable with a
+Gamma hyperprior. Understanding these constraints helps you specify
 feasible targets.
 
 ### Why Some Specifications Are Infeasible
 
-The variance of $K$ under a Gamma hyperprior is bounded:
+For the package's positive-variance moment workflows, target moments must use
+$1 < \mu_K < J$. The variance of $K$ is then bounded in two different senses:
 
-+ **Lower bound**: $\text{Var}(K) > \mu_K - 1$ (approximately). This is 
-  because the Negative Binomial proxy requires overdispersion relative 
-  to Poisson.
++ **A1 lower bound**: $\text{Var}(K) > \mu_K - 1$ (approximately). This is
+  a Negative Binomial proxy constraint used by A1, not a universal exact-DP
+  constraint.
 
-+ **Upper bound**: $\text{Var}(K) < (J-1)^2/4$ (approximately). This is 
-  a mathematical constraint on the variance of a bounded random variable.
++ **Finite-support upper bound**: $\text{Var}(K) \leq (\mu_K - 1)(J - \mu_K)$. This is the
+  sharp variance bound for a variable supported on $\{1,\ldots,J\}$ with fixed
+  mean $\mu_K$.
 
 ### How the Package Handles Infeasibility
 
@@ -545,10 +549,11 @@ cat("  Used var_K:", fit_infeasible$target$var_K_used, "\n")
 cat("  (Projected to feasible boundary)\n")
 ```
 
-The A1 method automatically projects infeasible specifications to the 
-boundary of the feasible region. The A2-MN method attempts exact matching 
-without projection, which may result in slower convergence or failure 
-for truly infeasible targets.
+The A1 method automatically projects specifications that violate its proxy
+lower bound to the A1 feasibility boundary. The A2-MN method attempts exact
+matching without that Negative Binomial lower-bound projection, but it still
+requires the package-wide moment domain and can fail for truly infeasible or
+numerically ill-conditioned targets.
 
 
 ## 7. A Complete Elicitation Workflow

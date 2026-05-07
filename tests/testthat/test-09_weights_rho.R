@@ -80,7 +80,7 @@ test_that("Variance formula consistent with second moment: Var = E[rho^2] - E[rh
 
 
 # =============================================================================
-# Test: Monotonicity (GPT addition)
+# Test: Monotonicity
 # =============================================================================
 
 test_that("E[rho|alpha] decreases with alpha", {
@@ -317,7 +317,7 @@ test_that("Functions are stable for challenging (a, b) combinations", {
 
 
 # =============================================================================
-# Test: Golden Reference Values (GPT addition)
+# Test: Golden Reference Values
 # =============================================================================
 
 test_that("Golden values for mean/variance are stable (if available)", {

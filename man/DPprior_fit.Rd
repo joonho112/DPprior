@@ -6,7 +6,7 @@
 \usage{
 DPprior_fit(
   J,
-  mu_K,
+  mu_K = NULL,
   var_K = NULL,
   confidence = c("medium", "low", "high"),
   method = c("A2-MN", "A1", "A2-KL"),
@@ -23,11 +23,14 @@ DPprior_fit(
 and not exceed the maximum supported value (default: 500).}
 
 \item{mu_K}{Numeric; target expected number of clusters \code{E[K_J]}. Must be
-in the range (1, J]. Note: mu_K = 1 is trivial (single cluster).}
+in the range (1, J). Note: mu_K = 1 is trivial (single cluster) and
+mu_K = J implies zero variance.
+May be omitted when \code{target_pmf} is supplied.}
 
 \item{var_K}{Numeric; target variance of \code{K_J}. If NULL, computed from
-the \code{confidence} argument. Must satisfy var_K <= (J-1)^2/4
-(maximum possible variance for K in \{1,...,J\}).}
+the \code{confidence} argument. Must satisfy
+\code{var_K <= (mu_K - 1) * (J - mu_K)}, the maximum possible variance
+for a variable supported on \{1,...,J\} with mean \code{mu_K}.}
 
 \item{confidence}{Character; alternative to var_K for specifying uncertainty.
 One of:
@@ -50,7 +53,11 @@ target (default) and custom target PMF via \code{target_pmf}.
 }}
 
 \item{target_pmf}{Numeric vector; optional custom target PMF for A2-KL.
-If provided, A2-KL uses PMF matching mode. Length must equal J.}
+If provided, A2-KL uses PMF matching mode and target moments are computed
+from the PMF. Length may be J for support \code{1:J}, or J+1 with the
+first entry corresponding to \code{K = 0}; the \code{K = 0} entry must be
+zero. If \code{mu_K} or \code{var_K} is also supplied, it must match the
+moment implied by \code{target_pmf} within numerical tolerance.}
 
 \item{check_diagnostics}{Logical; if TRUE (default), compute comprehensive
 diagnostics including weight distribution analysis.}
@@ -63,8 +70,7 @@ Default is 80, which provides good accuracy for most cases.}
 
 \item{verbose}{Logical; if TRUE, print progress messages during calibration.}
 
-\item{...}{Additional arguments passed to method-specific functions.
-Note: only matching formal arguments are forwarded to backends.}
+\item{...}{Reserved for future method-specific extensions.}
 }
 \value{
 An S3 object of class "DPprior_fit" containing:
@@ -97,11 +103,20 @@ This function is the primary interface for Design-Conditional Elicitation
 Matching (TSMM): Stage 1 (A1) provides a closed-form initialization, and
 Stage 2 (A2-MN) refines to exact moments via Newton iteration.
 
+If \code{target_pmf} is supplied and \code{method} is omitted,
+\code{DPprior_fit()} dispatches to \code{method = "A2-KL"}. Supplying
+\code{target_pmf} with \code{method = "A1"} or \code{method = "A2-MN"}
+is an error because those methods are moment-based. When \code{target_pmf}
+is supplied together with explicit \code{mu_K} or \code{var_K}, the explicit
+moments are treated as consistency checks rather than alternate targets.
+Inconsistent explicit moments are rejected.
+
 \subsection{Variance Constraints}{
 The target variance must satisfy two constraints:
 \enumerate{
-\item Upper bound: \code{var_K <= (J-1)^2/4} (maximum possible variance
-for a distribution on \{1,...,J\})
+\item Upper bound: \code{var_K <= (mu_K - 1) * (J - mu_K)}
+(maximum possible variance for a distribution on \{1,...,J\}
+with fixed mean \code{mu_K})
 \item Lower bound (A1 only): \code{var_K >= mu_K - 1} (NegBin feasibility).
 For A1, infeasible variance is projected to the boundary with a warning.
 A2-MN does not have this constraint.
@@ -130,6 +145,12 @@ fit_low <- DPprior_fit(J = 50, mu_K = 5, confidence = "low")
 
 # Quick approximation for exploration
 fit_quick <- DPprior_fit(J = 50, mu_K = 5, var_K = 8, method = "A1")
+
+# Custom PMF target; method dispatches to A2-KL when omitted
+target_pmf <- stats::dpois(1:20, lambda = 4)
+fit_pmf <- DPprior_fit(J = 20, target_pmf = target_pmf,
+                       check_diagnostics = FALSE,
+                       warn_dominance = FALSE)
 
 # Verbose output for debugging
 fit_verbose <- DPprior_fit(J = 50, mu_K = 5, var_K = 8, verbose = TRUE)

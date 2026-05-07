@@ -46,11 +46,12 @@ DPprior translates such beliefs into principled Gamma hyperpriors on $\alpha$.
 ### Installation
 
 ```{r installation, eval=FALSE}
-# From CRAN (when available)
-install.packages("DPprior")
-
-# From GitHub (development version)
+# From GitHub
+# install.packages("devtools")
 devtools::install_github("joonho112/DPprior")
+
+# From CRAN, if available
+# install.packages("DPprior")
 ```
 
 ```{r load-package}
@@ -363,8 +364,8 @@ These natural questions translate directly into prior specifications:
 | Researcher's Answer | Mathematical Translation |
 |---------------------|--------------------------|
 | "About 5 groups" | $\mu_K = 5$ (target mean of $K_J$) |
-| "Moderately confident" | $\text{Var}(K_J) \approx 2.5 \times \mu_K$ |
-| "Very uncertain" | $\text{Var}(K_J) \approx 5 \times \mu_K$ |
+| "Moderately confident" | $\text{Var}(K_J) \approx 2.5 \times (\mu_K - 1)$ |
+| "Very uncertain" | $\text{Var}(K_J) \approx 5 \times (\mu_K - 1)$ |
 | "Unlikely one group dominates" | $P(w_1 > 0.5) < 0.3$ |
 
 ### From Moments to Gamma Hyperparameters
@@ -384,8 +385,8 @@ hyperparameters $\alpha \sim \text{Gamma}(a, b)$ through a two-step process:
 
 This approach---which we call *Design-Conditional Elicitation (DCE)*---extends the original DORO method 
 (Dorazio, 2009; Lee et al., 2025) by replacing computationally expensive 
-grid search with near-instantaneous closed-form solutions backed by 
-Newton iteration for guaranteed accuracy. The optional dual-anchor extension 
+grid search with fast closed-form initialization and Newton refinement for
+accurate moment matching. The optional dual-anchor extension
 further incorporates weight constraints, addressing the "unintended prior" 
 problem identified by Vicentini & Jermyn (2025).
 
@@ -402,7 +403,7 @@ fit_high <- DPprior_fit(J = J, mu_K = mu_K, confidence = "high")
 # Display results
 results <- data.frame(
   Confidence = c("Low", "Medium", "High"),
-  VIF = c(4.0, 2.5, 1.5),
+  VIF = c(5.0, 2.5, 1.5),
   var_K = round(c(fit_low$target$var_K, fit_med$target$var_K, 
                   fit_high$target$var_K), 2),
   a = round(c(fit_low$a, fit_med$a, fit_high$a), 3),

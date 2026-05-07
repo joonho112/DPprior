@@ -72,6 +72,42 @@
   )
 }
 
+.close_all_test_devices <- function() {
+  while (!identical(names(grDevices::dev.cur()), "null device")) {
+    grDevices::dev.off()
+  }
+}
+
+.expect_no_base_plot_artifact <- function(expr) {
+  td <- tempfile("dpprior-plot-")
+  dir.create(td)
+  old_wd <- getwd()
+  old_device <- getOption("device")
+
+  on.exit({
+    .close_all_test_devices()
+    setwd(old_wd)
+    options(device = old_device)
+    unlink(td, recursive = TRUE, force = TRUE)
+  }, add = TRUE)
+
+  .close_all_test_devices()
+  setwd(td)
+  options(device = grDevices::pdf)
+
+  result <- eval.parent(substitute(expr))
+  dev_name <- names(grDevices::dev.cur())
+  if (!identical(dev_name, "null device")) {
+    .close_all_test_devices()
+  }
+  files <- list.files(td, all.files = FALSE, no.. = TRUE)
+
+  expect_null(result)
+  expect_identical(dev_name, "null device")
+  expect_false("Rplots.pdf" %in% files)
+  expect_length(files, 0L)
+}
+
 
 # =============================================================================
 # Section 1: DPprior_colors
@@ -289,6 +325,7 @@ test_that("plot_w1_prior risk level is one of HIGH, MODERATE, LOW", {
 test_that("plot_prior_dashboard returns gtable for ggplot2 engine", {
   skip_if_not_installed("ggplot2")
   skip_if_not_installed("gtable")
+  pdf(nullfile()); on.exit(dev.off())
   fit <- .make_test_fit()
   g <- plot_prior_dashboard(fit, show = FALSE)
   expect_true(inherits(g, "gtable") || is.list(g))
@@ -304,6 +341,7 @@ test_that("plot_prior_dashboard with base engine returns invisible NULL", {
 test_that("plot_prior_dashboard passes title to gtable", {
   skip_if_not_installed("ggplot2")
   skip_if_not_installed("gtable")
+  pdf(nullfile()); on.exit(dev.off())
   fit <- .make_test_fit()
   g <- plot_prior_dashboard(fit, title = "My Custom Title", show = FALSE)
   expect_true(inherits(g, "gtable") || is.list(g))
@@ -328,6 +366,7 @@ test_that("plot_prior_dashboard errors on non-fit input", {
 test_that("plot.DPprior_fit auto type dispatches to dashboard for K-only fit", {
   skip_if_not_installed("ggplot2")
   skip_if_not_installed("gtable")
+  pdf(nullfile()); on.exit(dev.off())
   fit <- .make_test_fit()
   result <- plot(fit, type = "auto", show = FALSE)
   # Should return gtable or list (dashboard)
@@ -358,6 +397,7 @@ test_that("plot.DPprior_fit type='w1' dispatches correctly", {
 test_that("plot.DPprior_fit type='dashboard' dispatches correctly", {
   skip_if_not_installed("ggplot2")
   skip_if_not_installed("gtable")
+  pdf(nullfile()); on.exit(dev.off())
   fit <- .make_test_fit()
   result <- plot(fit, type = "dashboard", show = FALSE)
   expect_true(inherits(result, "gtable") || is.list(result))
@@ -366,6 +406,7 @@ test_that("plot.DPprior_fit type='dashboard' dispatches correctly", {
 test_that("plot.DPprior_fit auto type detects dual fit", {
   skip_if_not_installed("ggplot2")
   skip_if_not_installed("gtable")
+  pdf(nullfile()); on.exit(dev.off())
   fit_dual <- .make_dual_fit()
   result <- plot(fit_dual, type = "auto", show = FALSE)
   # Should dispatch to plot_dual_comparison for dual fits
@@ -388,6 +429,7 @@ test_that("plot.DPprior_fit base engine works via S3 dispatch", {
 test_that("plot_dual_comparison works with dual fit (ggplot2)", {
   skip_if_not_installed("ggplot2")
   skip_if_not_installed("gtable")
+  pdf(nullfile()); on.exit(dev.off())
   fit_dual <- .make_dual_fit()
   result <- plot_dual_comparison(fit_dual, show = FALSE)
   expect_true(inherits(result, "gtable") || is.list(result))
@@ -411,6 +453,7 @@ test_that("plot_dual_comparison with base engine returns invisible NULL", {
 test_that("plot_dual_comparison accepts custom fit_K_only", {
   skip_if_not_installed("ggplot2")
   skip_if_not_installed("gtable")
+  pdf(nullfile()); on.exit(dev.off())
   fit_dual <- .make_dual_fit()
   fit_K <- .make_test_fit()
   fit_K$a <- 2.0
@@ -422,6 +465,7 @@ test_that("plot_dual_comparison accepts custom fit_K_only", {
 test_that("plot_dual_comparison respects title argument", {
   skip_if_not_installed("ggplot2")
   skip_if_not_installed("gtable")
+  pdf(nullfile()); on.exit(dev.off())
   fit_dual <- .make_dual_fit()
   result <- plot_dual_comparison(fit_dual, title = "Custom Title",
                                  show = FALSE)
@@ -492,6 +536,7 @@ test_that("plot_tradeoff_curve errors on missing metric column", {
 test_that("plot_tradeoff_dashboard works with ggplot2 engine", {
   skip_if_not_installed("ggplot2")
   skip_if_not_installed("gtable")
+  pdf(nullfile()); on.exit(dev.off())
   td <- .make_tradeoff_data()
   result <- plot_tradeoff_dashboard(td, show = FALSE)
   expect_true(inherits(result, "gtable") || is.list(result))
@@ -500,6 +545,7 @@ test_that("plot_tradeoff_dashboard works with ggplot2 engine", {
 test_that("plot_tradeoff_dashboard respects w1_target_prob", {
   skip_if_not_installed("ggplot2")
   skip_if_not_installed("gtable")
+  pdf(nullfile()); on.exit(dev.off())
   td <- .make_tradeoff_data()
   result <- plot_tradeoff_dashboard(td, w1_target_prob = 0.25, show = FALSE)
   expect_true(inherits(result, "gtable") || is.list(result))
@@ -508,15 +554,9 @@ test_that("plot_tradeoff_dashboard respects w1_target_prob", {
 test_that("plot_tradeoff_dashboard with base engine returns invisible NULL", {
   pdf(nullfile()); on.exit(dev.off())
   td <- .make_tradeoff_data()
-  # The base engine for tradeoff_dashboard calls plot_tradeoff_curve with
-
-  # "mu_K" as a metric, which may not be in the match.arg list.
-  # This exercises the base fallback path.
-  result <- tryCatch(
-    plot_tradeoff_dashboard(td, engine = "base", show = FALSE),
-    error = function(e) NULL
+  expect_no_error(
+    result <- plot_tradeoff_dashboard(td, engine = "base", show = FALSE)
   )
-  # Either succeeds with NULL or may error on match.arg for "mu_K"
   expect_true(is.null(result))
 })
 
@@ -528,6 +568,7 @@ test_that("plot_tradeoff_dashboard with base engine returns invisible NULL", {
 test_that("plot_dual_dashboard works with dual fit (ggplot2)", {
   skip_if_not_installed("ggplot2")
   skip_if_not_installed("gtable")
+  pdf(nullfile()); on.exit(dev.off())
   fit_dual <- .make_dual_fit()
   result <- plot_dual_dashboard(fit_dual, show = FALSE)
   expect_true(inherits(result, "gtable") || is.list(result))
@@ -536,6 +577,7 @@ test_that("plot_dual_dashboard works with dual fit (ggplot2)", {
 test_that("plot_dual_dashboard falls back to standard dashboard for K-only fit", {
   skip_if_not_installed("ggplot2")
   skip_if_not_installed("gtable")
+  pdf(nullfile()); on.exit(dev.off())
   fit <- .make_test_fit()
   result <- plot_dual_dashboard(fit, show = FALSE)
   # Should fall back to plot_prior_dashboard
@@ -830,6 +872,7 @@ test_that("plot_prior_dashboard base engine with title works", {
 test_that("plot.DPprior_fit type='comparison' warns for non-dual fit", {
   skip_if_not_installed("ggplot2")
   skip_if_not_installed("gtable")
+  pdf(nullfile()); on.exit(dev.off())
   fit <- .make_test_fit()
   expect_warning(
     plot(fit, type = "comparison", show = FALSE),
@@ -840,9 +883,12 @@ test_that("plot.DPprior_fit type='comparison' warns for non-dual fit", {
 test_that("plot.DPprior_fit type='dual' falls back for non-dual fit", {
   skip_if_not_installed("ggplot2")
   skip_if_not_installed("gtable")
+  pdf(nullfile()); on.exit(dev.off())
   fit <- .make_test_fit()
-  # Should silently fall back to standard dashboard
-  result <- plot(fit, type = "dual", show = FALSE)
+  result <- expect_warning(
+    plot(fit, type = "dual", show = FALSE),
+    "Not a dual-anchor fit"
+  )
   expect_true(inherits(result, "gtable") || is.list(result))
 })
 
@@ -850,6 +896,7 @@ test_that(".dpprior_dashboard_gtable creates a gtable from 4 ggplots", {
   skip_if_not_installed("ggplot2")
   skip_if_not_installed("gtable")
   skip_if_not_installed("grid")
+  pdf(nullfile()); on.exit(dev.off())
 
   # Create minimal ggplot objects
   df <- data.frame(x = 1:3, y = 1:3)
@@ -862,6 +909,7 @@ test_that(".dpprior_dashboard_gtable works without title", {
   skip_if_not_installed("ggplot2")
   skip_if_not_installed("gtable")
   skip_if_not_installed("grid")
+  pdf(nullfile()); on.exit(dev.off())
 
   df <- data.frame(x = 1:3, y = 1:3)
   p <- ggplot2::ggplot(df, ggplot2::aes(x = x, y = y)) + ggplot2::geom_point()
@@ -897,6 +945,67 @@ test_that("plot_tradeoff_curve base engine with target_value works", {
   result <- plot_tradeoff_curve(td, target_value = 0.3,
                                  engine = "base", show = FALSE)
   expect_null(result)
+})
+
+test_that("base show=FALSE paths do not create graphics artifacts", {
+  fit <- .make_test_fit()
+  fit_dual <- .make_dual_fit()
+  td <- .make_tradeoff_data()
+
+  .expect_no_base_plot_artifact(
+    plot_alpha_prior(fit, engine = "base", show = FALSE)
+  )
+  .expect_no_base_plot_artifact(
+    plot_alpha_prior(a = 2.0, b = 1.5, engine = "base", show = FALSE)
+  )
+  .expect_no_base_plot_artifact(
+    plot_K_prior(fit, engine = "base", show = FALSE)
+  )
+  .expect_no_base_plot_artifact(
+    plot_K_prior(J = 50, a = 1.6, b = 1.2, engine = "base", show = FALSE)
+  )
+  .expect_no_base_plot_artifact(
+    plot_w1_prior(fit, engine = "base", show = FALSE)
+  )
+  .expect_no_base_plot_artifact(
+    plot_w1_prior(a = 2.0, b = 1.5, engine = "base", show = FALSE)
+  )
+  .expect_no_base_plot_artifact(
+    plot_prior_dashboard(fit, engine = "base", show = FALSE)
+  )
+  .expect_no_base_plot_artifact(
+    plot_tradeoff_curve(td, metric = "mu_K", engine = "base", show = FALSE)
+  )
+  .expect_no_base_plot_artifact(
+    plot_tradeoff_dashboard(td, engine = "base", show = FALSE)
+  )
+  .expect_no_base_plot_artifact(
+    plot_dual_comparison(fit_dual, engine = "base", show = FALSE)
+  )
+  .expect_no_base_plot_artifact(
+    plot_dual_dashboard(fit_dual, engine = "base", show = FALSE)
+  )
+  .expect_no_base_plot_artifact(
+    plot_dual_dashboard(fit, engine = "base", show = FALSE)
+  )
+  .expect_no_base_plot_artifact(
+    plot(fit, type = "auto", engine = "base", show = FALSE)
+  )
+  .expect_no_base_plot_artifact(
+    plot(fit, type = "alpha", engine = "base", show = FALSE)
+  )
+  .expect_no_base_plot_artifact(
+    plot(fit, type = "K", engine = "base", show = FALSE)
+  )
+  .expect_no_base_plot_artifact(
+    plot(fit, type = "w1", engine = "base", show = FALSE)
+  )
+  .expect_no_base_plot_artifact(
+    plot(fit, type = "dashboard", engine = "base", show = FALSE)
+  )
+  .expect_no_base_plot_artifact(
+    plot(fit_dual, type = "auto", engine = "base", show = FALSE)
+  )
 })
 
 test_that(".dpprior_density_w1 handles boundary values gracefully", {

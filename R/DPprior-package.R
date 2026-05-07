@@ -21,8 +21,8 @@
 #' }
 #'
 #' Additionally, the \strong{Dual-Anchor} framework (\code{\link{DPprior_dual}})
-#' enables joint control of cluster count \eqn{K_J} and largest weight \eqn{w_1}
-#' targets.
+#' enables joint control of cluster count \eqn{K_J} and first stick-breaking
+#' weight \eqn{w_1} targets.
 #'
 #' The unified interface \code{\link{DPprior_fit}} dispatches to the appropriate
 #' algorithm based on the user's specification.
@@ -51,6 +51,14 @@
 #' in multisite trials.
 #' \emph{Journal of Educational and Behavioral Statistics}, 50(5), 731--764.
 #' \doi{10.3102/10769986241254286}
+#'
+#' @section Acknowledgments:
+#' This research was supported by the Institute of Education Sciences, U.S.
+#' Department of Education, through Grant R305D240078 to the University of
+#' Alabama.
+#'
+#' The opinions expressed are those of the authors and do not represent views of
+#' the Institute or the U.S. Department of Education.
 #'
 #' @keywords internal
 "_PACKAGE"

@@ -162,7 +162,9 @@ test_that("DPprior_a1 errors on invalid mu_K", {
   expect_error(DPprior_a1(J = 50, mu_K = 1, var_K = 8),
                "mu_K must be > 1")
   expect_error(DPprior_a1(J = 50, mu_K = 51, var_K = 8),
-               "mu_K must be <= J")
+               "mu_K must be < J")
+  expect_error(DPprior_a1(J = 50, mu_K = 50, var_K = 1),
+               "mu_K must be < J")
 })
 
 test_that("DPprior_a1 errors on invalid var_K", {
@@ -170,6 +172,8 @@ test_that("DPprior_a1 errors on invalid var_K", {
                "var_K must be a positive finite numeric scalar")
   expect_error(DPprior_a1(J = 50, mu_K = 5, var_K = -1),
                "var_K must be a positive finite numeric scalar")
+  expect_error(DPprior_a1(J = 10, mu_K = 9, var_K = 9),
+               "var_K = 9.*maximum possible variance 8.*K in \\{1,...,10\\}.*mu_K = 9")
 })
 
 

@@ -32,7 +32,7 @@ or target moment specification.
 \details{
 \strong{Direct PMF specification:}
 If \code{target} is a numeric vector of length J, it is treated as the PMF
-for k = 1, ..., J. If length J+1, the k=0 entry is dropped.
+for k = 1, ..., J. If length J+1, the k=0 entry must be zero and is dropped.
 
 \strong{Moment specification:}
 If \code{target} is a list with \code{mu_K} and \code{var_K}, a discretized

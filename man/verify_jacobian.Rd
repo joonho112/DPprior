@@ -55,4 +55,3 @@ in Python).
 result <- verify_jacobian(J = 50, a = 2.0, b = 1.0, verbose = TRUE)
 
 }
-\keyword{internal}

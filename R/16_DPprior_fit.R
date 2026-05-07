@@ -14,7 +14,7 @@
 # Part of: DPprior R Package
 #
 # Key improvements integrated:
-#   - var_K upper bound check: var_K <= (J-1)^2/4
+#   - fixed-mean var_K upper bound: var_K <= (mu_K - 1) * (J - mu_K)
 #   - A1-only projection (not at wrapper level for A2-MN)
 #   - Updated VIF values: low=5.0, medium=2.5, high=1.5
 #   - mu_K > 1 constraint (trivial case excluded)
@@ -110,6 +110,32 @@ vif_to_variance_fit <- function(mu_K, vif) {
 }
 
 
+.dpprior_check_target_pmf_moment <- function(supplied, implied, name,
+                                            tolerance = 1e-8) {
+  if (is.null(supplied)) {
+    return(invisible(TRUE))
+  }
+  if (!is.numeric(supplied) || length(supplied) != 1L || !is.finite(supplied)) {
+    stop(sprintf("%s must be a finite numeric scalar", name), call. = FALSE)
+  }
+
+  scale <- max(1, abs(supplied), abs(implied))
+  if (abs(supplied - implied) > tolerance * scale) {
+    label <- if (identical(name, "mu_K")) {
+      "mean"
+    } else {
+      "variance"
+    }
+    stop(sprintf(
+      "%s conflicts with target_pmf-derived %s (got %.12g; target_pmf implies %.12g; tolerance = %.1e).",
+      name, label, supplied, implied, tolerance
+    ), call. = FALSE)
+  }
+
+  invisible(TRUE)
+}
+
+
 # =============================================================================
 # Main Entry Point: DPprior_fit()
 # =============================================================================
@@ -126,10 +152,13 @@ vif_to_variance_fit <- function(mu_K, vif) {
 #' @param J Integer; sample size (number of sites/units). Must be positive
 #'   and not exceed the maximum supported value (default: 500).
 #' @param mu_K Numeric; target expected number of clusters \code{E[K_J]}. Must be
-#'   in the range (1, J]. Note: mu_K = 1 is trivial (single cluster).
+#'   in the range (1, J). Note: mu_K = 1 is trivial (single cluster) and
+#'   mu_K = J implies zero variance.
+#'   May be omitted when \code{target_pmf} is supplied.
 #' @param var_K Numeric; target variance of \code{K_J}. If NULL, computed from
-#'   the \code{confidence} argument. Must satisfy var_K <= (J-1)^2/4
-#'   (maximum possible variance for K in \{1,...,J\}).
+#'   the \code{confidence} argument. Must satisfy
+#'   \code{var_K <= (mu_K - 1) * (J - mu_K)}, the maximum possible variance
+#'   for a variable supported on \{1,...,J\} with mean \code{mu_K}.
 #' @param confidence Character; alternative to var_K for specifying uncertainty.
 #'   One of:
 #'   \itemize{
@@ -149,7 +178,11 @@ vif_to_variance_fit <- function(mu_K, vif) {
 #'           target (default) and custom target PMF via \code{target_pmf}.
 #'   }
 #' @param target_pmf Numeric vector; optional custom target PMF for A2-KL.
-#'   If provided, A2-KL uses PMF matching mode. Length must equal J.
+#'   If provided, A2-KL uses PMF matching mode and target moments are computed
+#'   from the PMF. Length may be J for support \code{1:J}, or J+1 with the
+#'   first entry corresponding to \code{K = 0}; the \code{K = 0} entry must be
+#'   zero. If \code{mu_K} or \code{var_K} is also supplied, it must match the
+#'   moment implied by \code{target_pmf} within numerical tolerance.
 #' @param check_diagnostics Logical; if TRUE (default), compute comprehensive
 #'   diagnostics including weight distribution analysis.
 #' @param warn_dominance Logical; if TRUE (default), issue a warning if the
@@ -157,8 +190,7 @@ vif_to_variance_fit <- function(mu_K, vif) {
 #' @param M Integer; number of quadrature nodes for numerical integration.
 #'   Default is 80, which provides good accuracy for most cases.
 #' @param verbose Logical; if TRUE, print progress messages during calibration.
-#' @param ... Additional arguments passed to method-specific functions.
-#'   Note: only matching formal arguments are forwarded to backends.
+#' @param ... Reserved for future method-specific extensions.
 #'
 #' @return An S3 object of class "DPprior_fit" containing:
 #'   \describe{
@@ -182,11 +214,20 @@ vif_to_variance_fit <- function(mu_K, vif) {
 #' Matching (TSMM): Stage 1 (A1) provides a closed-form initialization, and
 #' Stage 2 (A2-MN) refines to exact moments via Newton iteration.
 #'
+#' If \code{target_pmf} is supplied and \code{method} is omitted,
+#' \code{DPprior_fit()} dispatches to \code{method = "A2-KL"}. Supplying
+#' \code{target_pmf} with \code{method = "A1"} or \code{method = "A2-MN"}
+#' is an error because those methods are moment-based. When \code{target_pmf}
+#' is supplied together with explicit \code{mu_K} or \code{var_K}, the explicit
+#' moments are treated as consistency checks rather than alternate targets.
+#' Inconsistent explicit moments are rejected.
+#'
 #' \subsection{Variance Constraints}{
 #' The target variance must satisfy two constraints:
 #' \enumerate{
-#'   \item Upper bound: \code{var_K <= (J-1)^2/4} (maximum possible variance
-#'         for a distribution on \{1,...,J\})
+#'   \item Upper bound: \code{var_K <= (mu_K - 1) * (J - mu_K)}
+#'         (maximum possible variance for a distribution on \{1,...,J\}
+#'         with fixed mean \code{mu_K})
 #'   \item Lower bound (A1 only): \code{var_K >= mu_K - 1} (NegBin feasibility).
 #'         For A1, infeasible variance is projected to the boundary with a warning.
 #'         A2-MN does not have this constraint.
@@ -223,6 +264,12 @@ vif_to_variance_fit <- function(mu_K, vif) {
 #' # Quick approximation for exploration
 #' fit_quick <- DPprior_fit(J = 50, mu_K = 5, var_K = 8, method = "A1")
 #'
+#' # Custom PMF target; method dispatches to A2-KL when omitted
+#' target_pmf <- stats::dpois(1:20, lambda = 4)
+#' fit_pmf <- DPprior_fit(J = 20, target_pmf = target_pmf,
+#'                        check_diagnostics = FALSE,
+#'                        warn_dominance = FALSE)
+#'
 #' # Verbose output for debugging
 #' fit_verbose <- DPprior_fit(J = 50, mu_K = 5, var_K = 8, verbose = TRUE)
 #'
@@ -239,7 +286,7 @@ vif_to_variance_fit <- function(mu_K, vif) {
 #' @family elicitation
 #'
 #' @export
-DPprior_fit <- function(J, mu_K, var_K = NULL,
+DPprior_fit <- function(J, mu_K = NULL, var_K = NULL,
                         confidence = c("medium", "low", "high"),
                         method = c("A2-MN", "A1", "A2-KL"),
                         target_pmf = NULL,
@@ -256,12 +303,34 @@ DPprior_fit <- function(J, mu_K, var_K = NULL,
   assert_valid_J(J)
 
   # Validate M
-  if (!is.numeric(M) || length(M) != 1L || M < 10L || M != floor(M)) {
-    stop("M must be an integer >= 10", call. = FALSE)
-  }
-  M <- as.integer(M)
+  M <- .as_integer_scalar(M, "M", min = 10L)
 
-  # Validate mu_K: must be finite, positive, and in (1, J]
+  # Match method early; target_pmf implies A2-KL if method was omitted.
+  method_missing <- missing(method)
+  method <- match.arg(method)
+
+  target_pmf_info <- NULL
+  if (!is.null(target_pmf)) {
+    if (method_missing) {
+      method <- "A2-KL"
+    }
+    if (method != "A2-KL") {
+      stop("target_pmf can only be used with method = 'A2-KL'", call. = FALSE)
+    }
+
+    target_pmf_info <- construct_target_pmf(J, target_pmf)
+    .dpprior_check_target_pmf_moment(mu_K, target_pmf_info$mu_K, "mu_K")
+    .dpprior_check_target_pmf_moment(var_K, target_pmf_info$var_K, "var_K")
+    target_pmf <- target_pmf_info$pmf
+    mu_K <- target_pmf_info$mu_K
+    var_K <- target_pmf_info$var_K
+  }
+
+  if (is.null(mu_K)) {
+    stop("mu_K must be supplied unless target_pmf is provided", call. = FALSE)
+  }
+
+  # Validate mu_K: must be finite, positive, and in (1, J)
   if (!is.numeric(mu_K) || length(mu_K) != 1L || !is.finite(mu_K)) {
     stop("mu_K must be a finite numeric scalar", call. = FALSE)
   }
@@ -272,13 +341,10 @@ DPprior_fit <- function(J, mu_K, var_K = NULL,
          call. = FALSE)
   }
 
-  if (mu_K > J) {
-    stop(sprintf("mu_K must be <= J (got mu_K = %.2f, J = %d)", mu_K, J),
+  if (mu_K >= J) {
+    stop("mu_K must be < J (mu_K = J implies zero variance for K_J, outside the positive-variance elicitation workflow)",
          call. = FALSE)
   }
-
-  # Match method argument
-  method <- match.arg(method)
 
   # ---------------------------------------------------------------------------
   # Handle var_K vs Confidence
@@ -308,32 +374,10 @@ DPprior_fit <- function(J, mu_K, var_K = NULL,
   }
 
   # ---------------------------------------------------------------------------
-  # var_K upper bound check (universal)
+  # var_K upper bound check for fixed mu_K
   # ---------------------------------------------------------------------------
 
-  # Hard upper bound: K_J in {1, ..., J} implies Var(K) <= (J-1)^2 / 4
-  # This is the variance of a distribution at the endpoints (Bernoulli-like)
-  var_upper <- (J - 1)^2 / 4
-
-  if (var_K > var_upper + 1e-12) {
-    stop(sprintf(
-      "var_K = %.2f exceeds maximum possible variance (%.2f) for K in {1,...,%d}.\n  Reduce var_K or use a lower confidence level.",
-      var_K, var_upper, J), call. = FALSE)
-  }
-
-  # ---------------------------------------------------------------------------
-  # Validate target_pmf (if provided)
-  # ---------------------------------------------------------------------------
-
-  if (!is.null(target_pmf)) {
-    if (!is.numeric(target_pmf) || length(target_pmf) != J) {
-      stop(sprintf("target_pmf must be a numeric vector of length J = %d", J),
-           call. = FALSE)
-    }
-    if (any(target_pmf < 0) || abs(sum(target_pmf) - 1) > 1e-6) {
-      stop("target_pmf must be non-negative and sum to 1", call. = FALSE)
-    }
-  }
+  .assert_feasible_K_moments(J, mu_K, var_K)
 
   # ---------------------------------------------------------------------------
   # Method Dispatch
@@ -393,6 +437,14 @@ DPprior_fit <- function(J, mu_K, var_K = NULL,
                 }
   )
 
+  if (!isTRUE(fit$converged) && !identical(fit$status, "fallback_used")) {
+    residual <- .dpprior_coalesce(fit$fit$residual, NA_real_)
+    stop(sprintf(
+      "Calibration did not converge for method %s (status: %s, residual: %.4g). Try a larger var_K or a less concentrated target.",
+      method, fit$status %||% "unknown", residual
+    ), call. = FALSE)
+  }
+
   # ---------------------------------------------------------------------------
   # Build Consistent Output Structure
   # ---------------------------------------------------------------------------
@@ -414,17 +466,22 @@ DPprior_fit <- function(J, mu_K, var_K = NULL,
     solver_diag <- fit$diagnostics
   }
 
+  target_result <- list(
+    mu_K = mu_K,
+    var_K = var_K_original,   # Store original (before any projection)
+    var_K_used = var_K_used,  # Actual value used (may be projected for A1)
+    confidence = confidence_used,
+    type = if (!is.null(target_pmf)) "pmf" else "moments"
+  )
+  if (!is.null(target_pmf_info)) {
+    target_result$pmf <- target_pmf_info$pmf
+  }
+
   result <- list(
     a = fit$a,
     b = fit$b,
     J = J,
-    target = list(
-      mu_K = mu_K,
-      var_K = var_K_original,   # Store original (before any projection)
-      var_K_used = var_K_used,  # Actual value used (may be projected for A1)
-      confidence = confidence_used,
-      type = if (!is.null(target_pmf)) "pmf" else "moments"
-    ),
+    target = target_result,
     method = fit$method %||% method,
     status = fit$status %||% "success",
     converged = fit$converged %||% TRUE,
@@ -543,10 +600,10 @@ verify_DPprior_fit <- function(verbose = TRUE) {
   }
 
   J <- 50
-  var_upper <- (J - 1)^2 / 4  # 600.25
+  var_upper <- (25 - 1) * (J - 25)  # fixed-mean upper bound = 600
 
   test_error <- tryCatch({
-    DPprior_fit(J = J, mu_K = 25, var_K = 700,  # Exceeds (49)^2/4
+    DPprior_fit(J = J, mu_K = 25, var_K = 700,  # Exceeds fixed-mean bound
                 check_diagnostics = FALSE)
     FALSE  # Should not reach here
   }, error = function(e) {
@@ -615,12 +672,12 @@ verify_DPprior_fit <- function(verbose = TRUE) {
     grepl("mu_K must be > 1", e$message)
   })
 
-  # mu_K > J should error
+  # mu_K >= J should error
   test_mu_gt_J <- tryCatch({
     DPprior_fit(J = 50, mu_K = 51, var_K = 8, check_diagnostics = FALSE)
     FALSE
   }, error = function(e) {
-    grepl("mu_K must be <= J", e$message)
+    grepl("mu_K must be < J", e$message)
   })
 
   if (isTRUE(verbose)) {

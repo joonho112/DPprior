@@ -72,7 +72,6 @@
 #' alpha_vals <- c(0.5, 1.0, 2.0, 5.0)
 #' score_a(alpha_vals, a = 2.0, b = 1.0)
 #'
-#' @keywords internal
 #' @export
 score_a <- function(alpha, a, b) {
   assert_positive(alpha, "alpha")
@@ -116,7 +115,6 @@ score_a <- function(alpha, a, b) {
 #' alpha_vals <- c(0.5, 1.0, 2.0, 5.0)
 #' score_b(alpha_vals, a = 2.0, b = 1.0)
 #'
-#' @keywords internal
 #' @export
 score_b <- function(alpha, a, b) {
   assert_positive(alpha, "alpha")
@@ -373,7 +371,6 @@ moments_with_jacobian <- function(J, a, b, M = .QUAD_NODES_DEFAULT) {
 #' # Verify Jacobian for a specific case
 #' result <- verify_jacobian(J = 50, a = 2.0, b = 1.0, verbose = TRUE)
 #'
-#' @keywords internal
 #' @export
 verify_jacobian <- function(J, a, b, eps = 1e-6, M = .QUAD_NODES_VERIFICATION,
                             verbose = TRUE) {

@@ -47,4 +47,3 @@ Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtu
 \seealso{
 \code{\link{score_b}} for the score with respect to b
 }
-\keyword{internal}

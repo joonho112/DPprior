@@ -125,6 +125,12 @@ test_that("A2-KL handles edge cases gracefully", {
                   method = "chisq")
   )
   expect_true(is.finite(fit_low_var$fit$kl))
+
+  expect_error(
+    DPprior_a2_kl(J = 10, target = list(mu_K = 9, var_K = 9),
+                  method = "chisq"),
+    "var_K = 9.*maximum possible variance 8.*K in \\{1,...,10\\}.*mu_K = 9"
+  )
 })
 
 
@@ -195,6 +201,72 @@ test_that("construct_target_pmf works with PMF input", {
   # Verify moments
   k_vals <- 1:J
   expect_equal(result$mu_K, sum(k_vals * result$pmf), tolerance = 1e-10)
+})
+
+test_that("length J+1 target PMF validates K=0 entry before dropping", {
+  J <- 20L
+  expected <- rep(1 / J, J)
+
+  result <- DPprior:::.a2_kl_normalize_pmf(c(0, rep(1, J)), J)
+  expect_equal(result, expected, tolerance = 1e-12)
+
+  tiny_k0 <- DPprior:::.a2_kl_normalize_pmf(c(1e-13, rep(1, J)), J)
+  expect_equal(tiny_k0, expected, tolerance = 1e-12)
+
+  expect_error(
+    DPprior:::.a2_kl_normalize_pmf(c(0.1, rep(1, J)), J),
+    "target_pmf\\[1\\].*K = 0.*must be 0.*support \\{1, \\.\\.\\., J\\}"
+  )
+  expect_error(
+    DPprior:::.a2_kl_normalize_pmf(c(NA_real_, rep(1, J)), J),
+    "finite and non-missing"
+  )
+  expect_error(
+    DPprior:::.a2_kl_normalize_pmf(c(Inf, rep(1, J)), J),
+    "finite and non-missing"
+  )
+  expect_error(
+    DPprior:::.a2_kl_normalize_pmf(c(-0.1, rep(1, J)), J),
+    "non-negative"
+  )
+  expect_error(
+    DPprior:::.a2_kl_normalize_pmf(c(0, rep(0, J)), J),
+    "positive total mass on K=1:J"
+  )
+})
+
+test_that("construct_target_pmf rejects positive K=0 mass", {
+  J <- 20L
+
+  expect_error(
+    construct_target_pmf(J, c(0.25, rep(0.75 / J, J))),
+    "target_pmf\\[1\\].*K = 0.*must be 0.*support \\{1, \\.\\.\\., J\\}"
+  )
+})
+
+test_that("exported A2-KL PMF paths reject positive K=0 mass", {
+  J <- 20L
+  target_pmf <- c(0.25, rep(0.75 / J, J))
+
+  expect_error(
+    DPprior_a2_kl(J, target_pmf, method = "pmf", M = 20L),
+    "target_pmf\\[1\\].*K = 0.*must be 0.*support \\{1, \\.\\.\\., J\\}"
+  )
+  expect_error(
+    kl_divergence_K(target_pmf, a = 2, b = 1, J = J, M = 20L),
+    "target_pmf\\[1\\].*K = 0.*must be 0.*support \\{1, \\.\\.\\., J\\}"
+  )
+})
+
+test_that("A2-KL moment workflows reject mu_K at upper support boundary", {
+  expect_error(
+    construct_target_pmf(20, list(mu_K = 20, var_K = 1)),
+    "mu_K must be < J"
+  )
+  expect_error(
+    DPprior_a2_kl(20, list(mu_K = 20, var_K = 1), method = "chisq"),
+    "mu_K must be < J"
+  )
 })
 
 

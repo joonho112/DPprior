@@ -189,9 +189,9 @@ plot_alpha_prior(fit_cct)
 plot_K_prior(fit_cct)
 ```
 
-**Largest cluster weight distribution:**
+**First stick-breaking weight distribution:**
 
-```{r cct-viz-w1, fig.height=4, fig.cap="Prior distribution on the largest cluster weight w₁. The dashed line at 0.5 indicates the dominance threshold."}
+```{r cct-viz-w1, fig.height=4, fig.cap="Prior distribution on the first stick-breaking / size-biased weight w1. The dashed line at 0.5 indicates the dominance threshold."}
 plot_w1_prior(fit_cct)
 ```
 
@@ -206,7 +206,8 @@ plot(fit_cct)
 The diagnostics reveal an important concern: **`r diag_cct$weights$dominance_risk` 
 dominance risk** with $P(w_1 > 0.5) = `r round(diag_cct$weights$prob_exceeds["prob_gt_0.5"], 2)`$. 
 This means there is a `r round(100 * diag_cct$weights$prob_exceeds["prob_gt_0.5"])`% 
-prior probability that a single cluster contains more than half of all sites.
+prior probability that the size-biased first stick-breaking cluster mass
+exceeds one half.
 
 In a setting with limited between-site information, this high dominance 
 probability can lead to overshrinkage in posterior inference. The dual-anchor 

@@ -26,8 +26,8 @@ the implied marginal PMF and a target distribution.}
 }
 
 Additionally, the \strong{Dual-Anchor} framework (\code{\link{DPprior_dual}})
-enables joint control of cluster count \eqn{K_J} and largest weight \eqn{w_1}
-targets.
+enables joint control of cluster count \eqn{K_J} and first stick-breaking
+weight \eqn{w_1} targets.
 
 The unified interface \code{\link{DPprior_fit}} dispatches to the appropriate
 algorithm based on the user's specification.
@@ -47,6 +47,16 @@ algorithm based on the user's specification.
 \item{Visualization}{\code{\link{plot_prior_dashboard}},
 \code{\link{plot_dual_dashboard}}}
 }
+}
+
+\section{Acknowledgments}{
+
+This research was supported by the Institute of Education Sciences, U.S.
+Department of Education, through Grant R305D240078 to the University of
+Alabama.
+
+The opinions expressed are those of the authors and do not represent views of
+the Institute or the U.S. Department of Education.
 }
 
 \references{

@@ -20,7 +20,8 @@ DPprior_a2_kl(
 
 \item{target}{Either:
 \itemize{
-\item Numeric vector of length J: target PMF for k = 1, ..., J
+\item Numeric vector of length J or J+1: target PMF for k = 1, ..., J,
+or for k = 0, ..., J with the k = 0 entry zero and dropped
 (used when \code{method = "pmf"}).
 \item Named list with \code{mu_K} and \code{var_K}: construct from moments
 using a discretized scaled chi-square (used when \code{method = "chisq"}).

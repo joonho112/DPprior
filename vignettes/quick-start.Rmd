@@ -45,7 +45,9 @@ prior elicitation approach used in
 the benefits of informative Dirichlet Process priors for estimating site-specific 
 effects in multisite trials. While that paper relied on chi-square discrepancy 
 measures with computationally intensive grid search, the DPprior package 
-provides **instant, closed-form solutions** for the same elicitation task.
+provides fast calibrated priors for the same elicitation task, using exact
+moment matching by default with a closed-form approximation available for rapid
+exploration.
 
 ```{r minimal-example}
 library(DPprior)
@@ -118,7 +120,7 @@ You can also create individual plots for more focused analysis:
 plot_alpha_prior(fit)
 ```
 
-```{r fig-alpha2, echo=FALSE}
+```{r fig-alpha2, echo=FALSE, fig.cap="Prior density for the concentration parameter alpha.", fig.alt="A smooth right-skewed density curve showing the Gamma prior on the concentration parameter alpha."}
 invisible(plot_alpha_prior(fit))
 ```
 
@@ -128,7 +130,7 @@ invisible(plot_alpha_prior(fit))
 plot_K_prior(fit)
 ```
 
-```{r fig-K2, echo=FALSE}
+```{r fig-K2, echo=FALSE, fig.cap="Marginal PMF of the number of clusters K.", fig.alt="A bar plot of the prior probability mass for the number of clusters, centered near the target mean."}
 invisible(plot_K_prior(fit))
 ```
 
@@ -137,7 +139,7 @@ invisible(plot_K_prior(fit))
 plot_w1_prior(fit)
 ```
 
-```{r fig-w1_2, echo=FALSE}
+```{r fig-w1_2, echo=FALSE, fig.cap="Distribution of the first stick-breaking weight w1.", fig.alt="A density plot for the first stick-breaking weight with visual reference lines for dominance thresholds."}
 invisible(plot_w1_prior(fit))
 ```
 
@@ -263,7 +265,7 @@ This quick start covered the essentials. For more advanced topics:
 | 1 | Define context | `J <- 50` |
 | 2 | Set expected clusters | `mu_K <- 5` |
 | 3 | Choose confidence | `confidence = "medium"` |
-| 4 | Elicit prior | `fit <- DPprior_fit(J, mu_K, confidence)` |
+| 4 | Elicit prior | `fit <- DPprior_fit(J = J, mu_K = mu_K, confidence = "medium")` |
 | 5 | Visualize | `plot(fit)` |
 | 6 | Use in model | `alpha ~ gamma(fit$a, fit$b)` |
 

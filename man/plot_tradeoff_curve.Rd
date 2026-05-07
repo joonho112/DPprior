@@ -6,7 +6,7 @@
 \usage{
 plot_tradeoff_curve(
   tradeoff_data,
-  metric = c("w1_prob_gt_50", "E_w1", "K_loss", "var_K"),
+  metric = c("w1_prob_gt_50", "E_w1", "K_loss", "mu_K", "var_K"),
   target_value = NULL,
   engine = c("ggplot2", "base"),
   base_size = 11,
@@ -18,7 +18,7 @@ plot_tradeoff_curve(
 \item{tradeoff_data}{Data frame from compute_tradeoff_curve().}
 
 \item{metric}{Which metric to plot on y-axis: "w1_prob_gt_50" (default),
-"E_w1", "K_loss", or "var_K".}
+"E_w1", "K_loss", "mu_K", or "var_K".}
 
 \item{target_value}{Optional target value to mark with horizontal line.}
 

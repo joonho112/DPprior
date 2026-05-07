@@ -487,19 +487,28 @@ cat(sprintf("  CV(α) = 1/√a = %.4f\n", 1/sqrt(fit$a)))
 
 ### 4.4 Feasibility Region
 
-**Novel Contribution.** The feasibility constraints for A1 are:
+**Novel Contribution.** The package's positive-variance moment workflows first
+require the finite-support domain
+$$
+1 < \mu_K < J \quad \text{and} \quad 0 < \sigma^2_K \leq (\mu_K - 1)(J - \mu_K).
+$$
+
+Within that domain, the additional lower-bound feasibility constraint for A1 is:
 
 **Shifted A1 (default, for DP partitions):**
 $$
-\mu_K > 1 \quad \text{and} \quad \sigma^2_K > \mu_K - 1.
+\sigma^2_K > \mu_K - 1.
 $$
 
-These are **proxy-model** constraints arising from the NegBin moment identity, 
+This is a **proxy-model** constraint arising from the NegBin moment identity,
 not fundamental constraints of the DP itself.
 
 **Important:** Some user specifications with $\sigma^2_K \leq \mu_K - 1$ may be 
 **feasible under the exact DP** but **infeasible under A1**. In such cases, 
-the package projects to the feasibility boundary.
+`DPprior_a1()` projects to the A1 lower-bound feasibility boundary. Boundary
+means such as $\mu_K = J$ and fixed-mean variances above
+$(\mu_K - 1)(J - \mu_K)$ are outside the package's positive-variance moment
+workflow and are rejected rather than projected.
 
 ```{r feasibility-demo}
 # Demonstrate feasibility projection

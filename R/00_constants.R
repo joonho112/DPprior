@@ -279,6 +279,42 @@ assert_valid_J <- function(J) {
 }
 
 
+# Internal scalar integer validator used for numerical control arguments.
+.as_integer_scalar <- function(x, name, min = NULL, max = NULL) {
+  if (!is.numeric(x) || length(x) != 1L || !is.finite(x) ||
+      x != floor(x)) {
+    stop(sprintf("%s must be an integer", name), call. = FALSE)
+  }
+  if (!is.null(min) && x < min) {
+    stop(sprintf("%s must be an integer >= %d", name, as.integer(min)),
+         call. = FALSE)
+  }
+  if (!is.null(max) && x > max) {
+    stop(sprintf("%s must be an integer <= %d", name, as.integer(max)),
+         call. = FALSE)
+  }
+  as.integer(x)
+}
+
+
+# Maximum variance for a random variable supported on {1, ..., J} with fixed mean.
+.max_var_K_fixed_mean <- function(J, mu_K) {
+  (mu_K - 1) * (J - mu_K)
+}
+
+
+.assert_feasible_K_moments <- function(J, mu_K, var_K, tol = 1e-12) {
+  var_upper <- .max_var_K_fixed_mean(J, mu_K)
+  if (var_K > var_upper + tol) {
+    stop(sprintf(
+      "var_K = %.4g exceeds maximum possible variance %.4g for K in {1,...,%d} with mu_K = %.4g",
+      var_K, var_upper, as.integer(J), mu_K
+    ), call. = FALSE)
+  }
+  invisible(var_upper)
+}
+
+
 #' Assert Valid Probability
 #'
 #' Validates that all elements of a numeric vector are valid probabilities

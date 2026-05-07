@@ -1,15 +1,20 @@
 url: https://joonho112.github.io/DPprior/
+llm-docs: false
 template:
   bootstrap: 5
   bootswatch: cosmo
   bslib:
     primary: '#2980b9'
 home:
-  title: 'DPprior: Prior Elicitation for DP Models'
+  title: 'DPprior: Prior Elicitation for Dirichlet Process Mixture Models'
   description: |
     Principled prior elicitation on the concentration parameter alpha in
     Dirichlet Process mixture models via Design-Conditional Elicitation (DCE)
     and Two-Stage Moment Matching (TSMM).
+
+    This research was supported by the Institute of Education Sciences, U.S. Department of Education, through Grant R305D240078 to the University of Alabama.
+
+    The opinions expressed are those of the authors and do not represent views of the Institute or the U.S. Department of Education.
 authors:
   JoonHo Lee:
     href: https://github.com/joonho112
@@ -112,7 +117,7 @@ reference:
   - K_moments
   - exact_K_moments
 - title: Weight Distribution (w1)
-  desc: Distribution of the largest stick-breaking weight
+  desc: Distribution of the first stick-breaking / size-biased weight
   contents:
   - mean_w1
   - var_w1
@@ -200,9 +205,6 @@ reference:
   - validate_stirling
   - verify_jacobian
   - verify_underdispersion
-- title: internal
-  contents:
-  - matches(".")
 footer:
   structure:
     left: developed_by

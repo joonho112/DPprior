@@ -52,10 +52,8 @@
 
   # Handle both length J and J+1 inputs
 
-  if (length(target_pmf) == J + 1L) {
-    # Drop k=0 entry
-    target_pmf <- target_pmf[-1L]
-  } else if (length(target_pmf) != J) {
+  has_k0_entry <- length(target_pmf) == J + 1L
+  if (!has_k0_entry && length(target_pmf) != J) {
     stop(sprintf("target_pmf must have length J=%d or J+1=%d.", J, J + 1L),
          call. = FALSE)
   }
@@ -66,10 +64,18 @@
   if (any(target_pmf < 0)) {
     stop("target_pmf must be non-negative.", call. = FALSE)
   }
+  if (has_k0_entry) {
+    if (target_pmf[1L] > 1e-12) {
+      stop(sprintf(
+        "target_pmf[1] corresponds to K = 0 and must be 0 because K_J has support {1, ..., J}."
+      ), call. = FALSE)
+    }
+    target_pmf <- target_pmf[-1L]
+  }
 
   s <- sum(target_pmf)
   if (!is.finite(s) || s <= 0) {
-    stop("target_pmf must have positive total mass.", call. = FALSE)
+    stop("target_pmf must have positive total mass on K=1:J.", call. = FALSE)
   }
 
   target_pmf / s
@@ -189,7 +195,7 @@ kl_divergence_pmf <- function(p, q, eps = 1e-15) {
 #' and the induced marginal PMF of \eqn{K_J} under \eqn{\alpha \sim Gamma(a, b)}.
 #'
 #' @param target_pmf Numeric vector; target PMF for K_J. Can have length J
-#'   (support k=1,...,J) or J+1 (support k=0,...,J, where k=0 is ignored).
+#'   (support k=1,...,J) or J+1 (support k=0,...,J, where k=0 must have zero mass).
 #' @param a Numeric; shape parameter of Gamma hyperprior (a > 0).
 #' @param b Numeric; rate parameter of Gamma hyperprior (b > 0).
 #' @param J Integer; sample size.
@@ -319,7 +325,7 @@ discretize_chisq <- function(J, df, scale = 1) {
 #' @details
 #' \strong{Direct PMF specification:}
 #' If \code{target} is a numeric vector of length J, it is treated as the PMF
-#' for k = 1, ..., J. If length J+1, the k=0 entry is dropped.
+#' for k = 1, ..., J. If length J+1, the k=0 entry must be zero and is dropped.
 #'
 #' \strong{Moment specification:}
 #' If \code{target} is a list with \code{mu_K} and \code{var_K}, a discretized
@@ -373,9 +379,10 @@ construct_target_pmf <- function(J, target) {
     if (mu_K <= 1) {
       stop("mu_K must be > 1 (at least one cluster is always present)", call. = FALSE)
     }
-    if (mu_K > J) {
-      stop("mu_K must be <= J", call. = FALSE)
+    if (mu_K >= J) {
+      stop("mu_K must be < J (mu_K = J implies zero variance for K_J, outside the positive-variance elicitation workflow)", call. = FALSE)
     }
+    .assert_feasible_K_moments(J, mu_K, var_K)
 
     # Construct discretized chi-square
     # For Y = scale * X where X ~ chi2(df):
@@ -422,7 +429,8 @@ construct_target_pmf <- function(J, target) {
 #' @param J Integer; sample size (number of observations). Must be >= 2.
 #' @param target Either:
 #'   \itemize{
-#'     \item Numeric vector of length J: target PMF for k = 1, ..., J
+#'     \item Numeric vector of length J or J+1: target PMF for k = 1, ..., J,
+#'           or for k = 0, ..., J with the k = 0 entry zero and dropped
 #'           (used when \code{method = "pmf"}).
 #'     \item Named list with \code{mu_K} and \code{var_K}: construct from moments
 #'           using a discretized scaled chi-square (used when \code{method = "chisq"}).
@@ -537,18 +545,11 @@ DPprior_a2_kl <- function(J, target,
 
   method <- match.arg(method)
 
-  if (!is.numeric(max_iter) || length(max_iter) != 1L ||
-      !is.finite(max_iter) || max_iter != floor(max_iter) || max_iter < 1L) {
-    stop("max_iter must be a positive integer.", call. = FALSE)
-  }
-  max_iter <- as.integer(max_iter)
+  max_iter <- .as_integer_scalar(max_iter, "max_iter", min = 1L)
 
   assert_positive(tol, "tol")
 
-  if (!is.numeric(M) || length(M) != 1L || M < 10L) {
-    stop("M must be a positive integer >= 10", call. = FALSE)
-  }
-  M <- as.integer(M)
+  M <- .as_integer_scalar(M, "M", min = 10L)
 
   # Optional parameters from ...
   dots <- list(...)
@@ -594,8 +595,9 @@ DPprior_a2_kl <- function(J, target,
       stop("mu_K must be > 1 (at least one cluster).", call. = FALSE)
     }
     if (mu_target >= J) {
-      stop("mu_K must be < J.", call. = FALSE)
+      stop("mu_K must be < J (mu_K = J implies zero variance for K_J, outside the positive-variance elicitation workflow)", call. = FALSE)
     }
+    .assert_feasible_K_moments(J, mu_target, var_target)
 
     # Scaled chi-square moment matching:
     # If X = scale * chisq(df), then E[X] = df*scale, Var[X] = 2*df*scale^2

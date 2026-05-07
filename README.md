@@ -20,12 +20,12 @@ using computationally efficient algorithms backed by exact moment matching.
 ## Installation
 
 ```r
-# Install from CRAN (when available)
-install.packages("DPprior")
-
-# Or install the development version from GitHub
+# Install from GitHub
 # install.packages("devtools")
 devtools::install_github("joonho112/DPprior")
+
+# Install from CRAN, if available
+# install.packages("DPprior")
 ```
 
 ## Quick Start
@@ -35,20 +35,32 @@ library(DPprior)
 
 # Scenario: 50-site multisite trial, expecting ~5 distinct effect patterns
 fit <- DPprior_fit(
-  J = 50,                # Number of sites
-
-  mu_K = 5,              # Expected clusters
-  confidence = "medium"  # Moderate uncertainty
+  J = 50,                 # Number of sites
+  mu_K = 5,               # Expected clusters
+  confidence = "medium",  # Moderate uncertainty
+  warn_dominance = FALSE  # Keep quick-start output concise
 )
 
 # View the elicited prior
 print(fit)
-#> DPprior Elicitation Results
-#> ──────────────────────────────────────────────────────────────
-#> Prior: α ~ Gamma(1.892, 1.201)
-#> Target: E[K] = 5.00, Var(K) = 12.50
-#> Achieved: E[K] = 5.00, Var(K) = 12.50
-#> Method: A2-MN (converged in 3 iterations)
+#> DPprior Prior Elicitation Result
+#> =============================================
+#>
+#> Gamma Hyperprior: α ~ Gamma(a = 1.4082, b = 1.0770)
+#>   E[α] = 1.308, SD[α] = 1.102
+#>
+#> Target (J = 50):
+#>   E[K_J]   = 5.00
+#>   Var(K_J) = 10.00
+#>   (from confidence = 'medium')
+#>
+#> Achieved:
+#>   E[K_J] = 5.000000, Var(K_J) = 10.000000
+#>   Residual = 3.94e-10
+#>
+#> Method: A2-MN (7 iterations)
+#>
+#> Dominance Risk: HIGH ✘ (P(w₁>0.5) = 50%)
 
 # Visualize the prior
 plot(fit)
@@ -70,31 +82,32 @@ fit <- DPprior_fit(J = 50, mu_K = 5, var_K = 10)
 
 ### 2. Dual-Anchor Control
 
-Go beyond cluster counts to control weight behavior, addressing the "unintended 
-prior" problem ([Vicentini & Jermyn, 2025](https://doi.org/10.48550/arXiv.2502.00864)):
+Go beyond cluster counts to control first stick-breaking weight behavior,
+addressing the "unintended prior" problem
+([Vicentini & Jermyn, 2025](https://doi.org/10.48550/arXiv.2502.00864)):
 
 ```r
 # First, fit K-based prior
-fit_K <- DPprior_fit(J = 50, mu_K = 5, var_K = 8)
+fit_K <- DPprior_fit(J = 50, mu_K = 5, var_K = 8, warn_dominance = FALSE)
 
-# Check if largest cluster might dominate
+# Check whether the first size-biased cluster might dominate
 prob_w1_exceeds(0.5, fit_K$a, fit_K$b)
-#> [1] 0.52  # 52% chance one cluster has >50% of observations
+#> [1] 0.481478
 
 # Apply dual-anchor constraint
 w1_target <- list(prob = list(threshold = 0.5, value = 0.30))
 fit_dual <- DPprior_dual(fit_K, w1_target, lambda = 0.5)
 
-# Verify improvement
+# Verify the trade-off
 prob_w1_exceeds(0.5, fit_dual$a, fit_dual$b)
-#> [1] 0.31  # Now only 31%
+#> [1] 0.4379077
 ```
 
 ### 3. Comprehensive Diagnostics
 
 Verify your prior behaves as intended across all relevant dimensions:
 - K distribution (cluster counts)
-- w₁ distribution (largest cluster weight)
+- w₁ distribution (first stick-breaking / size-biased cluster weight)
 - ρ distribution (co-clustering probability)
 - α distribution (concentration parameter)
 
@@ -109,7 +122,7 @@ summary(fit)  # Detailed numerical diagnostics
 The package implements the Design-Conditional Elicitation (DCE) methodology via Two-Stage Moment Matching (TSMM):
 
 - **A1 (Closed-form)**: Instant initial estimates using Negative Binomial approximation
-- **A2 (Newton refinement)**: Exact moment matching in 2-4 iterations
+- **A2 (Newton refinement)**: Exact moment matching via damped Newton iterations
 
 ```r
 # A1 only (fastest, approximate)
@@ -163,7 +176,7 @@ If you use DPprior in your research, please cite:
   title = {{DPprior}: Principled Prior Elicitation for {Dirichlet} Process Mixture Models},
   author = {JoonHo Lee},
   year = {2026},
-  note = {R package version 1.0.0},
+  note = {R package version 1.1.0},
   url = {https://github.com/joonho112/DPprior},
 }
 
@@ -200,13 +213,11 @@ This package builds on methodological foundations from:
 
 ## Support
 
-This project was supported by the Institute of Education Sciences, U.S. Department 
-of Education, through Grant R305D240078 to University of Alabama.
+This research was supported by the Institute of Education Sciences, U.S. Department of Education, through Grant R305D240078 to the University of Alabama.
 
 <https://ies.ed.gov/use-work/awards/improving-estimation-site-specific-effects-and-their-distribution-multisite-trials-practical-tools>
 
-The opinions expressed are those of the authors and do not represent views of the 
-Institute or the U.S. Department of Education.
+The opinions expressed are those of the authors and do not represent views of the Institute or the U.S. Department of Education.
 
 ### References
 

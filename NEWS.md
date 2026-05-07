@@ -1,9 +1,43 @@
+# DPprior 1.1.0
+
+### Minor Release: Target PMFs, Feasibility Checks, And Release Hygiene
+
+* Added a wrapper-level custom target PMF workflow in `DPprior_fit()`.
+  `target_pmf` can now be supplied without `mu_K`; the wrapper dispatches to
+  `method = "A2-KL"` and stores the normalized PMF target with its implied
+  moments.
+* Made `target_pmf` the canonical target when it is supplied. Explicit `mu_K`
+  and `var_K` values are now treated as consistency checks and conflicting
+  values produce clear errors instead of being silently overwritten.
+* Tightened length `J + 1` target PMF validation. Inputs are validated before
+  the structural `K = 0` entry is dropped, and positive mass at `K = 0` is
+  rejected because `K_J` is supported on `{1, ..., J}`.
+* Standardized moment feasibility across `DPprior_fit()`, `DPprior_a1()`,
+  `DPprior_a2_newton()`, `construct_target_pmf()`, and
+  `DPprior_a2_kl(method = "chisq")`. Moment workflows now consistently require
+  `1 < mu_K < J`, since `mu_K = J` implies zero variance and is outside the
+  positive-variance elicitation workflow.
+* Enforced the fixed-mean variance bound
+  `var_K <= (mu_K - 1) * (J - mu_K)` consistently and surfaced
+  near-boundary confidence settings with clearer feasibility errors.
+* Updated `DPprior_fit()` so non-converged low-variance A2-MN calibrations are
+  reported as errors rather than returned as usable wrapper fits.
+* Improved base graphics behavior so `show = FALSE` plotting paths return
+  without opening a graphics device or leaving default `Rplots.pdf` artifacts.
+* Fixed the source-build boundary for installed vignettes. Source tarballs now
+  retain the generated `inst/doc` outputs required by `R CMD check`, while
+  local development artifacts remain excluded from public release outputs.
+* Updated package metadata, README citation version, and release-facing
+  documentation for the 1.1.0 minor release.
+* Added the exact Institute of Education Sciences support acknowledgement and
+  disclaimer.
+
 # DPprior 1.0.0
 
-### Initial CRAN Release
+### Initial Public Release
 
 This is the first public release of the DPprior package, providing tools for
-principled prior elicitation on the concentration parameter α in Dirichlet
+principled prior elicitation on the concentration parameter alpha in Dirichlet
 Process (DP) mixture models.
 
 ### Core Features
@@ -17,7 +51,7 @@ Process (DP) mixture models.
 
 * `DPprior_a1()`: Closed-form approximation using Negative Binomial proxy
   - Near-instantaneous computation
-  - Exploits asymptotic relationship K_J | α ~ Poisson(α log J)
+  - Exploits asymptotic relationship K_J | alpha ~ Poisson(alpha log J)
 
 * `DPprior_a2_newton()`: Exact moment matching via Newton iteration
   - Typically converges in 2-4 iterations
@@ -27,12 +61,13 @@ Process (DP) mixture models.
 
 * `DPprior_dual()`: Joint control of cluster counts AND weight concentration
   - Addresses "unintended prior" problem (Vicentini & Jermyn, 2025)
-  - Flexible weighting between K and w₁ targets via λ parameter
-  - Supports probability, quantile, and moment constraints on w₁
+  - Flexible weighting between K and w1 targets via lambda parameter
+  - Supports probability, quantile, and moment constraints on w1
 
-* `prob_w1_exceeds()`: Compute P(w₁ > threshold) for dominance risk assessment
-* `mean_w1()`, `var_w1()`: First and second moments of largest weight
-* `quantile_w1()`: Quantiles of w₁ distribution
+* `prob_w1_exceeds()`: Compute P(w1 > threshold) for dominance risk assessment
+* `mean_w1()`, `var_w1()`: First and second moments of the first
+  stick-breaking / size-biased weight
+* `quantile_w1()`: Quantiles of w1 distribution
 
 #### Exact Computation
 
@@ -40,14 +75,14 @@ Process (DP) mixture models.
   - Log-scale for numerical stability with large J
   - Vectorized for efficiency
 
-* `pmf_K_given_alpha()`: Exact Antoniak distribution P(K = k | α)
+* `pmf_K_given_alpha()`: Exact Antoniak distribution P(K = k | alpha)
 * `mean_K_given_alpha()`, `var_K_given_alpha()`: Conditional moments of K
 
 #### Diagnostic Tools
 
 * `DPprior_diagnostics()`: Comprehensive prior validation
-  - Checks K, w₁, ρ, and α distributions
-  - Identifies dominance risk (high P(w₁ > 0.5))
+  - Checks K, w1, rho, and alpha distributions
+  - Identifies dominance risk (high P(w1 > 0.5))
   - Computes effective sample sizes
 
 * `plot.DPprior_fit()`: Four-panel diagnostic dashboard
@@ -116,7 +151,7 @@ Process (DP) mixture models.
 - Stirling Numbers: Antoniak distribution details
 - Approximations: A1 closed-form theory
 - Newton Algorithm: A2 exact moment matching
-- Weight Distributions: w₁, ρ, and dual-anchor framework
+- Weight Distributions: w1, rho, and dual-anchor framework
 - API Reference: Complete function documentation
 
 #### pkgdown Website
@@ -133,13 +168,13 @@ This package implements the Design-Conditional Elicitation (DCE) methodology,
 extending the original DORO approach (Dorazio, 2009) with:
 
 1. **A1 closed-form approximation**: Instant initial estimates using the
-   asymptotic Negative Binomial distribution of K_J under a Gamma prior on α
+   asymptotic Negative Binomial distribution of K_J under a Gamma prior on alpha
    (Zito et al., 2024)
 
 2. **A2 Newton refinement**: Exact moment matching using numerically stable
    computation of Stirling numbers and Gauss-Laguerre quadrature
 
-3. **Dual-anchor extension**: Joint control of K and w₁ distributions,
+3. **Dual-anchor extension**: Joint control of K and w1 distributions,
    addressing the sample-size-independent concerns raised by
    Vicentini & Jermyn (2025)
 
@@ -147,7 +182,7 @@ extending the original DORO approach (Dorazio, 2009) with:
 
 * Dorazio, R. M. (2009). On selecting a prior for the precision parameter of
   Dirichlet process mixture models. *Journal of Statistical Planning and
-  Inference*, 139(10), 3384–3390.
+  Inference*, 139(10), 3384-3390.
 
 * Lee, J. (2026). Design-conditional prior elicitation for Dirichlet process
   mixtures. *arXiv preprint* arXiv:2602.06301.
@@ -155,7 +190,7 @@ extending the original DORO approach (Dorazio, 2009) with:
 * Lee, J., Che, J., Rabe-Hesketh, S., Feller, A., & Miratrix, L. (2025).
   Improving the estimation of site-specific effects and their distribution
   in multisite trials. *Journal of Educational and Behavioral Statistics*,
-  50(5), 731–764.
+  50(5), 731-764.
 
 * Vicentini, C., & Jermyn, I. H. (2025). Prior selection for the precision
   parameter of Dirichlet process mixtures. *arXiv:2502.00864*.
@@ -165,5 +200,6 @@ extending the original DORO approach (Dorazio, 2009) with:
 
 ### Acknowledgments
 
-This project was supported by the Institute of Education Sciences, U.S.
-Department of Education, through Grant R305D240078 to University of Alabama.
+This research was supported by the Institute of Education Sciences, U.S. Department of Education, through Grant R305D240078 to the University of Alabama.
+
+The opinions expressed are those of the authors and do not represent views of the Institute or the U.S. Department of Education.

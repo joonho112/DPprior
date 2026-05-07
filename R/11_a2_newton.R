@@ -178,32 +178,28 @@ DPprior_a2_newton <- function(J, mu_K, var_K,
   if (mu_K <= 1) {
     stop("mu_K must be > 1 (at least one cluster is always present)", call. = FALSE)
   }
-  if (mu_K > J) {
-    stop("mu_K must be <= J", call. = FALSE)
+  if (mu_K >= J) {
+    stop("mu_K must be < J (mu_K = J implies zero variance for K_J, outside the positive-variance elicitation workflow)", call. = FALSE)
   }
 
   if (!is.numeric(var_K) || length(var_K) != 1L || !is.finite(var_K) ||
       var_K <= 0) {
     stop("var_K must be a positive finite numeric scalar", call. = FALSE)
   }
+  .assert_feasible_K_moments(J, mu_K, var_K)
 
-  if (!is.numeric(tol_F) || length(tol_F) != 1L || tol_F <= 0) {
+  if (!is.numeric(tol_F) || length(tol_F) != 1L ||
+      !is.finite(tol_F) || tol_F <= 0) {
     stop("tol_F must be a positive numeric scalar", call. = FALSE)
   }
 
-  if (!is.numeric(tol_step) || length(tol_step) != 1L || tol_step <= 0) {
+  if (!is.numeric(tol_step) || length(tol_step) != 1L ||
+      !is.finite(tol_step) || tol_step <= 0) {
     stop("tol_step must be a positive numeric scalar", call. = FALSE)
   }
 
-  max_iter <- as.integer(max_iter)
-  if (max_iter < 1L) {
-    stop("max_iter must be a positive integer", call. = FALSE)
-  }
-
-  M <- as.integer(M)
-  if (M < 10L) {
-    stop("M must be at least 10", call. = FALSE)
-  }
+  max_iter <- .as_integer_scalar(max_iter, "max_iter", min = 1L)
+  M <- .as_integer_scalar(M, "M", min = 10L)
 
   # -------------------------------------------------------------------------
   # Initialization

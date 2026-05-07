@@ -348,6 +348,9 @@ plot_alpha_prior <- function(fit = NULL, a = NULL, b = NULL,
 
   # Base R fallback
   if (engine == "base" || !.dpprior_has_ggplot2()) {
+    if (!isTRUE(show)) {
+      return(invisible(NULL))
+    }
     .dpprior_base_plot_alpha(df, alpha_mean, ci, alpha_cv, a, b)
     return(invisible(NULL))
   }
@@ -452,6 +455,9 @@ plot_K_prior <- function(fit = NULL, J = NULL, a = NULL, b = NULL,
 
   # Base R fallback
   if (engine == "base" || !.dpprior_has_ggplot2()) {
+    if (!isTRUE(show)) {
+      return(invisible(NULL))
+    }
     .dpprior_base_plot_K(df, target_mu, achieved_mu, K_mean, K_var, K_mode, a, b)
     return(invisible(NULL))
   }
@@ -561,6 +567,9 @@ plot_w1_prior <- function(fit = NULL, a = NULL, b = NULL,
 
   # Base R fallback
   if (engine == "base" || !.dpprior_has_ggplot2()) {
+    if (!isTRUE(show)) {
+      return(invisible(NULL))
+    }
     .dpprior_base_plot_w1(df, thresholds, mean_w, median_w, p_gt_50, p_gt_90, risk_level, a, b)
     return(invisible(NULL))
   }
@@ -745,6 +754,9 @@ plot_prior_dashboard <- function(fit,
 
   # Base R fallback
   if (engine == "base" || !.dpprior_has_ggplot2()) {
+    if (!isTRUE(show)) {
+      return(invisible(NULL))
+    }
     op <- graphics::par(no.readonly = TRUE)
     on.exit(graphics::par(op), add = TRUE)
 
@@ -853,6 +865,9 @@ plot_dual_comparison <- function(fit_dual,
   lambda <- fit_dual$dual_anchor$lambda
 
   if (engine == "base" || !.dpprior_has_ggplot2()) {
+    if (!isTRUE(show)) {
+      return(invisible(NULL))
+    }
     .dpprior_base_dual_comparison(a_K, b_K, a_dual, b_dual, J, lambda, title)
     return(invisible(NULL))
   }
@@ -1074,7 +1089,7 @@ plot_dual_comparison <- function(fit_dual,
 #'
 #' @param tradeoff_data Data frame from compute_tradeoff_curve().
 #' @param metric Which metric to plot on y-axis: "w1_prob_gt_50" (default),
-#'   "E_w1", "K_loss", or "var_K".
+#'   "E_w1", "K_loss", "mu_K", or "var_K".
 #' @param target_value Optional target value to mark with horizontal line.
 #' @param engine "ggplot2" (default) or "base".
 #' @param base_size Base font size.
@@ -1098,7 +1113,8 @@ plot_dual_comparison <- function(fit_dual,
 #'
 #' @export
 plot_tradeoff_curve <- function(tradeoff_data,
-                                metric = c("w1_prob_gt_50", "E_w1", "K_loss", "var_K"),
+                                metric = c("w1_prob_gt_50", "E_w1", "K_loss",
+                                           "mu_K", "var_K"),
                                 target_value = NULL,
                                 engine = c("ggplot2", "base"),
                                 base_size = 11,
@@ -1120,11 +1136,15 @@ plot_tradeoff_curve <- function(tradeoff_data,
     w1_prob_gt_50 = "P(w1 > 0.5)",
     E_w1 = "E[w1]",
     K_loss = "K Loss (relative)",
+    mu_K = "E[K]",
     var_K = "Var(K)"
   )
   y_label <- metric_labels[[metric]]
 
   if (engine == "base" || !.dpprior_has_ggplot2()) {
+    if (!isTRUE(show)) {
+      return(invisible(NULL))
+    }
     graphics::plot(tradeoff_data$lambda, tradeoff_data[[metric]],
                    type = "b", pch = 19, lwd = 2, col = "steelblue4",
                    xlab = "lambda (weight on K anchor)",
@@ -1198,14 +1218,18 @@ plot_tradeoff_dashboard <- function(tradeoff_data,
   engine <- match.arg(engine)
 
   if (engine == "base" || !.dpprior_has_ggplot2()) {
+    if (!isTRUE(show)) {
+      return(invisible(NULL))
+    }
     op <- graphics::par(no.readonly = TRUE)
     on.exit(graphics::par(op), add = TRUE)
     graphics::par(mfrow = c(2, 2), mar = c(4, 4, 2, 1))
 
-    plot_tradeoff_curve(tradeoff_data, "w1_prob_gt_50", w1_target_prob, "base")
-    plot_tradeoff_curve(tradeoff_data, "E_w1", NULL, "base")
-    plot_tradeoff_curve(tradeoff_data, "mu_K", NULL, "base")
-    plot_tradeoff_curve(tradeoff_data, "var_K", NULL, "base")
+    plot_tradeoff_curve(tradeoff_data, "w1_prob_gt_50", w1_target_prob,
+                        "base", show = show)
+    plot_tradeoff_curve(tradeoff_data, "E_w1", NULL, "base", show = show)
+    plot_tradeoff_curve(tradeoff_data, "mu_K", NULL, "base", show = show)
+    plot_tradeoff_curve(tradeoff_data, "var_K", NULL, "base", show = show)
 
     return(invisible(NULL))
   }
@@ -1299,7 +1323,7 @@ plot_dual_dashboard <- function(fit_dual,
 
   if (engine == "base" || !.dpprior_has_ggplot2()) {
     # Use comparison dashboard for base
-    plot_dual_comparison(fit_dual, engine = "base")
+    plot_dual_comparison(fit_dual, engine = "base", title = title, show = show)
     return(invisible(NULL))
   }
 

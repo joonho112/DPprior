@@ -248,26 +248,27 @@ test_that("print.summary.DPprior_fit returns x invisibly", {
 
 test_that("plot.DPprior_fit type='alpha' produces a ggplot", {
   skip_if_not_installed("ggplot2")
-  p <- plot(fit_a2, type = "alpha")
+  p <- plot(fit_a2, type = "alpha", show = FALSE)
   expect_s3_class(p, "ggplot")
 })
 
 test_that("plot.DPprior_fit type='K' produces a ggplot", {
   skip_if_not_installed("ggplot2")
-  p <- plot(fit_a2, type = "K")
+  p <- plot(fit_a2, type = "K", show = FALSE)
   expect_s3_class(p, "ggplot")
 })
 
 test_that("plot.DPprior_fit type='w1' produces a ggplot", {
   skip_if_not_installed("ggplot2")
-  p <- plot(fit_a2, type = "w1")
+  p <- plot(fit_a2, type = "w1", show = FALSE)
   expect_s3_class(p, "ggplot")
 })
 
 test_that("plot.DPprior_fit type='dashboard' produces output", {
   skip_if_not_installed("ggplot2")
   skip_if_not_installed("gridExtra")
-  p <- plot(fit_a2, type = "dashboard")
+  pdf(nullfile()); on.exit(dev.off())
+  p <- plot(fit_a2, type = "dashboard", show = FALSE)
   # dashboard returns a gtable or arrangeGrob, not necessarily ggplot
   expect_true(!is.null(p))
 })
@@ -277,13 +278,15 @@ test_that("plot.DPprior_fit auto-detects dual for dual-anchor fits", {
   skip_if_not_installed("gridExtra")
   # For dual fits, auto should select "dual" type
   # This should not error
-  p <- plot(fit_dual, type = "auto")
+  pdf(nullfile()); on.exit(dev.off())
+  p <- plot(fit_dual, type = "auto", show = FALSE)
   expect_true(!is.null(p))
 })
 
 test_that("plot.DPprior_fit engine='base' runs without error", {
   # Base engine should not require ggplot2
-  expect_no_error(plot(fit_a2, type = "alpha", engine = "base"))
+  pdf(nullfile()); on.exit(dev.off())
+  expect_no_error(plot(fit_a2, type = "alpha", engine = "base", show = FALSE))
 })
 
 

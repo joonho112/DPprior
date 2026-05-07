@@ -60,14 +60,16 @@ the appropriate algorithm based on input specification.
 ```r
 DPprior_fit(
   J,                      # Sample size (required)
-  mu_K,                   # Target E[K_J] (required)
+  mu_K = NULL,            # Target E[K_J], unless target_pmf is supplied
   var_K = NULL,           # Target Var(K_J) (optional)
-  confidence = NULL,      # "low", "medium", "high" (optional)
-  method = "A2-MN",       # "A1", "A2-MN", "A2-KL"
-  check_diagnostics = FALSE,
+  confidence = c("medium", "low", "high"),
+  method = c("A2-MN", "A1", "A2-KL"),
+  target_pmf = NULL,      # Optional custom PMF target for A2-KL
+  check_diagnostics = TRUE,
   warn_dominance = TRUE,
   M = 80L,                # Quadrature nodes
-  verbose = FALSE
+  verbose = FALSE,
+  ...                     # Reserved
 )
 ```
 
@@ -76,14 +78,16 @@ DPprior_fit(
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `J` | Integer | Sample size (number of observations/sites). Must be $\geq 2$. |
-| `mu_K` | Numeric | Target prior mean $\mathbb{E}[K_J]$. Must satisfy $1 < \mu_K < J$. |
-| `var_K` | Numeric | Target prior variance $\text{Var}(K_J)$. If `NULL`, computed from `confidence`. |
-| `confidence` | Character | Qualitative uncertainty: `"low"` (VIF=4), `"medium"` (VIF=2.5), `"high"` (VIF=1.5). |
+| `mu_K` | Numeric | Target prior mean $\mathbb{E}[K_J]$. Moment workflows require $1 < \mu_K < J$; may be omitted when `target_pmf` is supplied. |
+| `var_K` | Numeric | Target prior variance $\text{Var}(K_J)$. If `NULL`, computed from `confidence`. For fixed `mu_K`, must satisfy $\text{Var}(K_J) \leq (\mu_K - 1)(J - \mu_K)$. |
+| `confidence` | Character | Qualitative uncertainty: `"low"` (VIF=5.0), `"medium"` (VIF=2.5), `"high"` (VIF=1.5), where $\text{Var}(K_J)=\text{VIF}(\mu_K - 1)$. |
 | `method` | Character | Algorithm: `"A1"` (closed-form), `"A2-MN"` (Newton), `"A2-KL"` (KL minimization). |
+| `target_pmf` | Numeric | Optional custom PMF target for `K_J`. Length may be `J` for support `1:J`, or `J+1` for support `0:J` when the `K = 0` entry is zero. If supplied and `method` is omitted, dispatches to `"A2-KL"`; explicit `mu_K` or `var_K` values must match the PMF-implied moments. |
 | `check_diagnostics` | Logical | If `TRUE`, compute full diagnostics. |
 | `warn_dominance` | Logical | If `TRUE`, warn when $P(w_1 > 0.5) > 0.4$. |
 | `M` | Integer | Number of Gauss-Laguerre quadrature nodes. |
 | `verbose` | Logical | Print iteration progress. |
+| `...` | Dots | Reserved for future method-specific extensions. |
 
 **Returns:** An S3 object of class `DPprior_fit` with components:
 
@@ -92,7 +96,7 @@ DPprior_fit(
 | `a` | Optimal Gamma shape parameter |
 | `b` | Optimal Gamma rate parameter |
 | `J` | Sample size |
-| `target` | List with `mu_K`, `var_K`, `var_K_used` |
+| `target` | List with target specification, including `mu_K`, `var_K`, `var_K_used`, and optionally `pmf` |
 | `fit` | Achieved `mu_K`, `var_K`, and `residual` |
 | `method` | Algorithm used |
 | `converged` | Logical convergence indicator |
@@ -115,6 +119,11 @@ fit3 <- DPprior_fit(J = 200, mu_K = 15, var_K = 30, method = "A1")
 
 # With diagnostics
 fit4 <- DPprior_fit(J = 50, mu_K = 5, var_K = 8, check_diagnostics = TRUE)
+
+# Custom PMF target; omitted method dispatches to A2-KL
+target_pmf <- dpois(1:30, lambda = 5)
+fit5 <- DPprior_fit(J = 30, target_pmf = target_pmf,
+                    check_diagnostics = FALSE)
 ```
 
 
@@ -225,27 +234,6 @@ J <- 6
 row_sum <- sum(exp(logS[J+1, 2:(J+1)]))
 cat("sum |s(6,k)| =", round(row_sum), ", 6! =", factorial(6), "\n")
 ```
-
-
-#### `get_log_stirling()`
-**Safe Accessor with Bounds Checking**
-
-```r
-get_log_stirling(J, k, logS)
-```
-
-Returns $\log|s(J,k)|$ with automatic bounds checking. Returns `-Inf` for 
-invalid indices ($k > J$ or $k < 1$).
-
-
-#### `get_stirling_row()`
-**Extract Row of Stirling Numbers**
-
-```r
-get_stirling_row(J, logS)
-```
-
-Returns a vector of $\log|s(J,k)|$ for $k = 1, \ldots, J$.
 
 
 ### 2.2 Conditional PMF Functions
@@ -481,10 +469,9 @@ marginal distribution of $K_J$.
 DPprior_a1(
   J,                      # Sample size
   mu_K,                   # Target mean
-  var_K = NULL,           # Target variance
-  confidence = NULL,      # "low", "medium", "high"
+  var_K,                  # Target variance
   scaling = "log",        # "log", "harmonic", "digamma"
-  project_to_feasible = TRUE
+  epsilon = 1e-6          # Feasibility projection buffer
 )
 ```
 
@@ -581,7 +568,7 @@ DPprior_a2_kl(
 
 | `method` | `target` Input | Description |
 |----------|----------------|-------------|
-| `"pmf"` | Numeric vector of length $J$ | Direct PMF on $\{1, \ldots, J\}$ |
+| `"pmf"` | Numeric vector of length $J$ or $J+1$ | Direct PMF on $\{1, \ldots, J\}$, or on $\{0, \ldots, J\}$ with the $K=0$ entry required to be zero and then dropped |
 | `"chisq"` | `list(mu_K = ..., var_K = ...)` | Discretized chi-square matching moments |
 
 **Examples:**
@@ -678,12 +665,12 @@ cat("P(w1 > 0.9) =", round(prob_w1_exceeds(0.9, a, b), 4), "\n")
 ```
 
 
-#### `cdf_w1()` and `pdf_w1()`
-**CDF and PDF of $w_1$**
+#### `cdf_w1()` and `density_w1()`
+**CDF and Density of $w_1$**
 
 ```r
 cdf_w1(x, a, b, M = 80L)
-pdf_w1(x, a, b, M = 80L)
+density_w1(x, a, b, M = 80L)
 ```
 
 
@@ -832,24 +819,6 @@ check_dominance_risk(a, b, threshold = 0.5, risk_level = 0.3)
 Returns `TRUE` if $P(w_1 > \text{threshold}) > \text{risk\_level}$.
 
 
-#### `compute_alpha_diagnostics()`
-
-```r
-compute_alpha_diagnostics(a, b)
-```
-
-Returns mean, SD, CV, and quantiles of $\alpha \sim \text{Gamma}(a, b)$.
-
-
-#### `compute_K_diagnostics()`
-
-```r
-compute_K_diagnostics(J, a, b, M = 80L)
-```
-
-Returns mean, SD, mode, median, and quantiles of $K_J$.
-
-
 #### `compute_weight_diagnostics()`
 
 ```r
@@ -894,7 +863,7 @@ confidence_to_vif(confidence)
 
 | Confidence | VIF | Interpretation |
 |------------|-----|----------------|
-| `"low"` | 4.0 | High uncertainty |
+| `"low"` | 5.0 | High uncertainty |
 | `"medium"` | 2.5 | Moderate uncertainty |
 | `"high"` | 1.5 | Low uncertainty |
 
@@ -998,28 +967,7 @@ logsumexp_vec(x)
 Computes $\log(\sum_i \exp(x_i))$ for a vector.
 
 
-#### `softmax()`
-**Numerically Stable Softmax**
-
-```r
-softmax(x)
-```
-
-Returns probability vector from log-odds.
-
-
-### 6.5 Rising Factorial
-
-#### `log_rising_factorial()`
-
-```r
-log_rising_factorial(alpha, J)
-```
-  
-Computes $\log(\alpha)_J = \log\Gamma(\alpha + J) - \log\Gamma(\alpha)$.
-
-
-### 6.6 KL Divergence Functions
+### 6.5 KL Divergence Functions
 
 #### `kl_divergence_pmf()`
 **KL Divergence Between PMFs**
@@ -1139,12 +1087,9 @@ plot_K_prior(fit)  # K distribution only
 | `DPprior_fit()` | Core | Main entry point |
 | `exact_K_moments()` | Exact | Marginal moments |
 | `gauss_laguerre_nodes()` | Utility | Quadrature nodes |
-| `get_log_stirling()` | Exact | Safe Stirling access |
-| `get_stirling_row()` | Exact | Row of Stirling |
 | `integrate_gamma()` | Utility | Expectation under Gamma |
 | `kl_divergence_K()` | Utility | KL for K |
 | `kl_divergence_pmf()` | Utility | KL between PMFs |
-| `log_rising_factorial()` | Utility | Log Pochhammer |
 | `logsumexp()` | Utility | Binary log-sum-exp |
 | `logsumexp_vec()` | Utility | Vector log-sum-exp |
 | `mean_K_given_alpha()` | Exact | Conditional mean |
@@ -1152,7 +1097,7 @@ plot_K_prior(fit)  # K distribution only
 | `mean_rho_given_alpha()` | Weights | Conditional $\mathbb{E}[\rho|\alpha]$ |
 | `mean_w1()` | Weights | Marginal $\mathbb{E}[w_1]$ |
 | `moments_K_given_alpha()` | Exact | Both conditional moments |
-| `pdf_w1()` | Weights | PDF of $w_1$ |
+| `density_w1()` | Weights | Density of $w_1$ |
 | `plot.DPprior_fit()` | Diagnostics | Dashboard plot |
 | `plot_alpha_prior()` | Diagnostics | Alpha plot |
 | `plot_K_prior()` | Diagnostics | K plot |
@@ -1163,7 +1108,6 @@ plot_K_prior(fit)  # K distribution only
 | `prob_w1_exceeds()` | Weights | Tail probability |
 | `quantile_K_given_alpha()` | Exact | Conditional quantile |
 | `quantile_w1()` | Weights | Quantiles of $w_1$ |
-| `softmax()` | Utility | Stable softmax |
 | `summary.DPprior_fit()` | Diagnostics | Summary method |
 | `summary_K_marginal()` | Exact | Full K summary |
 | `var_K_given_alpha()` | Exact | Conditional variance |

@@ -63,14 +63,14 @@ test_that("Marginal moments match Python-verified golden data (tol = 1e-6)", {
 
 
 # =============================================================================
-# Test: Python Reference Match (Canonical Case)
+# Test: Independent Reference Match (Canonical Case)
 # =============================================================================
 
-test_that("Python reference values match exactly (J=50, a=1.5, b=0.5)", {
-  # Reference computed by dev/verify_moments_marginal.py with M=80
+test_that("independent reference values match exactly (J=50, a=1.5, b=0.5)", {
+  # Reference values computed independently with high-order quadrature (M=80).
   moments <- exact_K_moments(50, 1.5, 0.5, M = 80)
 
-  # Match to 8 decimal places (Python self-test precision)
+  # Match to 8 decimal places (independent-reference precision).
   expect_equal(moments$mean, 8.3554867566, tolerance = 1e-8)
   expect_equal(moments$var, 22.7689501247, tolerance = 1e-8)
 })
@@ -289,13 +289,13 @@ test_that("Works for large alpha parameters", {
 
 
 # =============================================================================
-# Test: NegBin Comparison Structure (Claude's nested list structure)
+# Test: NegBin Comparison Structure
 # =============================================================================
 
 test_that("compare_to_negbin returns correct structure", {
   result <- compare_to_negbin(50, 1.5, 0.5)
 
-  # Claude's implementation uses nested lists
+  # The comparison helper returns nested exact and approximation summaries
   expect_true("exact" %in% names(result))
   expect_true("negbin" %in% names(result))
   expect_true("abs_error" %in% names(result))

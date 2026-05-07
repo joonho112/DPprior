@@ -61,7 +61,6 @@
 #' # Digamma scaling (requires mu_K)
 #' compute_scaling_constant(50, "digamma", mu_K = 5)
 #'
-#' @keywords internal
 #' @export
 compute_scaling_constant <- function(J, scaling = c("log", "harmonic", "digamma"),
                                      mu_K = NULL) {
@@ -94,7 +93,7 @@ compute_scaling_constant <- function(J, scaling = c("log", "harmonic", "digamma"
 #' approximation based on Negative Binomial moment matching.
 #'
 #' @param J Integer; number of items/sites (must be >= 2).
-#' @param mu_K Numeric; target prior mean of \eqn{K_J} (must be > 1 and <= J).
+#' @param mu_K Numeric; target prior mean of \eqn{K_J} (must satisfy \eqn{1 < \mu_K < J}).
 #' @param var_K Numeric; target prior variance of \eqn{K_J} (must be > 0).
 #' @param scaling Character; scaling constant method: "log" (default),
 #'   "harmonic", or "digamma".
@@ -190,13 +189,14 @@ DPprior_a1 <- function(J, mu_K, var_K,
   if (mu_K <= 1) {
     stop("mu_K must be > 1 (at least one cluster is always present)", call. = FALSE)
   }
-  if (mu_K > J) {
-    stop("mu_K must be <= J (cannot have more clusters than items)", call. = FALSE)
+  if (mu_K >= J) {
+    stop("mu_K must be < J (mu_K = J implies zero variance for K_J, outside the positive-variance elicitation workflow)", call. = FALSE)
   }
   if (!is.numeric(var_K) || length(var_K) != 1L || !is.finite(var_K) ||
       var_K <= 0) {
     stop("var_K must be a positive finite numeric scalar", call. = FALSE)
   }
+  .assert_feasible_K_moments(J, mu_K, var_K)
   # Epsilon validation
   if (!is.numeric(epsilon) || length(epsilon) != 1L ||
       !is.finite(epsilon) || epsilon <= 0) {

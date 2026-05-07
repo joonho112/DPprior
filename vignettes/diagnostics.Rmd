@@ -354,8 +354,9 @@ cat("  P(w₁ > 0.5) =", round(diag_risky$weights$prob_exceeds["prob_gt_0.5"], 4
 
 ### 5.4 What High Dominance Means
 
-A HIGH dominance risk means your prior places substantial probability on 
-scenarios where a single cluster contains more than half of all observations. 
+A HIGH dominance risk means your prior places substantial probability on
+scenarios where the size-biased first stick-breaking cluster mass exceeds one
+half.
 This may or may not be appropriate depending on your application:
 
 **When high dominance might be appropriate:**
@@ -406,7 +407,7 @@ For more focused analysis, you can create individual plots:
 plot_alpha_prior(fit)
 ```
 
-```{r fig-alpha-plot, echo=FALSE, fig.height=4}
+```{r fig-alpha-plot, echo=FALSE, fig.height=4, fig.cap="Prior density for the concentration parameter alpha.", fig.alt="A smooth density curve showing the Gamma prior distribution on the concentration parameter alpha."}
 invisible(plot_alpha_prior(fit))
 ```
 
@@ -415,7 +416,7 @@ invisible(plot_alpha_prior(fit))
 plot_K_prior(fit)
 ```
 
-```{r fig-K-plot, echo=FALSE, fig.height=4}
+```{r fig-K-plot, echo=FALSE, fig.height=4, fig.cap="Marginal PMF of the number of clusters K.", fig.alt="A bar plot showing the prior probability mass over possible numbers of clusters."}
 invisible(plot_K_prior(fit))
 ```
 
@@ -424,7 +425,7 @@ invisible(plot_K_prior(fit))
 plot_w1_prior(fit)
 ```
 
-```{r fig-w1-plot, echo=FALSE, fig.height=4}
+```{r fig-w1-plot, echo=FALSE, fig.height=4, fig.cap="Distribution of the first stick-breaking weight w1.", fig.alt="A density plot showing the prior distribution of the first stick-breaking weight and dominance thresholds."}
 invisible(plot_w1_prior(fit))
 ```
 
@@ -521,7 +522,7 @@ cat("  Dominance risk:", toupper(diag1$weights$dominance_risk), "\n")
 plot_w1_prior(fit1)
 ```
 
-```{r refinement-step3, echo=FALSE, fig.height=4}
+```{r refinement-step3, echo=FALSE, fig.height=4, fig.cap="The K-only prior shows high dominance risk.", fig.alt="A diagnostic plot showing substantial prior mass above the dominance threshold for the first stick-breaking weight."}
 cat("Step 3: Problem identification\n")
 cat("  The researcher wanted: ~5 clusters with balanced weights\n")
 cat("  The prior implies: ~5 clusters but high chance of one dominant cluster\n")

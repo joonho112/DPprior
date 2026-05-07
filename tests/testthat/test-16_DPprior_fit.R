@@ -38,18 +38,18 @@ test_that("Default method is A2-MN", {
 })
 
 # =============================================================================
-# Confidence Level Tests (GPT VIF values)
+# Confidence Level Tests
 # =============================================================================
 
 test_that("Confidence to var_K conversion uses updated VIF values", {
-  # GPT VIF values: low=5.0, medium=2.5, high=1.5
+  # Current VIF values: low=5.0, medium=2.5, high=1.5
   fit_medium <- suppressMessages(
     DPprior_fit(J = 50, mu_K = 5, confidence = "medium", check_diagnostics = FALSE)
   )
   vif_medium <- confidence_to_vif_fit("medium")
   expected_var <- vif_to_variance_fit(5, vif_medium)
 
-  expect_equal(vif_medium, 2.5)  # GPT value
+  expect_equal(vif_medium, 2.5)
   expect_equal(fit_medium$target$var_K, expected_var)
   expect_equal(fit_medium$target$confidence, "medium")
 })
@@ -60,7 +60,7 @@ test_that("Low confidence produces VIF=5.0", {
   )
   vif_low <- confidence_to_vif_fit("low")
 
-  expect_equal(vif_low, 5.0)  # GPT value
+  expect_equal(vif_low, 5.0)
   # var_K = 5.0 * (5 - 1) = 20
   expect_equal(fit_low$target$var_K, 20.0)
 })
@@ -120,12 +120,11 @@ test_that("A2 improves on A1 accuracy", {
 })
 
 # =============================================================================
-# Variance Bounds Tests (GPT improvement)
+# Variance Bounds Tests
 # =============================================================================
 
 test_that("var_K upper bound is enforced", {
   J <- 50
-  var_upper <- (J - 1)^2 / 4  # 600.25
 
   expect_error(
     DPprior_fit(J = J, mu_K = 25, var_K = 700, check_diagnostics = FALSE),
@@ -133,12 +132,18 @@ test_that("var_K upper bound is enforced", {
   )
 })
 
+test_that("var_K fixed-mean upper bound is enforced", {
+  expect_error(
+    DPprior_fit(J = 10, mu_K = 9, var_K = 9, check_diagnostics = FALSE),
+    "var_K = 9.*maximum possible variance 8.*K in \\{1,...,10\\}.*mu_K = 9"
+  )
+})
+
 test_that("var_K at upper bound limit works", {
   J <- 20
-  var_upper <- (J - 1)^2 / 4  # 90.25
 
-  # Should not error
-  fit <- DPprior_fit(J = J, mu_K = 10, var_K = 80,
+  # Feasibility should not reject a high but valid variance.
+  fit <- DPprior_fit(J = J, mu_K = 10, var_K = 80, method = "A1",
                      check_diagnostics = FALSE, warn_dominance = FALSE)
   expect_s3_class(fit, "DPprior_fit")
 })
@@ -150,15 +155,24 @@ test_that("var_K at upper bound limit works", {
 test_that("A1 projects var_K when infeasible for NegBin", {
   # var_K = 3 < mu_K - 1 = 4
   # A1 has its own projection
-  expect_warning(
-    fit <- DPprior_fit(J = 50, mu_K = 5, var_K = 3,
-                       method = "A1", check_diagnostics = FALSE),
-    "projected|Projected|projection"
+  warnings <- character()
+  fit <- withCallingHandlers(
+    DPprior_fit(J = 50, mu_K = 5, var_K = 3,
+                method = "A1", check_diagnostics = FALSE),
+    warning = function(w) {
+      warnings <<- c(warnings, conditionMessage(w))
+      invokeRestart("muffleWarning")
+    }
   )
 
   expect_s3_class(fit, "DPprior_fit")
   expect_true(fit$a > 0)
   expect_true(fit$b > 0)
+  expect_equal(fit$method, "A1")
+  expect_equal(fit$target$var_K, 3)
+  expect_gt(fit$target$var_K_used, fit$target$var_K)
+  expect_true(any(grepl("infeasible for NegBin", warnings)))
+  expect_true(any(grepl("projected to feasible boundary", warnings)))
 })
 
 test_that("A2-MN handles challenging variance gracefully", {
@@ -175,7 +189,7 @@ test_that("A2-MN handles challenging variance gracefully", {
 })
 
 # =============================================================================
-# mu_K Boundary Tests (GPT improvement)
+# mu_K Boundary Tests
 # =============================================================================
 
 test_that("mu_K = 1 is rejected as trivial", {
@@ -185,10 +199,14 @@ test_that("mu_K = 1 is rejected as trivial", {
   )
 })
 
-test_that("mu_K > J is rejected", {
+test_that("mu_K >= J is rejected", {
   expect_error(
     DPprior_fit(J = 50, mu_K = 51, var_K = 8, check_diagnostics = FALSE),
-    "mu_K must be <= J"
+    "mu_K must be < J"
+  )
+  expect_error(
+    DPprior_fit(J = 50, mu_K = 50, var_K = 1, check_diagnostics = FALSE),
+    "mu_K must be < J"
   )
 })
 
@@ -198,13 +216,45 @@ test_that("mu_K just above 1 works", {
   expect_s3_class(fit, "DPprior_fit")
 })
 
-test_that("mu_K = J works with appropriate variance", {
+test_that("mu_K below J works with appropriate variance", {
   # Use moderate variance that won't cause numerical issues
   fit <- suppressWarnings(
     DPprior_fit(J = 20, mu_K = 15, var_K = 30,
                 check_diagnostics = FALSE, warn_dominance = FALSE)
   )
   expect_s3_class(fit, "DPprior_fit")
+})
+
+test_that("mu_K = J is rejected consistently across moment workflows", {
+  expect_error(DPprior_fit(J = 20, mu_K = 20, var_K = 1,
+                           check_diagnostics = FALSE),
+               "mu_K must be < J")
+  expect_error(DPprior_a1(J = 20, mu_K = 20, var_K = 1),
+               "mu_K must be < J")
+  expect_error(DPprior_a2_newton(J = 20, mu_K = 20, var_K = 1),
+               "mu_K must be < J")
+  expect_error(construct_target_pmf(20, list(mu_K = 20, var_K = 1)),
+               "mu_K must be < J")
+  expect_error(DPprior_a2_kl(20, list(mu_K = 20, var_K = 1), method = "chisq"),
+               "mu_K must be < J")
+})
+
+test_that("near-boundary confidence-derived variance gives clear feasibility error", {
+  expect_error(
+    DPprior_fit(J = 20, mu_K = 18, confidence = "medium",
+                check_diagnostics = FALSE),
+    "var_K = 42.5.*maximum possible variance 34.*K in \\{1,...,20\\}.*mu_K = 18"
+  )
+})
+
+test_that("DPprior_fit reports low-variance non-convergence as an error", {
+  expect_error(
+    suppressWarnings(
+      DPprior_fit(J = 50, mu_K = 5, var_K = 3,
+                  method = "A2-MN", check_diagnostics = FALSE)
+    ),
+    "Calibration did not converge.*A2-MN.*larger var_K|less concentrated target"
+  )
 })
 
 # =============================================================================
@@ -289,7 +339,7 @@ test_that("Output contains all required fields", {
   }
 })
 
-test_that("Target structure includes var_K_used (GPT improvement)", {
+test_that("Target structure includes var_K_used", {
   fit <- DPprior_fit(J = 50, mu_K = 5, var_K = 8, check_diagnostics = FALSE)
 
   expect_true("var_K" %in% names(fit$target))
@@ -389,7 +439,7 @@ test_that("Works with moderate mu_K relative to J", {
 })
 
 # =============================================================================
-# target_pmf Tests (GPT dual-mode for A2-KL)
+# target_pmf Tests for A2-KL
 # =============================================================================
 
 test_that("target_pmf validation works", {
@@ -397,17 +447,23 @@ test_that("target_pmf validation works", {
 
   # Wrong length
   expect_error(
-    DPprior_fit(J = J, mu_K = 5, var_K = 8, method = "A2-KL",
-                target_pmf = rep(1/10, 10), check_diagnostics = FALSE),
-    "target_pmf must be"
+    DPprior_fit(J = J, method = "A2-KL", target_pmf = rep(1/10, 10),
+                check_diagnostics = FALSE),
+    "target_pmf must"
   )
 
   # Negative values
   expect_error(
-    DPprior_fit(J = J, mu_K = 5, var_K = 8, method = "A2-KL",
+    DPprior_fit(J = J, method = "A2-KL",
                 target_pmf = c(-0.1, rep(1.1/(J-1), J-1)),
                 check_diagnostics = FALSE),
     "non-negative"
+  )
+
+  expect_error(
+    DPprior_fit(J = J, method = "A1", target_pmf = rep(1/J, J),
+                check_diagnostics = FALSE),
+    "target_pmf can only be used"
   )
 })
 
@@ -419,11 +475,220 @@ test_that("A2-KL works with valid target_pmf", {
   raw_pmf <- dbinom(1:J, size = J, prob = 0.1)
   target_pmf <- raw_pmf / sum(raw_pmf)  # Normalize to sum to 1
 
-  fit <- DPprior_fit(J = J, mu_K = 5, var_K = 8, method = "A2-KL",
-                     target_pmf = target_pmf, check_diagnostics = FALSE)
+  fit <- DPprior_fit(J = J, target_pmf = target_pmf,
+                     check_diagnostics = FALSE)
 
   expect_s3_class(fit, "DPprior_fit")
   expect_match(fit$method, "A2-KL")
+  expect_equal(fit$target$type, "pmf")
+  expect_equal(fit$target$pmf, target_pmf, tolerance = 1e-12)
+  expect_equal(fit$target$mu_K, sum(seq_len(J) * target_pmf), tolerance = 1e-12)
+})
+
+test_that("A2-KL wrapper accepts target_pmf with k=0 entry", {
+  J <- 20
+  tail_pmf <- stats::dpois(seq_len(J), lambda = 4)
+  expected <- tail_pmf / sum(tail_pmf)
+  target_pmf <- c(0, tail_pmf)
+
+  fit <- DPprior_fit(J = J, method = "A2-KL", target_pmf = target_pmf,
+                     check_diagnostics = FALSE)
+
+  expect_s3_class(fit, "DPprior_fit")
+  expect_equal(fit$target$type, "pmf")
+  expect_equal(length(fit$target$pmf), J)
+  expect_equal(fit$target$pmf, expected, tolerance = 1e-12)
+  expect_equal(sum(fit$target$pmf), 1, tolerance = 1e-12)
+})
+
+test_that("A2-KL wrapper rejects positive k=0 target_pmf mass", {
+  J <- 20L
+
+  expect_error(
+    DPprior_fit(J = J,
+                target_pmf = c(0.25, rep(0.75 / J, J)),
+                check_diagnostics = FALSE,
+                warn_dominance = FALSE,
+                M = 20L),
+    "target_pmf\\[1\\].*K = 0.*must be 0.*support \\{1, \\.\\.\\., J\\}"
+  )
+})
+
+test_that("A2-KL wrapper validates invalid k=0 entries before dropping", {
+  J <- 20L
+
+  expect_error(
+    DPprior_fit(J = J,
+                target_pmf = c(NA_real_, rep(1, J)),
+                check_diagnostics = FALSE,
+                warn_dominance = FALSE,
+                M = 20L),
+    "target_pmf must be finite and non-missing"
+  )
+  expect_error(
+    DPprior_fit(J = J,
+                target_pmf = c(Inf, rep(1, J)),
+                check_diagnostics = FALSE,
+                warn_dominance = FALSE,
+                M = 20L),
+    "target_pmf must be finite and non-missing"
+  )
+  expect_error(
+    DPprior_fit(J = J,
+                target_pmf = c(-0.1, rep(1, J)),
+                check_diagnostics = FALSE,
+                warn_dominance = FALSE,
+                M = 20L),
+    "target_pmf must be non-negative"
+  )
+})
+
+test_that("target_pmf accepts explicit moments that match implied moments", {
+  J <- 20L
+  target_pmf <- stats::dpois(seq_len(J), lambda = 4)
+  target_pmf <- target_pmf / sum(target_pmf)
+  k <- seq_len(J)
+  pmf_mu <- sum(k * target_pmf)
+  pmf_var <- sum(k^2 * target_pmf) - pmf_mu^2
+
+  fit <- DPprior_fit(J = J,
+                     mu_K = pmf_mu + 1e-11,
+                     var_K = pmf_var - 1e-11,
+                     method = "A2-KL",
+                     target_pmf = target_pmf,
+                     check_diagnostics = FALSE,
+                     warn_dominance = FALSE,
+                     M = 20L)
+
+  expect_s3_class(fit, "DPprior_fit")
+  expect_equal(fit$method, "A2-KL")
+  expect_equal(fit$target$type, "pmf")
+  expect_equal(fit$target$mu_K, pmf_mu, tolerance = 1e-10)
+  expect_equal(fit$target$var_K, pmf_var, tolerance = 1e-10)
+  expect_equal(fit$target$var_K_used, pmf_var, tolerance = 1e-10)
+})
+
+test_that("target_pmf rejects explicit mu_K that conflicts with implied mean", {
+  J <- 20L
+  target_pmf <- stats::dpois(seq_len(J), lambda = 4)
+  target_pmf <- target_pmf / sum(target_pmf)
+  k <- seq_len(J)
+  pmf_mu <- sum(k * target_pmf)
+  pmf_var <- sum(k^2 * target_pmf) - pmf_mu^2
+
+  expect_error(
+    DPprior_fit(J = J,
+                mu_K = pmf_mu + 0.25,
+                var_K = pmf_var,
+                method = "A2-KL",
+                target_pmf = target_pmf,
+                check_diagnostics = FALSE,
+                warn_dominance = FALSE,
+                M = 20L),
+    "mu_K conflicts with target_pmf-derived mean"
+  )
+})
+
+test_that("target_pmf rejects explicit var_K that conflicts with implied variance", {
+  J <- 20L
+  target_pmf <- stats::dpois(seq_len(J), lambda = 4)
+  target_pmf <- target_pmf / sum(target_pmf)
+  k <- seq_len(J)
+  pmf_mu <- sum(k * target_pmf)
+  pmf_var <- sum(k^2 * target_pmf) - pmf_mu^2
+
+  expect_error(
+    DPprior_fit(J = J,
+                mu_K = pmf_mu,
+                var_K = pmf_var + 0.25,
+                method = "A2-KL",
+                target_pmf = target_pmf,
+                check_diagnostics = FALSE,
+                warn_dominance = FALSE,
+                M = 20L),
+    "var_K conflicts with target_pmf-derived variance"
+  )
+})
+
+test_that("target_pmf conflict checks run when method is omitted", {
+  J <- 20L
+  raw_pmf <- stats::dpois(seq_len(J), lambda = 4)
+  target_pmf <- raw_pmf / sum(raw_pmf)
+  k <- seq_len(J)
+  pmf_mu <- sum(k * target_pmf)
+  pmf_var <- sum(k^2 * target_pmf) - pmf_mu^2
+
+  expect_error(
+    DPprior_fit(J = J,
+                mu_K = pmf_mu + 0.25,
+                var_K = pmf_var,
+                target_pmf = target_pmf,
+                check_diagnostics = FALSE,
+                warn_dominance = FALSE,
+                M = 20L),
+    "mu_K conflicts with target_pmf-derived mean"
+  )
+  expect_error(
+    DPprior_fit(J = J,
+                mu_K = pmf_mu,
+                var_K = pmf_var + 0.25,
+                target_pmf = target_pmf,
+                check_diagnostics = FALSE,
+                warn_dominance = FALSE,
+                M = 20L),
+    "var_K conflicts with target_pmf-derived variance"
+  )
+  expect_error(
+    DPprior_fit(J = J,
+                mu_K = pmf_mu + 0.25,
+                var_K = pmf_var,
+                target_pmf = c(0, raw_pmf),
+                check_diagnostics = FALSE,
+                warn_dominance = FALSE,
+                M = 20L),
+    "mu_K conflicts with target_pmf-derived mean"
+  )
+})
+
+test_that("target_pmf consistency checks use normalized length J+1 input", {
+  J <- 20L
+  raw_pmf <- stats::dpois(seq_len(J), lambda = 4)
+  k <- seq_len(J)
+  normalized <- raw_pmf / sum(raw_pmf)
+  pmf_mu <- sum(k * normalized)
+  pmf_var <- sum(k^2 * normalized) - pmf_mu^2
+  target_pmf <- c(0, raw_pmf)
+
+  fit <- DPprior_fit(J = J,
+                     mu_K = pmf_mu,
+                     var_K = pmf_var,
+                     method = "A2-KL",
+                     target_pmf = target_pmf,
+                     check_diagnostics = FALSE,
+                     warn_dominance = FALSE,
+                     M = 20L)
+
+  expect_s3_class(fit, "DPprior_fit")
+  expect_equal(fit$target$pmf, normalized, tolerance = 1e-12)
+  expect_equal(fit$target$mu_K, pmf_mu, tolerance = 1e-12)
+  expect_equal(fit$target$var_K, pmf_var, tolerance = 1e-12)
+})
+
+test_that("target_pmf rejects invalid explicit consistency moments", {
+  J <- 20L
+  target_pmf <- stats::dpois(seq_len(J), lambda = 4)
+  target_pmf <- target_pmf / sum(target_pmf)
+
+  expect_error(
+    DPprior_fit(J = J, mu_K = NA_real_, target_pmf = target_pmf,
+                check_diagnostics = FALSE),
+    "mu_K must be a finite numeric scalar"
+  )
+  expect_error(
+    DPprior_fit(J = J, var_K = -1, target_pmf = target_pmf,
+                check_diagnostics = FALSE),
+    "var_K conflicts with target_pmf-derived variance"
+  )
 })
 
 # =============================================================================

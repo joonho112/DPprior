@@ -8,7 +8,7 @@ kl_divergence_K(target_pmf, a, b, J, M = .QUAD_NODES_DEFAULT)
 }
 \arguments{
 \item{target_pmf}{Numeric vector; target PMF for K_J. Can have length J
-(support k=1,...,J) or J+1 (support k=0,...,J, where k=0 is ignored).}
+(support k=1,...,J) or J+1 (support k=0,...,J, where k=0 must have zero mass).}
 
 \item{a}{Numeric; shape parameter of Gamma hyperprior (a > 0).}
 

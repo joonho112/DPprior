@@ -314,8 +314,8 @@ of the Newton-Kantorovich theorem; see Ortega & Rheinboldt (1970, Chapter 10).
 
 **Theorem 1** (Local quadratic convergence of A2-MN).
 
-*Let $(\mu_K, \sigma^2_K)$ be feasible targets satisfying $\mu_K > 1$, 
-$\sigma^2_K > 0$, and suppose there exists $(a^*, b^*)$ with 
+*Let $(\mu_K, \sigma^2_K)$ be feasible targets satisfying $1 < \mu_K < J$,
+$0 < \sigma^2_K \leq (\mu_K - 1)(J - \mu_K)$, and suppose there exists $(a^*, b^*)$ with
 $F(a^*, b^*) = 0$. If the A1 initializer $(a_0, b_0)$ lies in a 
 neighborhood of $(a^*, b^*)$ where $F$ is continuously differentiable 
 and $\mathbf{J}_F$ is nonsingular, then:*
@@ -523,7 +523,7 @@ fit <- DPprior_a2_newton(J = 50, mu_K = 5, var_K = 8,
 Before optimization, the algorithm enforces basic necessary conditions:
 
 - $1 < \mu_K < J$ (mean must be achievable)
-- $0 < \sigma^2_K < (J-1)^2/4$ (Popoviciu variance bound)
+- $0 < \sigma^2_K \leq (\mu_K - 1)(J - \mu_K)$ (fixed-mean bounded-support variance bound)
 
 These conditions are **necessary but not sufficient** for feasibility 
 under the Gamma-DP model.
@@ -687,7 +687,7 @@ cat("Computational Cost Comparison\n")
 cat(strrep("-", 50), "\n")
 print(summary(bench)[, c("expr", "mean", "median")])
 
-cat("\nNote: A2 takes ~10x longer than A1 but achieves ~10⁶x better accuracy.\n")
+cat("\nNote: In this benchmark, A2 is slower than A1 but much more accurate.\n")
 cat("The added cost (a few milliseconds) is negligible for most applications.\n")
 ```
 
@@ -707,8 +707,8 @@ This vignette has provided a rigorous treatment of the A2 Newton algorithm:
 4. **Numerical safeguards:** Log-parameterization, damped Newton with 
    backtracking, Jacobian regularization, and Nelder-Mead fallback
 
-5. **Error reduction:** A2 reduces moment-matching residuals by factors of 
-   $10^6$ or more compared to A1
+5. **Error reduction:** A2 can reduce moment-matching residuals by orders of
+   magnitude compared to A1 in the benchmark scenarios above
 
 
 ### Key Functions
@@ -738,8 +738,8 @@ This vignette has provided a rigorous treatment of the A2 Newton algorithm:
 
 ## What's Next?
 
-- **[Error Quantification](theory-error.html)**: Detailed analysis of A1 
-  approximation errors and when they matter
+- **[A1 Approximation Theory](theory-approximations.html)**: Detailed analysis
+  of A1 approximation errors and when they matter
 
 - **[Dual-Anchor Framework](dual-anchor.html)**: Extending A2 to 
   simultaneously match cluster and weight targets

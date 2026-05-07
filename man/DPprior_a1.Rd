@@ -15,7 +15,7 @@ DPprior_a1(
 \arguments{
 \item{J}{Integer; number of items/sites (must be >= 2).}
 
-\item{mu_K}{Numeric; target prior mean of \eqn{K_J} (must be > 1 and <= J).}
+\item{mu_K}{Numeric; target prior mean of \eqn{K_J} (must satisfy \eqn{1 < \mu_K < J}).}
 
 \item{var_K}{Numeric; target prior variance of \eqn{K_J} (must be > 0).}
 
