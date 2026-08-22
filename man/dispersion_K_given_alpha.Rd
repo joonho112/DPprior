@@ -1,0 +1,32 @@
+% Please edit documentation in R/03_moments_conditional.R
+\name{dispersion_K_given_alpha}
+\alias{dispersion_K_given_alpha}
+\title{Dispersion Index for K Given Alpha}
+\usage{
+dispersion_K_given_alpha(J, alpha)
+}
+\arguments{
+\item{J}{Sample size (integer >= 1).}
+
+\item{alpha}{Concentration parameter (positive numeric, vectorized).}
+}
+\value{
+Numeric vector of dispersion indices.
+}
+\description{
+Computes the dispersion index (variance-to-mean ratio) of \eqn{K_J | \alpha}.
+Always < 1 for this distribution (underdispersion).
+}
+\seealso{
+Other conditional_K:
+\code{\link[=cdf_K_given_alpha]{cdf_K_given_alpha()}},
+\code{\link[=cv_K_given_alpha]{cv_K_given_alpha()}},
+\code{\link[=log_pmf_K_given_alpha]{log_pmf_K_given_alpha()}},
+\code{\link[=mean_K_given_alpha]{mean_K_given_alpha()}},
+\code{\link[=mode_K_given_alpha]{mode_K_given_alpha()}},
+\code{\link[=moments_K_given_alpha]{moments_K_given_alpha()}},
+\code{\link[=pmf_K_given_alpha]{pmf_K_given_alpha()}},
+\code{\link[=quantile_K_given_alpha]{quantile_K_given_alpha()}},
+\code{\link[=var_K_given_alpha]{var_K_given_alpha()}}
+}
+\concept{conditional_K}

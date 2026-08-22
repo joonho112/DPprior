@@ -1,0 +1,32 @@
+% Please edit documentation in R/03_moments_conditional.R
+\name{cv_K_given_alpha}
+\alias{cv_K_given_alpha}
+\title{Coefficient of Variation for K Given Alpha}
+\usage{
+cv_K_given_alpha(J, alpha)
+}
+\arguments{
+\item{J}{Sample size (integer >= 1).}
+
+\item{alpha}{Concentration parameter (positive numeric, vectorized).}
+}
+\value{
+Numeric vector of coefficients of variation.
+}
+\description{
+Computes the coefficient of variation (CV) of \eqn{K_J | \alpha},
+defined as \eqn{CV = SD(K) / E[K]}.
+}
+\seealso{
+Other conditional_K:
+\code{\link[=cdf_K_given_alpha]{cdf_K_given_alpha()}},
+\code{\link[=dispersion_K_given_alpha]{dispersion_K_given_alpha()}},
+\code{\link[=log_pmf_K_given_alpha]{log_pmf_K_given_alpha()}},
+\code{\link[=mean_K_given_alpha]{mean_K_given_alpha()}},
+\code{\link[=mode_K_given_alpha]{mode_K_given_alpha()}},
+\code{\link[=moments_K_given_alpha]{moments_K_given_alpha()}},
+\code{\link[=pmf_K_given_alpha]{pmf_K_given_alpha()}},
+\code{\link[=quantile_K_given_alpha]{quantile_K_given_alpha()}},
+\code{\link[=var_K_given_alpha]{var_K_given_alpha()}}
+}
+\concept{conditional_K}

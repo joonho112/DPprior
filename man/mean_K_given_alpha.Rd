@@ -1,0 +1,61 @@
+% Please edit documentation in R/03_moments_conditional.R
+\name{mean_K_given_alpha}
+\alias{mean_K_given_alpha}
+\title{Conditional Mean of K_J Given Alpha}
+\usage{
+mean_K_given_alpha(J, alpha)
+}
+\arguments{
+\item{J}{Sample size (integer >= 1).}
+
+\item{alpha}{Concentration parameter (positive numeric, vectorized).}
+}
+\value{
+Numeric vector of conditional means (same length as \code{alpha}).
+}
+\description{
+Computes \eqn{\mathbb{E}[K_J \mid \alpha]} under a Dirichlet process prior.
+}
+\details{
+The classical digamma closed form is:
+\deqn{\mu_J(\alpha) = \alpha\{\psi(\alpha+J)-\psi(\alpha)\}}
+where \eqn{\psi(\cdot)} is the digamma function.
+
+This is equivalent to the direct summation:
+\deqn{\mu_J(\alpha) = \sum_{i=1}^{J} \frac{\alpha}{\alpha + i - 1}}
+
+\strong{Limiting behavior:}
+\itemize{
+\item \eqn{\alpha \to 0^+}: \eqn{\mu_J(\alpha) \to 1}
+\item \eqn{\alpha \to \infty}: \eqn{\mu_J(\alpha) \to J}
+}
+
+The implementation evaluates the equivalent finite sum. For small
+\code{alpha} it adds the small increments to 1; for large \code{alpha} it
+subtracts the small deficits from \code{J}. This avoids special-function
+cancellation and a discontinuous small-alpha guard.
+}
+\examples{
+mean_K_given_alpha(50, 2.0)
+mean_K_given_alpha(50, c(0.5, 1, 2, 5))
+
+# Limiting behavior
+mean_K_given_alpha(50, 1e-10)  # Returns a value just above 1
+mean_K_given_alpha(50, 1e6)    # Returns ~50
+
+}
+\seealso{
+\code{\link{var_K_given_alpha}}, \code{\link{moments_K_given_alpha}}
+
+Other conditional_K:
+\code{\link[=cdf_K_given_alpha]{cdf_K_given_alpha()}},
+\code{\link[=cv_K_given_alpha]{cv_K_given_alpha()}},
+\code{\link[=dispersion_K_given_alpha]{dispersion_K_given_alpha()}},
+\code{\link[=log_pmf_K_given_alpha]{log_pmf_K_given_alpha()}},
+\code{\link[=mode_K_given_alpha]{mode_K_given_alpha()}},
+\code{\link[=moments_K_given_alpha]{moments_K_given_alpha()}},
+\code{\link[=pmf_K_given_alpha]{pmf_K_given_alpha()}},
+\code{\link[=quantile_K_given_alpha]{quantile_K_given_alpha()}},
+\code{\link[=var_K_given_alpha]{var_K_given_alpha()}}
+}
+\concept{conditional_K}

@@ -1,0 +1,895 @@
+---
+title: "Diagnosing Your Prior: Avoiding Unintended Consequences"
+author: "JoonHo Lee (jlee296@ua.edu)"
+date: "`r Sys.Date()`"
+description: >
+  Learn to verify that your elicited Gamma hyperprior behaves as intended 
+  across all relevant dimensions, not just the number of clusters.
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Diagnosing Your Prior: Avoiding Unintended Consequences}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+library(DPprior)
+library(ggplot2)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5,
+  fig.align = "center",
+  out.width = "85%"
+)
+set.seed(42)
+
+# Define a consistent color palette
+palette_3 <- c("#E41A1C", "#377EB8", "#4DAF4A")
+palette_4 <- c("#E41A1C", "#377EB8", "#4DAF4A", "#984EA3")
+```
+
+## Overview
+
+When you elicit a Gamma hyperprior for $\alpha$ based on your expectations 
+about the number of clusters $K_J$, you are implicitly specifying priors 
+on *many other quantities* that you may not have consciously considered. 
+These "unintended priors" can lead your posterior inference in unexpected 
+directions, particularly in low-information settings where the data cannot 
+overwhelm an inadvertently strong prior.
+
+This vignette introduces the diagnostic tools in the DPprior package that 
+help you verify your prior behaves as intended across all relevant 
+dimensions. By the end, you will understand:
+
+1. Why diagnostics matter: the "unintended prior" problem
+2. The complete diagnostic suite available in DPprior
+3. How to interpret $\alpha$ and weight distribution diagnostics
+4. Explicit estimand-specific warning policies and how to respond to them
+5. How to use diagnostics to iteratively refine your prior
+
+
+## 1. Why Diagnostics Matter
+
+### 1.1 The Blind Spot in Prior Elicitation
+
+The standard workflow for eliciting a DP prior focuses on cluster counts:
+
+1. You think about $\mu_K$: "How many groups do I expect?"
+2. You think about $\text{Var}(K)$: "How uncertain am I about that?"
+3. You build `DPprior_target_K()`, pass it to `DPprior_fit()`, and obtain
+   $\alpha \sim \text{Gamma}(a, b)$
+
+This is intuitive and principled. However, your elicited prior on $\alpha$ 
+determines not just $K_J$, but also:
+ 
+- The **distribution of $\alpha$ itself**: mean, variance, and shape
+- The **cluster weight distribution**: how mass is allocated across clusters
+- The **co-clustering probability**: how likely two random observations share a cluster
+- A named **weight-tail probability**, such as $P(W_{SB}>0.5)$, kept
+  distinct from largest-weight evidence for $W_{max}$
+
+These characteristics are implicit consequences of your $(a, b)$ choice. 
+You may not have intended any particular behavior for these quantities, 
+yet your prior assigns specific probabilities to them.
+
+### 1.2 The Unintended Prior Problem
+
+[Vicentini & Jermyn (2025)](https://doi.org/10.48550/arXiv.2502.00864) 
+demonstrated that matching a target $K_J$ distribution does not guarantee 
+intuitive weight behavior. Consider a concrete example:
+
+```{r unintended-demo}
+J <- 50
+mu_K <- 5
+
+# Canonical K-only calibration
+target_K <- DPprior_target_K(J = J, mu_K = mu_K, var_K = 8)
+fit_K <- DPprior_fit(J = J, target_K = target_K, method = "A2-MN")
+
+cat("K-only prior: Gamma(", round(fit_K$parameters$a, 3), ", ",
+    round(fit_K$parameters$b, 3), ")\n", sep = "")
+cat("\nCluster count behavior:\n")
+cat("  E[K] =", round(fit_K$achieved$K$mean, 2), "\n")
+cat("  This matches our target of", mu_K, "clusters.\n")
+
+cat("\nBut what about weight behavior?\n")
+cat("  E[w₁] =",
+    round(mean_w1(fit_K$parameters$a, fit_K$parameters$b), 3), "\n")
+cat("  P(W_SB > 0.3) =",
+    round(prob_wsb_exceeds(0.3, fit_K$parameters$a, fit_K$parameters$b), 3), "\n")
+cat("  P(W_SB > 0.5) =",
+    round(prob_wsb_exceeds(0.5, fit_K$parameters$a, fit_K$parameters$b), 3), "\n")
+cat("  P(W_SB > 0.9) =",
+    round(prob_wsb_exceeds(0.9, fit_K$parameters$a, fit_K$parameters$b), 3), "\n")
+fit_K[c("status", "usable", "verified", "message")]
+```
+
+The prior expects 5 clusters, but there is a substantial probability 
+(nearly 50%) that a randomly selected observation belongs to a cluster 
+containing more than half of all observations. Is this what you intended 
+when you said "I expect 5 clusters"?
+
+Most researchers, when they think "5 clusters," imagine something like 
+five roughly comparable groups---not a situation where one cluster might 
+dominate the entire mixture.
+
+### 1.3 Why This Matters in Practice
+
+The unintended prior problem is especially consequential in 
+**low-information settings** ([Lee et al., 2025](https://doi.org/10.3102/10769986241254286)):
+
+- **Multisite trials with few sites**: When $J$ is moderate (20--100), 
+  each site provides limited data
+- **Sparse clustering applications**: When observations per cluster are small
+- **Exploratory analyses**: When you don't have strong prior data to inform expectations
+
+In these settings, the posterior can remain close to the prior. If your 
+prior places more mass than intended on large size-biased clusters, your
+posterior may inherit this behavior even when the data suggest otherwise.
+
+
+## 2. The Complete Diagnostic Suite
+
+The DPprior package provides a comprehensive set of diagnostics that you 
+can access in several ways.
+
+### 2.1 Automatic Diagnostics During Fitting
+
+The simplest approach is to enable diagnostics during the fitting process:
+
+```{r diagnostics-during-fit}
+target_K <- DPprior_target_K(J = 50, mu_K = 5, var_K = 8)
+fit <- DPprior_fit(
+  J = 50, target_K = target_K, check_diagnostics = TRUE
+)
+```
+
+When `check_diagnostics = TRUE`, the function computes all diagnostic 
+quantities and stores them in the returned object.
+
+### 2.2 Post-Hoc Diagnostic Computation
+
+You can also compute diagnostics after fitting:
+ 
+```{r posthoc-diagnostics}
+# Fit without diagnostics first
+target_K <- DPprior_target_K(J = 50, mu_K = 5, var_K = 8)
+fit <- DPprior_fit(
+  J = 50, target_K = target_K, check_diagnostics = FALSE
+)
+
+# Then compute and verify diagnostics. W_SB evidence is named explicitly;
+# a W_max policy remains explicitly indeterminate when its backend is unavailable.
+diag <- DPprior_diagnostics(fit)
+print(diag)
+diag[c("status", "usable", "verified", "message")]
+```
+
+### 2.3 Overview of Diagnostic Components
+
+The diagnostic object contains several components:
+
+| Component | Description |
+|-----------|-------------|
+| `diagnostics$alpha` | Verified $\alpha$ mean and CV |
+| `diagnostics$K` | Verified $K_J$ mean, variance, PMF, and quadrature order |
+| `diagnostics$weights` | Verified first-size-biased-weight mean $E[W_{SB}]$ |
+| `diagnostics$coclustering` | Verified co-clustering mean and variance |
+| `diagnostics$policy_results` | Exact $W_{SB}$ policy evidence, or an explicit indeterminate $W_{max}$ record when its backend is unavailable |
+| `diagnostics$warnings` | One warning for each triggered named policy |
+
+Let us examine each component in detail.
+
+
+## 3. Alpha Distribution Diagnostics
+
+The first set of diagnostics concerns the concentration parameter $\alpha$ 
+itself. Since $\alpha \sim \text{Gamma}(a, b)$, we can compute all moments 
+analytically.
+
+### 3.1 Accessing Alpha Diagnostics
+
+```{r alpha-diagnostics}
+target_K <- DPprior_target_K(J = 50, mu_K = 5, var_K = 8)
+fit <- DPprior_fit(
+  J = 50, target_K = target_K, check_diagnostics = FALSE
+)
+diag <- DPprior_diagnostics(fit)
+alpha_diag <- diag$diagnostics$alpha
+alpha_sd <- sqrt(fit$parameters$a) / fit$parameters$b
+alpha_quantiles <- qgamma(
+  c(q5 = 0.05, q25 = 0.25, q50 = 0.50, q75 = 0.75, q95 = 0.95),
+  shape = fit$parameters$a, rate = fit$parameters$b
+)
+
+cat("Alpha distribution summary:\n")
+cat("  Mean:     E[α] =", round(alpha_diag$mean, 4), "\n")
+cat("  SD:       SD(α) =", round(alpha_sd, 4), "\n")
+cat("  CV:       CV(α) =", round(alpha_diag$CV, 4), "\n")
+cat("\nQuantiles:\n")
+cat("   5th percentile:",
+    round(alpha_quantiles["q5"], 4), "\n")
+cat("  25th percentile:",
+    round(alpha_quantiles["q25"], 4), "\n")
+cat("  50th percentile:",
+    round(alpha_quantiles["q50"], 4), "\n")
+cat("  75th percentile:",
+    round(alpha_quantiles["q75"], 4), "\n")
+cat("  95th percentile:",
+    round(alpha_quantiles["q95"], 4), "\n")
+```
+
+### 3.2 Interpreting the Coefficient of Variation
+
+The coefficient of variation (CV) of $\alpha$ is particularly informative:
+
+| CV Range | Interpretation |
+|----------|----------------|
+| CV < 0.3 | **Highly informative**: You are quite certain about $\alpha$ |
+| 0.3 ≤ CV < 0.5 | **Moderately informative**: Reasonable uncertainty |
+| 0.5 ≤ CV < 1.0 | **Weakly informative**: Substantial uncertainty about $\alpha$ |
+| CV ≥ 1.0 | **Highly diffuse**: Very uncertain about $\alpha$ |
+
+For a Gamma distribution, $\text{CV}(\alpha) = 1/\sqrt{a}$, so the CV 
+depends only on the shape parameter $a$.
+
+```{r cv-interpretation, fig.height=5, fig.cap="Different levels of informativeness in the α prior, controlled by the shape parameter a."}
+# Compare different CV levels
+a_values <- c(0.5, 1, 2, 4, 10)
+cv_values <- 1 / sqrt(a_values)
+
+alpha_grid <- seq(0.01, 8, length.out = 300)
+cv_df <- do.call(rbind, lapply(seq_along(a_values), function(i) {
+  a <- a_values[i]
+  # Use b = a so E[alpha] = 1 for all
+  b <- a
+  data.frame(
+    alpha = alpha_grid,
+    density = dgamma(alpha_grid, shape = a, rate = b),
+    CV = sprintf("CV = %.2f (a = %.1f)", cv_values[i], a)
+  )
+}))
+cv_df$CV <- factor(cv_df$CV, levels = unique(cv_df$CV))
+
+ggplot(cv_df, aes(x = alpha, y = density, color = CV)) +
+  geom_line(linewidth = 1) +
+  scale_color_viridis_d(option = "plasma", end = 0.85) +
+  labs(
+    x = expression(alpha),
+    y = "Density",
+    title = "Prior Informativeness Controlled by Shape Parameter",
+    subtitle = "All priors have E[α] = 1; higher a means lower CV (more informative)"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "right")
+```
+
+
+## 4. Weight Distribution Diagnostics
+
+The weight diagnostics are crucial for detecting unintended prior behavior. 
+The DPprior package provides comprehensive diagnostics for the first
+size-biased stick $W_{SB}$ (historically named `w1` in helper functions).
+
+### 4.1 Understanding $W_{SB}$
+
+Recall from the [Dual-Anchor vignette](dual-anchor.html) that under 
+Sethuraman's stick-breaking representation:
+
+$$
+w_1 = v_1, \quad v_1 \mid \alpha \sim \text{Beta}(1, \alpha)
+$$
+
+The quantity $w_1=W_{SB}$ has a natural interpretation: it is the **proportion
+of the cluster containing a randomly selected observation**. If 
+$P(w_1 > 0.5)$ is high, a random observation is likely to belong to a 
+cluster containing more than half of all observations.
+
+### 4.2 Accessing Weight Diagnostics
+
+```{r weight-diagnostics}
+wsb <- diag$diagnostics$weights
+wsb_median <- quantile_w1(
+  0.5, fit$parameters$a, fit$parameters$b
+)
+wsb_tail <- vapply(
+  c(0.5, 0.9), prob_wsb_exceeds, numeric(1),
+  a = fit$parameters$a, b = fit$parameters$b
+)
+names(wsb_tail) <- c("threshold_0.5", "threshold_0.9")
+cat("Weight distribution summary:\n")
+cat("  E[W_SB] =", round(wsb$mean, 4), "\n")
+cat("  Median(W_SB) =", round(wsb_median, 4), "\n")
+
+cat("\nNamed W_SB tail probabilities from the closed-form helper:\n")
+print(wsb_tail)
+cat("\nW_SB diagnostic status fields:\n")
+print(wsb[c("status", "usable", "verified", "message")])
+```
+
+Canonical diagnostics do not substitute a $W_{SB}$ value for $W_{max}$. A
+$W_{max}$ warning policy is retained as `outcome = "indeterminate"` with
+`basis = "backend_unavailable"` unless an independently authorized backend
+is available. Certified upper-bound constraints belong to the separate
+`wmax_tail_upper` hard-dual route.
+
+### 4.3 Closed-Form Calculations
+
+All $w_1$ diagnostics are computed using closed-form expressions (derived
+in [Lee, 2026](https://arxiv.org/abs/2602.06301), following [Vicentini & Jermyn, 2025](https://doi.org/10.48550/arXiv.2502.00864)):
+
+**CDF:**
+$$
+F_{w_1}(x \mid a, b) = 1 - \left( \frac{b}{b - \log(1-x)} \right)^a
+$$
+
+**Quantile function:**
+$$
+Q_{w_1}(u \mid a, b) = 1 - \exp\left( b \left[ 1 - (1-u)^{-1/a} \right] \right)
+$$
+
+**First-size-biased-weight tail probability:**
+$$
+P(w_1 > t \mid a, b) = \left( \frac{b}{b - \log(1-t)} \right)^a
+$$
+
+You can access these functions directly:
+
+```{r closed-form-demo}
+a <- fit$parameters$a
+b <- fit$parameters$b
+
+# Direct computation of tail probabilities
+cat("Direct computation of P(W_SB > t):\n")
+for (t in c(0.3, 0.5, 0.7, 0.9)) {
+  p <- prob_wsb_exceeds(t, a, b)
+  cat(sprintf("  P(W_SB > %.1f) = %.4f\n", t, p))
+}
+
+# Quantiles
+cat("\nQuantiles of W_SB distribution:\n")
+for (q in c(0.25, 0.5, 0.75, 0.95)) {
+  x <- quantile_w1(q, a, b)
+  cat(sprintf("  %d%% quantile: %.4f\n", round(100*q), x))
+}
+```
+
+
+## 5. Explicit Estimand-Specific Warning Policies
+
+DPprior does not assign an ambiguous LOW/MODERATE/HIGH category. A warning
+policy must name the estimand (`"W_SB"` or `"W_max"`), mass threshold,
+comparison direction, and action threshold.
+
+### 5.1 Separate the Mass Threshold from the Action Threshold
+
+For example, the policy below asks whether
+$P(W_{SB}>0.5)$ exceeds 0.40. The two 0.5 and 0.40 values answer different
+questions and are recorded separately.
+
+```r
+warning_policy <- list(
+  estimand = "W_SB",
+  direction = "above",
+  weight_threshold = 0.5,
+  action_threshold = 0.40
+)
+```
+
+### 5.2 Enabling an Explicit Warning Policy
+
+You can enable automatic warnings during fitting:
+
+```{r dominance-warning-demo}
+# A prior with a predeclared W_SB policy
+target_risky <- DPprior_target_K(J = 50, mu_K = 2, var_K = 2)
+fit_risky <- DPprior_fit(
+  J = 50, target_K = target_risky,
+  warning_policy = list(
+    estimand = "W_SB", direction = "above",
+    weight_threshold = 0.5, action_threshold = 0.40
+  )
+)
+```
+
+The warning reports the named estimand and exact policy comparison. It does
+not claim that $W_{SB}$ is the largest weight.
+
+### 5.3 Reviewing the Policy Record
+
+You can also review the named policy record in the diagnostic object:
+
+```{r dominance-check}
+diag_risky <- DPprior_diagnostics(
+  fit_risky,
+  warning_policy = list(
+    estimand = "W_SB", direction = "above",
+    weight_threshold = 0.5, action_threshold = 0.40
+  )
+)
+
+cat("Named policy record:\n")
+policy_record <- diag_risky$diagnostics$policy_results[[1]]
+print(policy_record)
+cat("  P(W_SB > 0.5) =",
+    round(policy_record$value, 4), "\n")
+```
+
+### 5.4 Interpreting a Triggered Policy
+
+A triggered policy means the named comparison was met. For the example above,
+the exact $W_{SB}$ tail probability exceeded the predeclared 0.40 action
+threshold.
+This may or may not be appropriate depending on your application:
+
+**When a large $W_{SB}$ tail probability might be appropriate:**
+
+- You genuinely expect most data to fall into one dominant group
+- You are modeling rare events where most observations are "baseline"
+- You have strong prior evidence of an unbalanced partition
+
+**When a large $W_{SB}$ tail probability is likely unintended:**
+
+- You expect roughly equal-sized clusters
+- You think "$K$ clusters" should mean roughly balanced groups
+- You are doing exploratory clustering without strong prior expectations
+
+### 5.5 Responding to a Triggered Policy
+
+If a predeclared weight policy triggers and that behavior is unintended, you
+have several options:
+
+1. **Increase $\mu_K$**: Expecting more clusters typically reduces the
+   $W_{SB}$ tail probability
+2. **Decrease $\text{Var}(K)$**: More certainty about cluster count can help
+3. **Use dual-anchor elicitation**: Directly constrain weight behavior
+
+We will demonstrate option 3 in Section 7.
+
+
+## 6. Visualizing Diagnostics
+
+The DPprior package provides several visualization functions for 
+understanding your prior.
+
+### 6.1 The Complete Dashboard
+
+The `plot()` method for a `DPprior_fit` object creates a comprehensive 
+four-panel dashboard:
+
+```{r dashboard, fig.height=8, fig.cap="Complete diagnostic dashboard showing all key prior characteristics."}
+target_K <- DPprior_target_K(J = 50, mu_K = 5, var_K = 8)
+fit <- DPprior_fit(
+  J = 50, target_K = target_K, check_diagnostics = FALSE
+)
+plot(fit)
+```
+
+### 6.2 Individual Diagnostic Plots
+
+For more focused analysis, you can create individual plots:
+
+```{r fig-alpha-code, fig.cap="Prior density for the concentration parameter α.", eval=FALSE}
+# Alpha prior density
+plot_alpha_prior(fit)
+```
+
+```{r fig-alpha-plot, echo=FALSE, fig.height=4, fig.cap="Prior density for the concentration parameter alpha.", fig.alt="A smooth density curve showing the Gamma prior distribution on the concentration parameter alpha."}
+invisible(plot_alpha_prior(fit))
+```
+
+```{r fig-K-code, fig.cap="Marginal PMF of the number of clusters K.", eval=FALSE}
+# K marginal PMF
+plot_K_prior(fit)
+```
+
+```{r fig-K-plot, echo=FALSE, fig.height=4, fig.cap="Marginal PMF of the number of clusters K.", fig.alt="A bar plot showing the prior probability mass over possible numbers of clusters."}
+invisible(plot_K_prior(fit))
+```
+
+```{r fig-w1-code, fig.cap="Distribution of the first size-biased weight W_SB.", eval=FALSE}
+# First-size-biased-weight distribution with reviewed mass thresholds
+plot_w1_prior(fit)
+```
+
+```{r fig-w1-plot, echo=FALSE, fig.height=4, fig.cap="Distribution of the first size-biased weight W_SB.", fig.alt="A density plot showing the prior distribution of the first size-biased weight and reviewed mass thresholds."}
+invisible(plot_w1_prior(fit))
+```
+
+### 6.3 Comparing Multiple Priors
+
+When considering different prior specifications, you can visualize them 
+side by side:
+
+```{r compare-priors, fig.height=5, fig.cap="Comparison of K distributions under different variance assumptions."}
+comparison_targets <- list(
+  "Low uncertainty (var_K = 6)" =
+    DPprior_target_K(J = 50, mu_K = 5, var_K = 6),
+  "Medium uncertainty (var_K = 10)" =
+    DPprior_target_K(J = 50, mu_K = 5, var_K = 10),
+  "High uncertainty (var_K = 20)" =
+    DPprior_target_K(J = 50, mu_K = 5, var_K = 20)
+)
+fits <- lapply(comparison_targets, function(target_K) {
+  DPprior_fit(J = 50, target_K = target_K, check_diagnostics = FALSE)
+})
+
+# Compute log Stirling numbers for efficiency
+logS <- compute_log_stirling(50)
+
+# Build comparison data
+k_df <- do.call(rbind, lapply(names(fits), function(nm) {
+  fit <- fits[[nm]]
+  pmf <- pmf_K_marginal(
+    50, fit$parameters$a, fit$parameters$b, logS = logS
+  )
+  data.frame(
+    K = seq_along(pmf) - 1,  # pmf_K_marginal returns k=0,...,J
+    probability = pmf,
+    Prior = nm
+  )
+}))
+k_df <- k_df[k_df$K >= 1, ]  # Remove k=0
+k_df$Prior <- factor(k_df$Prior, levels = names(fits))
+
+# Plot
+ggplot(k_df[k_df$K <= 20, ], aes(x = K, y = probability, color = Prior)) +
+  geom_point(size = 2) +
+  geom_line(linewidth = 0.8) +
+  scale_color_manual(values = palette_3) +
+  labs(
+    x = expression(Number~of~clusters~K[J]),
+    y = "Probability",
+    title = "Prior PMF of K Under Different Variance Assumptions",
+    subtitle = "All priors have μ_K = 5; higher variance spreads the distribution"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom", legend.title = element_blank())
+```
+
+
+## 7. Diagnostic-Driven Refinement
+
+The diagnostic tools enable an iterative workflow for refining your prior 
+until it matches your intentions across all dimensions.
+
+### 7.1 The Refinement Workflow
+
+The recommended workflow is:
+
+1. **Start with K-only calibration**: Build `DPprior_target_K()` and pass it
+   unchanged to `DPprior_fit()`
+2. **Run diagnostics**: Check $\alpha$, $K_J$, and explicitly named weight estimands
+3. **Identify mismatches**: Does any aspect of the prior surprise you?
+4. **Refine**: Adjust parameters or use dual-anchor if needed
+5. **Repeat**: Until all aspects of the prior match your intentions
+
+### 7.2 Complete Example: From Problem to Solution
+
+Let us walk through a complete example of diagnostic-driven refinement.
+
+**Step 1: Initial K-only prior**
+
+```{r refinement-step1}
+# Researcher expects ~5 clusters with moderate uncertainty
+target_K <- DPprior_target_K(J = 50, mu_K = 5, var_K = 8)
+fit1 <- DPprior_fit(
+  J = 50, target_K = target_K, method = "A2-MN",
+  check_diagnostics = FALSE
+)
+
+cat("Step 1: Initial K-only prior\n")
+cat("Gamma(a =", round(fit1$parameters$a, 4), ", b =",
+    round(fit1$parameters$b, 4), ")\n\n")
+```
+
+**Step 2: Run diagnostics**
+
+```{r refinement-step2}
+diag1 <- DPprior_diagnostics(fit1)
+K1 <- diag1$diagnostics$K
+wsb1 <- diag1$diagnostics$weights
+wsb1_tail <- prob_wsb_exceeds(
+  0.5, fit1$parameters$a, fit1$parameters$b
+)
+
+cat("Step 2: Diagnostics reveal...\n")
+cat("  K behavior: E[K] =", round(K1$mean, 2),
+    ", Var(K) =", round(K1$variance, 2), "✓\n")
+cat("  Weight behavior: P(W_SB > 0.5) =",
+    round(wsb1_tail, 3), "\n")
+print(diag1[c("status", "usable", "verified", "message")])
+```
+
+**Step 3: Identify the problem**
+
+```{r refinement-step3-code, fig.cap="The K-only prior has a larger-than-intended W_SB tail probability.", eval=FALSE}
+plot_w1_prior(fit1)
+```
+
+```{r refinement-step3, echo=FALSE, fig.height=4, fig.cap="The K-only prior has a larger-than-intended W_SB tail probability.", fig.alt="A diagnostic plot showing substantial first-size-biased-weight mass above 0.5."}
+cat("Step 3: Problem identification\n")
+cat("  The researcher wanted: ~5 clusters with balanced weights\n")
+cat("  The prior implies: ~5 clusters but a large W_SB tail probability\n")
+cat("  P(W_SB > 0.5) =",
+    round(100 * wsb1_tail),
+    "% is higher than expected for 'balanced' clusters\n")
+
+invisible(plot_w1_prior(fit1))
+```
+
+**Step 4: Apply dual-anchor refinement**
+
+```{r refinement-step4}
+cat("Step 4: Dual-anchor refinement\n")
+cat("  Adding constraint: P(W_SB > 0.5) ≤ 0.25\n\n")
+
+fit2 <- DPprior_dual_hard(
+  fit = fit1,
+  constraint = list(
+    metric = "wsb_tail", threshold = 0.5,
+    relation = "<=", bound = 0.25
+  )
+)
+
+cat("Refined prior: Gamma(a =", round(fit2$parameters$a, 4), ", b =",
+    round(fit2$parameters$b, 4), ")\n")
+cat("Constraint verified:", fit2$constraint$satisfied, "\n")
+fit2[c("status", "usable", "verified", "message")]
+```
+
+**Step 5: Read the verified hard-fit evidence**
+
+```{r refinement-step5}
+K2 <- fit2$achieved$K
+wsb2_mean <- mean_w1(fit2$parameters$a, fit2$parameters$b)
+wsb2_tail <- fit2$achieved$weight$value
+
+cat("Step 5: Post-refinement evidence\n")
+cat("  K behavior: E[K] =", round(K2$mean, 2),
+    " (shifted from target of 5)\n")
+cat("  Weight behavior: P(W_SB > 0.5) =",
+    round(wsb2_tail, 3), "✓\n")
+print(fit2[c("status", "usable", "verified", "message")])
+```
+
+**Step 6: Visualize the improvement**
+
+```{r refinement-step6, fig.height=5, fig.cap="Comparison of weight distributions before and after dual-anchor refinement."}
+# Compare w1 distributions
+x_grid <- seq(0.001, 0.999, length.out = 500)
+w1_df <- data.frame(
+  x = rep(x_grid, 2),
+  density = c(
+    density_w1(x_grid, fit1$parameters$a, fit1$parameters$b),
+    density_w1(x_grid, fit2$parameters$a, fit2$parameters$b)
+  ),
+  Prior = rep(c("K-only (before)", "Dual-anchor (after)"), each = length(x_grid))
+)
+w1_df$Prior <- factor(w1_df$Prior, levels = c("K-only (before)", "Dual-anchor (after)"))
+
+# Cap extreme densities for visualization
+w1_df$density[w1_df$density > 10] <- NA
+
+ggplot(w1_df, aes(x = x, y = density, color = Prior)) +
+  geom_line(linewidth = 1, na.rm = TRUE) +
+  geom_vline(xintercept = 0.5, linetype = "dashed", color = "gray50") +
+  scale_color_manual(values = c("#E41A1C", "#377EB8")) +
+  annotate("text", x = 0.52, y = 5, label = "P(W_SB > 0.5)", hjust = 0, color = "gray40") +
+  labs(
+    x = expression(w[1]),
+    y = "Density",
+    title = "Weight Distribution: Before and After Dual-Anchor Refinement",
+    subtitle = sprintf("P(W_SB > 0.5): Before = %.0f%%, After = %.0f%%",
+                       100 * wsb1_tail,
+                       100 * wsb2_tail)
+  ) +
+  coord_cartesian(xlim = c(0, 1), ylim = c(0, 6)) +
+  theme_minimal() +
+  theme(legend.position = "bottom", legend.title = element_blank())
+```
+
+### 7.3 Summary of the Refinement
+
+```{r refinement-summary}
+comparison_df <- data.frame(
+  Metric = c(
+    "Gamma(a, b)", "E[K]", "Var(K)", "E[W_SB]",
+    "P(W_SB > 0.5)", "Diagnostic status"
+  ),
+  Before = c(
+    sprintf("(%.3f, %.3f)", fit1$parameters$a, fit1$parameters$b),
+    sprintf("%.2f", K1$mean),
+    sprintf("%.2f", K1$variance),
+    sprintf("%.3f", wsb1$mean),
+    sprintf("%.1f%%", 100 * wsb1_tail),
+    diag1$status
+  ),
+  After = c(
+    sprintf("(%.3f, %.3f)", fit2$parameters$a, fit2$parameters$b),
+    sprintf("%.2f", K2$mean),
+    sprintf("%.2f", K2$variance),
+    sprintf("%.3f", wsb2_mean),
+    sprintf("%.1f%%", 100 * wsb2_tail),
+    fit2$status
+  )
+)
+
+knitr::kable(
+  comparison_df,
+  col.names = c("Metric", "K-only", "Dual-anchor"),
+  caption = "Comparison of prior specifications before and after dual-anchor refinement"
+)
+```
+
+The trade-off is clear: the refined prior has slightly higher E[K] than 
+the original target of 5, but now has appropriately controlled weight 
+behavior. This is the Pareto trade-off that the dual-anchor framework 
+makes explicit.
+
+
+## 8. Comparative Diagnostics
+
+When evaluating multiple candidate priors, comparative diagnostics help 
+you understand the trade-offs.
+
+### 8.1 Comparing Multiple Priors
+
+```{r comparative-diagnostics}
+# Define three candidate priors
+candidate_targets <- list(
+  "Conservative" = DPprior_target_K(J = 50, mu_K = 5, var_K = 6),
+  "Moderate" = DPprior_target_K(J = 50, mu_K = 5, var_K = 10),
+  "Diffuse" = DPprior_target_K(J = 50, mu_K = 5, var_K = 20)
+)
+candidates <- lapply(candidate_targets, function(target_K) {
+  DPprior_fit(J = 50, target_K = target_K, check_diagnostics = FALSE)
+})
+
+# Compute diagnostics for each
+comp_results <- lapply(names(candidates), function(nm) {
+  fit <- candidates[[nm]]
+  # Retain a complete review object if fixed-order refinement does not verify.
+  # Such a row remains unusable and must not be promoted to a scientific result.
+  diag <- DPprior_diagnostics(fit, allow_approximate = TRUE)
+  K_diag <- diag$diagnostics$K
+  wsb_diag <- diag$diagnostics$weights
+  data.frame(
+    Prior = nm,
+    a = round(fit$parameters$a, 3),
+    b = round(fit$parameters$b, 3),
+    E_K = round(K_diag$mean, 2),
+    Var_K = round(K_diag$variance, 2),
+    E_w1 = round(wsb_diag$mean, 3),
+    P_WSB_gt_50 = sprintf(
+      "%.1f%%", 100 * prob_wsb_exceeds(
+        0.5, fit$parameters$a, fit$parameters$b
+      )
+    ),
+    Status = diag$status,
+    Usable = diag$usable,
+    Verified = diag$verified,
+    Message = diag$message
+  )
+})
+
+comp_df <- do.call(rbind, comp_results)
+
+knitr::kable(
+  comp_df,
+  col.names = c(
+    "Prior", "a", "b", "E[K]", "Var(K)", "E[W_SB]",
+    "P(W_SB>0.5)", "Status", "Usable", "Verified", "Message"
+  ),
+  caption = "Comparative diagnostics for three candidate priors"
+)
+```
+
+Any row with `usable = FALSE` is retained only for method review; its numerical
+summaries are not an approved scientific result.
+
+### 8.2 Visualizing the Comparison
+
+```{r comparative-viz, fig.height=6, fig.cap="Comparison of three candidate priors across multiple dimensions."}
+# Create comparison data for w1
+w1_comp_df <- do.call(rbind, lapply(names(candidates), function(nm) {
+  fit <- candidates[[nm]]
+  x <- seq(0.001, 0.999, length.out = 300)
+  d <- density_w1(x, fit$parameters$a, fit$parameters$b)
+  d[d > 8] <- NA
+  data.frame(x = x, density = d, Prior = nm)
+}))
+w1_comp_df$Prior <- factor(w1_comp_df$Prior, levels = names(candidates))
+
+p1 <- ggplot(w1_comp_df, aes(x = x, y = density, color = Prior)) +
+  geom_line(linewidth = 1, na.rm = TRUE) +
+  geom_vline(xintercept = 0.5, linetype = "dashed", color = "gray60") +
+  scale_color_manual(values = palette_3) +
+  coord_cartesian(xlim = c(0, 1), ylim = c(0, 5)) +
+  labs(x = expression(w[1]), y = "Density", 
+       title = expression("Prior on " * w[1])) +
+  theme_minimal() +
+  theme(legend.position = "bottom", legend.title = element_blank())
+
+# Create comparison data for K
+logS <- compute_log_stirling(50)
+k_comp_df <- do.call(rbind, lapply(names(candidates), function(nm) {
+  fit <- candidates[[nm]]
+  pmf <- pmf_K_marginal(
+    50, fit$parameters$a, fit$parameters$b, logS = logS
+  )
+  data.frame(k = seq_along(pmf) - 1, pmf = pmf, Prior = nm)
+}))
+k_comp_df <- k_comp_df[k_comp_df$k >= 1, ]
+k_comp_df$Prior <- factor(k_comp_df$Prior, levels = names(candidates))
+
+p2 <- ggplot(k_comp_df[k_comp_df$k <= 15, ], 
+             aes(x = k, y = pmf, color = Prior)) +
+  geom_point(size = 2) +
+  geom_line(linewidth = 0.8) +
+  scale_color_manual(values = palette_3) +
+  labs(x = expression(K[J]), y = "Probability", 
+       title = expression("Prior PMF of " * K[J])) +
+  theme_minimal() +
+  theme(legend.position = "bottom", legend.title = element_blank())
+
+gridExtra::grid.arrange(p1, p2, ncol = 2)
+```
+
+
+## Summary
+
+| Diagnostic Aspect | What to Check | Concern If... |
+|-------------------|---------------|---------------|
+| $\alpha$ CV | `diag$diagnostics$alpha$CV` | CV > 1 (very diffuse) or CV < 0.3 (very tight) without intention |
+| E[K] | `diag$diagnostics$K$mean` | Differs substantially from your target $\mu_K$ |
+| Var(K) | `diag$diagnostics$K$variance` | Differs substantially from your target or implied variance |
+| P($W_{SB}$ > 0.5) | Explicit `warning_policy` record or `prob_wsb_exceeds()` | Exceeds your predeclared action threshold |
+| $W_{max}$ policy | `diag$diagnostics$policy_results[[1]]` | An indeterminate/backend-unavailable result is reported as a point claim |
+| Decision status | `diag[c("status","usable","verified","message")]` | Approximation or failed verification is hidden |
+
+**Key Takeaways:**
+
+1. **Always run diagnostics** after eliciting a prior, especially for 
+   weight-related quantities
+2. **K-calibration is necessary but not sufficient**: matching E[K] does 
+   not guarantee intuitive weight behavior
+3. **Use an explicit estimand-specific warning policy** to catch potential
+   problems early
+4. **Apply `DPprior_dual_hard()`** when you need a verified inequality, or
+   `DPprior_dual_soft()` when you intend a fixed-scale trade-off
+5. **Iterate until satisfied**: prior elicitation is an iterative process
+
+
+## What's Next?
+
++ **[Dual-Anchor Framework](dual-anchor.html)**: Deep dive into controlling 
+  both cluster counts and weight behavior
+  
++ **[Case Studies](case-studies.html)**: Real-world examples of 
+  diagnostic-driven prior refinement
+  
++ **[Theory Overview](theory-overview.html)**: Mathematical foundations 
+  of the diagnostic quantities
+
+
+## References
+
+Lee, J., Che, J., Rabe-Hesketh, S., Feller, A., & Miratrix, L. (2025). 
+Improving the estimation of site-specific effects and their distribution 
+in multisite trials. *Journal of Educational and Behavioral Statistics*, 
+50(5), 731–764. https://doi.org/10.3102/10769986241254286
+
+Vicentini, S., & Jermyn, I. H. (2025). Prior selection for the precision 
+parameter of Dirichlet process mixture models. *arXiv:2502.00864*. 
+https://doi.org/10.48550/arXiv.2502.00864
+
+Sethuraman, J. (1994). A constructive definition of Dirichlet priors. 
+*Statistica Sinica*, 4(2), 639–650.
+
+---
+
+*For questions or feedback, please visit the 
+[GitHub repository](https://github.com/joonho112/DPprior).*

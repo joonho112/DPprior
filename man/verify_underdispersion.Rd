@@ -1,0 +1,31 @@
+% Please edit documentation in R/03_moments_conditional.R
+\name{verify_underdispersion}
+\alias{verify_underdispersion}
+\title{Verify Underdispersion Inequality}
+\usage{
+verify_underdispersion(
+  J,
+  alpha_values = c(0.1, 0.5, 1, 2, 5, 10),
+  verbose = TRUE
+)
+}
+\arguments{
+\item{J}{Sample size (integer >= 1).}
+
+\item{alpha_values}{Numeric vector of alpha values to test
+(default: c(0.1, 0.5, 1, 2, 5, 10)).}
+
+\item{verbose}{Logical; if TRUE, print results.}
+}
+\value{
+Logical; TRUE if inequality holds for all alpha values.
+}
+\description{
+Verifies that \eqn{0 \leq Var(K_J | \alpha) < E[K_J | \alpha]} for all
+specified values of \eqn{\alpha}. The variance is zero at \code{J = 1}.
+}
+\examples{
+verify_underdispersion(50)
+verify_underdispersion(50, c(0.1, 1, 10), verbose = TRUE)
+
+}

@@ -1,0 +1,38 @@
+% Please edit documentation in R/04_pmf_conditional.R
+\name{mode_K_given_alpha}
+\alias{mode_K_given_alpha}
+\title{Mode of K Given Alpha}
+\usage{
+mode_K_given_alpha(J, alpha, logS)
+}
+\arguments{
+\item{J}{Integer; sample size.}
+
+\item{alpha}{Numeric; DP concentration parameter.}
+
+\item{logS}{Matrix; pre-computed log-Stirling matrix.}
+}
+\value{
+Integer; the value \eqn{k} that maximizes \eqn{P(K_J = k \mid \alpha)}.
+}
+\description{
+Computes the mode (most likely value) of \eqn{K_J \mid \alpha}.
+}
+\examples{
+logS <- compute_log_stirling(50)
+mode_K_given_alpha(50, 2.0, logS)
+
+}
+\seealso{
+Other conditional_K:
+\code{\link[=cdf_K_given_alpha]{cdf_K_given_alpha()}},
+\code{\link[=cv_K_given_alpha]{cv_K_given_alpha()}},
+\code{\link[=dispersion_K_given_alpha]{dispersion_K_given_alpha()}},
+\code{\link[=log_pmf_K_given_alpha]{log_pmf_K_given_alpha()}},
+\code{\link[=mean_K_given_alpha]{mean_K_given_alpha()}},
+\code{\link[=moments_K_given_alpha]{moments_K_given_alpha()}},
+\code{\link[=pmf_K_given_alpha]{pmf_K_given_alpha()}},
+\code{\link[=quantile_K_given_alpha]{quantile_K_given_alpha()}},
+\code{\link[=var_K_given_alpha]{var_K_given_alpha()}}
+}
+\concept{conditional_K}

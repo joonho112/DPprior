@@ -1,0 +1,43 @@
+Package: DPprior
+Title: Principled Prior Elicitation for Dirichlet Process Mixture Models
+Version: 2.0.0
+Authors@R:
+    person("JoonHo", "Lee", , "jlee296@ua.edu", role = c("aut", "cre"),
+           comment = c(ORCID = "0009-0006-4019-8703"))
+Description: Tools for eliciting Gamma hyperpriors on the concentration
+    parameter alpha in Dirichlet Process (DP) mixture models. Rather than
+    requiring specification of the abstract parameter alpha directly,
+    'DPprior' allows researchers to express prior beliefs through intuitive
+    quantities: occupied-cluster counts and named weight estimands. The package
+    implements Two-Stage Moment Matching (TSMM) with an explicit closed-form
+    proxy (A1), independently verified Newton-based moment matching (A2-MN),
+    and distributional calibration (A2-KL). Versioned canonical results retain
+    computation, verification, and provenance evidence. Separate hard and soft
+    dual-anchor workflows support verified inequalities and fixed-scale
+    trade-offs. Based on methods described in Lee (2026)
+    <doi:10.48550/arXiv.2602.06301> and Lee, Che, Rabe-Hesketh, Feller, and Miratrix (2025)
+    <doi:10.3102/10769986241254286>.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Language: en-US
+Roxygen: list(markdown = TRUE)
+Depends:
+    R (>= 4.0.0)
+Imports:
+    stats,
+    graphics
+Suggests:
+    ggplot2 (>= 3.4.0),
+    gridExtra,
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0),
+    gtable,
+    scales,
+    microbenchmark
+Config/testthat/edition: 3
+VignetteBuilder: knitr
+URL: https://joonho112.github.io/DPprior/,
+    https://github.com/joonho112/DPprior
+BugReports: https://github.com/joonho112/DPprior/issues
+Config/roxygen2/version: 8.1.0

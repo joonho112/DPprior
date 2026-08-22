@@ -1,0 +1,14 @@
+% Please edit documentation in R/18_visualization.R
+\name{verify_visualization}
+\alias{verify_visualization}
+\title{Verify Visualization Module}
+\usage{
+verify_visualization(verbose = TRUE)
+}
+\arguments{
+\item{verbose}{Logical; if TRUE, print progress messages. Default is TRUE.}
+}
+\description{
+Verify Visualization Module
+}
+\keyword{internal}

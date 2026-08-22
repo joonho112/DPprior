@@ -1,0 +1,230 @@
+url: https://joonho112.github.io/DPprior/
+llm-docs: false
+template:
+  bootstrap: 5
+  bootswatch: cosmo
+  bslib:
+    primary: '#2980b9'
+home:
+  title: 'DPprior: Prior Elicitation for Dirichlet Process Mixture Models'
+  description: |
+    Decision-ready prior elicitation on the concentration parameter alpha in
+    Dirichlet Process mixture models via Design-Conditional Elicitation (DCE),
+    versioned canonical objects, and independently verified calibration.
+
+    This research was supported by the Institute of Education Sciences, U.S. Department of Education, through Grant R305D240078 to the University of Alabama.
+
+    The opinions expressed are those of the author and do not represent views of the Institute or the U.S. Department of Education.
+authors:
+  JoonHo Lee:
+    href: https://github.com/joonho112
+navbar:
+  structure:
+    left:
+    - intro
+    - reference
+    - articles
+    - news
+    right:
+    - search
+    - github
+  components:
+    articles:
+      text: Vignettes
+      menu:
+      - text: '--- Applied Track ---'
+      - text: Introduction
+        href: articles/introduction.html
+      - text: Quick Start
+        href: articles/quick-start.html
+      - text: Applied Guide
+        href: articles/applied-guide.html
+      - text: Dual-Anchor Framework
+        href: articles/dual-anchor.html
+      - text: Diagnostics
+        href: articles/diagnostics.html
+      - text: Case Studies
+        href: articles/case-studies.html
+      - text: '--- Methodological Track ---'
+      - text: Theory Overview
+        href: articles/theory-overview.html
+      - text: Stirling Numbers
+        href: articles/theory-stirling.html
+      - text: Approximations (A1)
+        href: articles/theory-approximations.html
+      - text: Newton Algorithm (A2)
+        href: articles/theory-newton.html
+      - text: Weight Distributions
+        href: articles/theory-weights.html
+      - text: API Reference
+        href: articles/api-reference.html
+articles:
+- title: Applied Track
+  navbar: ~
+  contents:
+  - introduction
+  - quick-start
+  - applied-guide
+  - dual-anchor
+  - diagnostics
+  - case-studies
+- title: Methodological Track
+  navbar: ~
+  contents:
+  - theory-overview
+  - theory-stirling
+  - theory-approximations
+  - theory-newton
+  - theory-weights
+  - api-reference
+reference:
+- title: Targets and Core Elicitation
+  desc: Canonical target construction and K-based calibration
+  contents:
+  - DPprior_target_K
+  - DPprior_fit
+- title: Dual-Anchor Calibration
+  desc: Current hard and soft workflows plus the retained v2.x legacy adapter
+  contents:
+  - DPprior_dual_hard
+  - DPprior_dual_soft
+  - DPprior_dual
+- title: Schema Migration
+  desc: Conservative validation and upgrade of serialized objects
+  contents:
+  - upgrade_DPprior_object
+- title: Approximation Algorithms
+  desc: A1 closed-form and A2 Newton-based algorithms
+  contents:
+  - DPprior_a1
+  - DPprior_a2_newton
+  - DPprior_a2_kl
+- title: Stirling Numbers
+  desc: Computation of unsigned Stirling numbers of the first kind
+  contents:
+  - compute_log_stirling
+- title: K Distribution (Conditional)
+  desc: Antoniak distribution P(K | alpha)
+  contents:
+  - pmf_K_given_alpha
+  - log_pmf_K_given_alpha
+  - cdf_K_given_alpha
+  - mean_K_given_alpha
+  - var_K_given_alpha
+  - mode_K_given_alpha
+  - quantile_K_given_alpha
+  - moments_K_given_alpha
+  - cv_K_given_alpha
+  - dispersion_K_given_alpha
+- title: K Distribution (Marginal)
+  desc: Marginal distribution of K under Gamma prior on alpha
+  contents:
+  - pmf_K_marginal
+  - cdf_K_marginal
+  - mode_K_marginal
+  - quantile_K_marginal
+  - summary_K_marginal
+  - K_moments
+  - exact_K_moments
+- title: Weight Distribution (w1)
+  desc: Distribution of the first stick-breaking / size-biased weight
+  contents:
+  - mean_w1
+  - var_w1
+  - prob_wsb_exceeds
+  - prob_w1_exceeds
+  - quantile_w1
+  - density_w1
+  - cdf_w1
+  - rw1
+  - summary_w1
+  - w1_grid
+- title: Maximum-Weight Tail Bounds
+  desc: Certified W-max bounds and the status-aware deferred direct interface
+  contents:
+  - wmax_tail_bounds
+  - prob_wmax_exceeds
+- title: Co-clustering Probability (rho)
+  desc: Pairwise co-clustering probability functions
+  contents:
+  - mean_rho
+  - var_rho
+  - mean_rho_given_alpha
+  - var_rho_given_alpha
+  - cv_rho
+  - rrho
+  - summary_rho
+  - rho_conditional_grid
+- title: Diagnostics
+  desc: Prior validation and diagnostic tools
+  contents:
+  - DPprior_diagnostics
+  - DPprior_error_bounds
+  - check_dominance_risk
+  - dual_anchor_diagnostics
+  - compare_a1_a2
+- title: Visualization
+  desc: Plotting functions
+  contents:
+  - plot.DPprior_fit
+  - plot_alpha_prior
+  - plot_K_prior
+  - plot_w1_prior
+  - plot_prior_dashboard
+  - plot_dual_comparison
+  - plot_dual_dashboard
+  - plot_tradeoff_curve
+  - plot_tradeoff_dashboard
+  - DPprior_colors
+  - theme_DPprior
+- title: S3 Methods
+  desc: Print, summary, and coercion methods
+  contents:
+  - print.DPprior_fit
+  - summary.DPprior_fit
+  - print.summary.DPprior_fit
+  - as.data.frame.DPprior_fit
+  - print.DPprior_diagnostics
+  - summary.DPprior_diagnostics
+  - as.data.frame.DPprior_diagnostics
+  - print.DPprior_error_bounds
+  - summary.DPprior_error_bounds
+  - print.w1_summary
+  - print.rho_summary
+- title: Numerical Utilities
+  desc: Conversion, quadrature, and numerical helper functions
+  contents:
+  - vif_to_variance
+  - confidence_to_vif
+  - cv_alpha_to_variance
+  - integrate_gamma
+  - build_gamma_quadrature
+  - gauss_laguerre_nodes
+  - logsumexp
+  - logsumexp_vec
+  - score_a
+  - score_b
+- title: Computation
+  desc: Lower-level computational functions
+  contents:
+  - compute_weight_diagnostics
+  - compute_error_landscape
+  - compute_tradeoff_curve
+  - compute_scaling_constant
+  - a1_moment_error
+  - discretize_chisq
+  - kl_divergence_K
+  - kl_divergence_pmf
+  - moments_with_jacobian
+- title: Validation & Verification
+  desc: Functions for verifying mathematical properties
+  contents:
+  - validate_stirling
+  - verify_jacobian
+  - verify_underdispersion
+footer:
+  structure:
+    left: developed_by
+    right: built_with
+  components:
+    developed_by: Developed by [JoonHo Lee (jlee296@ua.edu)](mailto:jlee296@ua.edu).

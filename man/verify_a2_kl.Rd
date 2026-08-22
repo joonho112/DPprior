@@ -1,0 +1,23 @@
+% Please edit documentation in R/12_a2_kl.R
+\name{verify_a2_kl}
+\alias{verify_a2_kl}
+\title{Verify A2-KL Optimization}
+\usage{
+verify_a2_kl(verbose = TRUE)
+}
+\arguments{
+\item{verbose}{Logical; if TRUE, print detailed results.}
+}
+\value{
+Logical; TRUE if all tests pass.
+}
+\description{
+Runs verification tests on the A2-KL optimization algorithm.
+}
+\examples{
+\dontrun{
+verify_a2_kl()
+
+}
+}
+\keyword{internal}

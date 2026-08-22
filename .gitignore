@@ -1,0 +1,40 @@
+# R session files
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+.Rprofile
+.Renviron
+
+# R package build/check artifacts
+*.Rcheck/
+*.tar.gz
+*.tgz
+*.Rout
+*.Rout.fail
+*.Rout.save
+
+# Local development workspaces
+/dev/
+/scratch/
+/paper/
+/log/
+/logs/
+
+# Generated documentation/build outputs
+/docs/
+/inst/doc/
+/doc/
+/Meta/
+
+# Test and plot artifacts
+Rplots.pdf
+/tests/testthat/Rplots.pdf
+
+# IDE/editor state
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,49 @@
+% Please edit documentation in R/13_error_bounds.R
+\name{compute_total_tv_bound}
+\alias{compute_total_tv_bound}
+\title{Total TV Error Bound (Conditional)}
+\usage{
+compute_total_tv_bound(J, alpha, cJ = log(J))
+}
+\arguments{
+\item{J}{Integer; sample size.}
+
+\item{alpha}{Numeric; concentration parameter (vectorized).}
+
+\item{cJ}{Numeric; scaling constant (default: log(J)).}
+}
+\value{
+Numeric; upper bound on total TV error (capped at 1).
+}
+\description{
+Computes the combined conditional TV bound using the triangle inequality:
+\deqn{d_{TV}(\mathcal{L}(S_J | \alpha),
+             \text{Poisson}(\alpha c_J))
+      \le B_{\text{Pois}} + B_{\text{lin}}}
+}
+\details{
+The result is capped at 1 since TV distance is bounded by 1.
+
+In the submitted manuscript this is Appendix D, Corollary
+\code{cor:combined-conditional} (Equations D14--D16). The total conditional
+TV error decomposes as:
+\enumerate{
+\item Poissonization error: \eqn{S_J | \alpha} vs \eqn{\text{Poisson}(\lambda_J(\alpha))}
+\item Linearization error: \eqn{\text{Poisson}(\lambda_J(\alpha))} vs \eqn{\text{Poisson}(\alpha c_J)}
+}
+}
+\examples{
+\dontrun{
+# Total bound at alpha = E[alpha] under Gamma(2, 1)
+compute_total_tv_bound(J = 50, alpha = 2)
+
+# Vectorized
+compute_total_tv_bound(J = 50, alpha = c(0.5, 1, 2, 5))
+
+}
+}
+\seealso{
+\code{\link{compute_poissonization_bound}}, \code{\link{compute_linearization_bound}},
+\code{\link{expected_tv_bound}}
+}
+\keyword{internal}

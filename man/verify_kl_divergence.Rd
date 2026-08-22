@@ -1,0 +1,23 @@
+% Please edit documentation in R/12_a2_kl.R
+\name{verify_kl_divergence}
+\alias{verify_kl_divergence}
+\title{Verify KL Divergence Properties}
+\usage{
+verify_kl_divergence(verbose = TRUE)
+}
+\arguments{
+\item{verbose}{Logical; if TRUE, print detailed results.}
+}
+\value{
+Logical; TRUE if all tests pass.
+}
+\description{
+Runs verification tests on KL divergence computations.
+}
+\examples{
+\dontrun{
+verify_kl_divergence()
+
+}
+}
+\keyword{internal}

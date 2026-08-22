@@ -1,0 +1,45 @@
+% Please edit documentation in R/05_moments_marginal.R
+\name{verify_quadrature_convergence}
+\alias{verify_quadrature_convergence}
+\title{Report Quadrature Discrepancies for Marginal Moments}
+\usage{
+verify_quadrature_convergence(
+  J,
+  a,
+  b,
+  M_values = c(20, 40, 60, 80, 100, 120),
+  verbose = TRUE,
+  abs_tol = 1e-10,
+  rel_tol = 1e-08
+)
+}
+\arguments{
+\item{J}{Integer; sample size.}
+
+\item{a}{Numeric; shape parameter.}
+
+\item{b}{Numeric; rate parameter.}
+
+\item{M_values}{Integer vector; numbers of quadrature nodes to test.}
+
+\item{verbose}{Logical; if \code{TRUE}, print detailed results.}
+
+\item{abs_tol, rel_tol}{Non-negative mixed-error tolerances.}
+}
+\value{
+Data frame of successive-order discrepancies, mixed-error budgets,
+and pairwise budget classifications.
+}
+\description{
+Reports successive-order marginal-moment discrepancies and classifies each
+selected/refined pair against an explicit mixed absolute/relative budget.
+Successive discrepancies are not assumed to decrease monotonically because
+quadrature error depends on the integrand and parameter regime.
+}
+\examples{
+\dontrun{
+verify_quadrature_convergence(50, 1.5, 0.5)
+
+}
+}
+\keyword{internal}

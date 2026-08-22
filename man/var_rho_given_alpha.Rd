@@ -1,0 +1,50 @@
+% Please edit documentation in R/09_weights_rho.R
+\name{var_rho_given_alpha}
+\alias{var_rho_given_alpha}
+\title{Conditional Variance of rho Given Alpha}
+\usage{
+var_rho_given_alpha(alpha)
+}
+\arguments{
+\item{alpha}{Numeric vector; concentration parameter(s) (must be positive).}
+}
+\value{
+Numeric vector; Var(rho | alpha).
+}
+\description{
+Computes the conditional variance Var(rho | alpha).
+}
+\details{
+The conditional variance is:
+\deqn{Var(\rho | \alpha) = \frac{2\alpha}{(1+\alpha)^2(2+\alpha)(3+\alpha)}}
+
+This is derived from the GEM recursion:
+rho = V^2 + (1-V)^2 * rho' where V ~ Beta(1, alpha) and rho' is an
+independent copy of rho.
+
+\strong{Properties:}
+\itemize{
+\item Var(rho|alpha) = 0 when alpha -> 0 (degenerate at rho = 1)
+\item Var(rho|alpha) -> 0 when alpha -> Inf (degenerate at rho = 0)
+\item Maximum variance occurs at intermediate alpha
+}
+}
+\examples{
+var_rho_given_alpha(2)
+var_rho_given_alpha(c(0.5, 1, 2, 5, 10))
+
+}
+\references{
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+\emph{arXiv preprint} arXiv:2602.06301.
+}
+\seealso{
+\code{\link{mean_rho_given_alpha}}, \code{\link{var_rho}}
+
+Other co_clustering:
+\code{\link[=cv_rho]{cv_rho()}},
+\code{\link[=mean_rho]{mean_rho()}},
+\code{\link[=mean_rho_given_alpha]{mean_rho_given_alpha()}},
+\code{\link[=var_rho]{var_rho()}}
+}
+\concept{co_clustering}

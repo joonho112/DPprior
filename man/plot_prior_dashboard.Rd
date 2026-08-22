@@ -1,0 +1,52 @@
+% Please edit documentation in R/18_visualization.R
+\name{plot_prior_dashboard}
+\alias{plot_prior_dashboard}
+\title{4-Panel Prior Dashboard}
+\usage{
+plot_prior_dashboard(
+  fit,
+  engine = c("ggplot2", "base"),
+  base_size = 11,
+  ci_level = 0.95,
+  title = NULL,
+  show = TRUE
+)
+}
+\arguments{
+\item{fit}{A DPprior_fit object.}
+
+\item{engine}{"ggplot2" (default) or "base".}
+
+\item{base_size}{Base font size.}
+
+\item{ci_level}{Credible interval level.}
+
+\item{title}{Optional overall title for the dashboard.}
+
+\item{show}{If TRUE, draw the dashboard.}
+}
+\value{
+A gtable grob (for ggplot2) or invisible(NULL) for base.
+}
+\description{
+4-Panel Prior Dashboard
+}
+\references{
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+\emph{arXiv preprint} arXiv:2602.06301.
+}
+\seealso{
+\code{\link{DPprior_fit}} for fitting, \code{\link{plot.DPprior_fit}} for S3 plot method
+
+Other visualization:
+\code{\link[=DPprior_colors]{DPprior_colors()}},
+\code{\link[=plot_K_prior]{plot_K_prior()}},
+\code{\link[=plot_alpha_prior]{plot_alpha_prior()}},
+\code{\link[=plot_dual_comparison]{plot_dual_comparison()}},
+\code{\link[=plot_dual_dashboard]{plot_dual_dashboard()}},
+\code{\link[=plot_tradeoff_curve]{plot_tradeoff_curve()}},
+\code{\link[=plot_tradeoff_dashboard]{plot_tradeoff_dashboard()}},
+\code{\link[=plot_w1_prior]{plot_w1_prior()}},
+\code{\link[=theme_DPprior]{theme_DPprior()}}
+}
+\concept{visualization}

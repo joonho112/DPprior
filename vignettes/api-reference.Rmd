@@ -1,0 +1,1274 @@
+---
+title: "Complete API Reference with Examples"
+author: "JoonHo Lee (jlee296@ua.edu)"
+date: "`r Sys.Date()`"
+description: >
+  A comprehensive reference for all DPprior package functions, organized by 
+  category with detailed signatures, parameters, return values, and usage examples.
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Complete API Reference with Examples}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+library(DPprior)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5,
+  fig.align = "center",
+  out.width = "85%"
+)
+set.seed(42)
+```
+
+## Overview
+
+This vignette provides a complete API reference for the DPprior package. All 
+exported functions are documented with their full signatures, parameter 
+descriptions, return values, and usage examples.
+
+The package functions are organized into six categories:
+
+| Category | Description | Key Functions |
+|----------|-------------|---------------|
+| **Core Elicitation** | Canonical target, K fit, and dual contracts | `DPprior_target_K()`, `DPprior_fit()`, `DPprior_dual_hard()`, `DPprior_dual_soft()` |
+| **Exact Computation** | Stirling numbers and exact distributions | `compute_log_stirling()`, `pmf_K_given_alpha()` |
+| **Approximation** | Closed-form A1 and Newton-based A2 methods | `DPprior_a1()`, `DPprior_a2_newton()` |
+| **Weight Distribution** | First size-biased stick $W_{SB}$ and co-clustering $\rho$ | `mean_w1()`, `prob_wsb_exceeds()` |
+| **Diagnostics** | Prior validation and estimand-specific weight assessment | `DPprior_diagnostics()`, `summary()` |
+| **Utility** | Helper functions for conversions and integration | `vif_to_variance()`, `integrate_gamma()` |
+
+
+---
+
+
+## 1. Core Elicitation Functions
+
+These are the primary user-facing functions for eliciting Gamma hyperpriors 
+on the DP concentration parameter $\alpha$.
+
+### 1.1 `DPprior_fit()`
+**Unified Interface for Prior Elicitation**
+
+The main entry point for eliciting a Gamma hyperprior. Automatically selects 
+the appropriate algorithm based on input specification.
+
+```r
+DPprior_fit(
+  J,                      # Sample size (required)
+  mu_K = NULL,            # Target E[K_J], unless target_pmf is supplied
+  var_K = NULL,           # Target Var(K_J) (optional)
+  confidence = c("medium", "low", "high"),
+  method = c("A2-MN", "A1", "A2-KL"),
+  target_pmf = NULL,      # Optional custom PMF target for A2-KL
+  check_diagnostics = TRUE,
+  warn_dominance = NULL,  # Deprecated warning adapter
+  M = 80L,                # Quadrature nodes
+  verbose = FALSE,
+  warning_policy = NULL,
+  a1_projection = c("error", "nearest"),
+  cv_K = NULL,
+  K_interval = NULL,
+  target_K = NULL,
+  ...                     # Must be empty
+)
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `J` | Integer | Sample size (number of observations/sites). Must be $\geq 2$. |
+| `mu_K` | Numeric | Target prior mean $\mathbb{E}[K_J]$. Moment workflows require $1 < \mu_K < J$; may be omitted when `target_pmf` is supplied. |
+| `var_K` | Numeric | Target prior variance $\text{Var}(K_J)$. If `NULL`, computed from `confidence`. For fixed `mu_K`, must satisfy $\text{Var}(K_J) \leq (\mu_K - 1)(J - \mu_K)$. |
+| `confidence` | Character | Qualitative uncertainty: `"low"` (VIF=5.0), `"medium"` (VIF=2.5), `"high"` (VIF=1.5), where $\text{Var}(K_J)=\text{VIF}(\mu_K - 1)$. |
+| `method` | Character | Algorithm: `"A1"` (closed-form), `"A2-MN"` (Newton), `"A2-KL"` (KL minimization). |
+| `target_pmf` | Numeric | Optional custom PMF target for `K_J`. Length may be `J` for support `1:J`, or `J+1` for support `0:J` when the `K = 0` entry is zero. If supplied and `method` is omitted, dispatches to `"A2-KL"`; explicit `mu_K` or `var_K` values must match the PMF-implied moments. |
+| `check_diagnostics` | Logical | If `TRUE`, compute full diagnostics. |
+| `warn_dominance` | Logical | Deprecated adapter. If `TRUE`, translates to the explicit policy $P(W_{SB}>0.5)>0.4$; it does not evaluate $W_{\max}$. Prefer `warning_policy`. |
+| `M` | Integer | Number of Gauss-Laguerre quadrature nodes. |
+| `verbose` | Logical | Print iteration progress. |
+| `cv_K` | Numeric | Optional coefficient of variation route, `SD(K_J)/E(K_J)`. |
+| `K_interval` | List | Optional canonical interval-target specification. |
+| `target_K` | dpprior_K_target | Validated target from `DPprior_target_K()`; cannot be combined with scalar target arguments. |
+| `...` | Dots | Must be empty. |
+
+**Returns:** A canonical `dpprior.result/1` `DPprior_fit` object. Its
+scientific and audit fields are:
+
+| Component | Description |
+|-----------|-------------|
+| `parameters$a`, `parameters$b` | Gamma shape and rate |
+| `J` | Sample size |
+| `target$K$used`, `target$K$implied` | Authoritative requested/used target and implied target moments |
+| `achieved$K` | Fresh achieved K evidence |
+| `residuals` | Scientific residuals in their named units |
+| `method` | Algorithm used |
+| `status`, `usable`, `verified`, `message` | Decision/status quartet |
+| `computation`, `verification`, `provenance` | Attempts, termination, independent checks, and audit trail |
+
+**Examples:**
+
+```{r dpprior-fit-examples}
+# Primary workflow: construct, review, and fit one canonical target
+target_K <- DPprior_target_K(J = 50, mu_K = 5, confidence = "medium")
+fit1 <- DPprior_fit(
+  J = 50, target_K = target_K, method = "A2-MN",
+  check_diagnostics = FALSE
+)
+print(fit1)
+
+# Scalar convenience route (the canonical target route above is preferred)
+fit2 <- DPprior_fit(
+  J = 50, mu_K = 5, var_K = 10, check_diagnostics = FALSE
+)
+cat("Gamma(", round(fit2$parameters$a, 4), ", ",
+    round(fit2$parameters$b, 4), ")\n", sep = "")
+
+# Using A1 closed-form (faster for large J)
+target_A1 <- DPprior_target_K(J = 200, mu_K = 15, var_K = 30)
+fit3 <- DPprior_fit(
+  J = 200, target_K = target_A1, method = "A1",
+  check_diagnostics = FALSE
+)
+
+# With diagnostics
+target_diagnostics <- DPprior_target_K(J = 50, mu_K = 5, var_K = 8)
+fit4 <- DPprior_fit(
+  J = 50, target_K = target_diagnostics, check_diagnostics = TRUE
+)
+
+# Custom PMF target; omitted method dispatches to A2-KL
+target_pmf <- dpois(1:30, lambda = 5)
+target_pmf <- target_pmf / sum(target_pmf)
+target_K_pmf <- DPprior_target_K(J = 30, target_pmf = target_pmf)
+fit5 <- DPprior_fit(
+  J = 30, target_K = target_K_pmf, check_diagnostics = FALSE
+)
+```
+
+
+### 1.2 `DPprior_target_K()`
+**Construct a Canonical Bounded-Discrete K Target**
+
+```r
+DPprior_target_K(
+  J, mu_K = NULL, var_K = NULL, confidence = NULL, cv_K = NULL,
+  K_interval = NULL, target_pmf = NULL, tolerance = 1e-9,
+  root_control = NULL
+)
+```
+
+Supply exactly one uncertainty source: `var_K`, `confidence`, `cv_K`,
+`K_interval`, or `target_pmf`. The returned `dpprior.target/1` object retains
+the exact support, original request, normalized and used values, implied
+moments, tolerances, verification, and provenance. Pass it unchanged as
+`target_K` to `DPprior_fit()`.
+
+```{r dpprior-target-example}
+target_K <- DPprior_target_K(J = 50, mu_K = 5, var_K = 8)
+target_K$used[c("mu_K", "var_K")]
+fit_K <- DPprior_fit(J = 50, target_K = target_K, method = "A2-MN")
+```
+
+### 1.3 `DPprior_dual_hard()`
+**Verified Named Weight Inequality**
+
+```r
+DPprior_dual_hard(
+  fit,
+  constraint = list(
+    metric = "wsb_tail", threshold = 0.5,
+    relation = "<=", bound = 0.30
+  ),
+  constraint_tol = list(abs = 1e-6, rel = 1e-6),
+  M = 80L, M_verify = NULL,
+  log_bounds = c(-15, 15), control = list(),
+  allow_approximate = FALSE, ...
+)
+```
+
+Supported named metrics are `"wsb_tail"`, `"wsb_mean"`,
+`"wsb_quantile"`, and the certified `"wmax_tail_upper"`. Hard mode has no
+`lambda`. A decision-ready result requires its mode-specific contract,
+`constraint$satisfied`, and an approved
+`status`/`usable`/`verified`/`message` quartet.
+Infeasible, unknown-feasibility, or unapproved approximate outcomes signal a
+typed condition whose `result` retains the canonical evidence.
+
+```{r dpprior-dual-hard-example}
+fit_hard <- DPprior_dual_hard(
+  fit = fit_K,
+  constraint = list(
+    metric = "wsb_tail", threshold = 0.5,
+    relation = "<=", bound = 0.30
+  )
+)
+fit_hard$constraint[c("satisfied", "residual", "tolerance")]
+fit_hard[c("status", "usable", "verified", "message")]
+```
+
+### 1.4 `DPprior_dual_soft()`
+**Fixed-Scale Soft Trade-off**
+
+```r
+DPprior_dual_soft(
+  fit, target, lambda, max_iter = 100L,
+  M_fit = 80L, M_verify = NULL,
+  log_bounds = c(-15, 15), control = list(),
+  allow_approximate = FALSE, start = NULL, ...
+)
+```
+
+`target` names a weight metric, relation, and value. `lambda` is mandatory
+and satisfies `0 < lambda <= 1`; it is a trade-off weight, not a constraint
+probability or certificate. The `tradeoff` extension records the fixed
+input-derived scales, component losses, and total objective. Soft objects do
+not contain `constraint_satisfied`.
+
+```{r dpprior-dual-soft-example}
+fit_soft <- DPprior_dual_soft(
+  fit = fit_K,
+  target = list(
+    metric = "wsb_tail", threshold = 0.5,
+    relation = "target", value = 0.30
+  ),
+  lambda = 0.7
+)
+fit_soft$tradeoff[c("lambda", "K_loss", "weight_loss", "total_loss")]
+fit_soft[c("status", "usable", "verified", "message")]
+```
+
+### 1.5 Legacy v2.x Compatibility: `DPprior_dual()`
+
+`DPprior_dual()` remains available throughout v2.x for legacy equality-loss
+workflows. It returns an explicitly approximate, unverified canonical result
+and is not a hard-constraint certificate. It will not be removed before v3.0
+and a migration review. New analyses should use the hard or soft API above.
+
+```{r dpprior-dual-legacy-example, eval=FALSE}
+legacy_fit <- DPprior_dual(
+  fit = fit_K,
+  w1_target = list(prob = list(threshold = 0.5, value = 0.30)),
+  lambda = 0.7,
+  loss_type = "adaptive"
+)
+legacy_fit[c("status", "usable", "verified", "message")]
+```
+
+
+---
+
+
+## 2. Exact Computation Functions
+
+These functions provide exact computation of Stirling numbers, PMFs, and 
+moments using numerically stable log-space arithmetic.
+
+### 2.1 Stirling Number Functions
+
+#### `compute_log_stirling()`
+**Pre-compute Log Stirling Numbers**
+
+Computes the logarithm of unsigned Stirling numbers of the first kind 
+$|s(J,k)|$ for all $J$ from 0 to `J_max` and $k$ from 0 to $J$.
+
+```r
+compute_log_stirling(J_max)
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `J_max` | Integer | Maximum sample size. Must be $\leq 500$. |
+
+**Returns:** A lower triangular matrix of dimension $(J_{max}+1) \times (J_{max}+1)$. 
+Entry `[J+1, k+1]` contains $\log|s(J,k)|$ (using R's 1-based indexing).
+
+**Examples:**
+
+```{r stirling-examples}
+# Pre-compute for J up to 100
+logS <- compute_log_stirling(100)
+
+# Access |s(10,3)| = 9450
+s_10_3 <- exp(logS[11, 4])
+cat("|s(10,3)| =", round(s_10_3), "\n")
+
+# Verify row sum identity: sum_k |s(J,k)| = J!
+J <- 6
+row_sum <- sum(exp(logS[J+1, 2:(J+1)]))
+cat("sum |s(6,k)| =", round(row_sum), ", 6! =", factorial(6), "\n")
+```
+
+
+### 2.2 Conditional PMF Functions
+
+#### `pmf_K_given_alpha()`
+**Antoniak Distribution PMF**
+
+Computes the exact conditional PMF $P(K_J = k | \alpha)$ using the Antoniak 
+distribution formula:
+$$
+P(K_J = k | \alpha) = \frac{|s(J,k)| \cdot \alpha^k}{(\alpha)_J}
+$$
+
+```r
+pmf_K_given_alpha(J, alpha, logS, normalize = TRUE)
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `J` | Integer | Sample size. |
+| `alpha` | Numeric | Concentration parameter (scalar, $> 0$). |
+| `logS` | Matrix | Pre-computed log-Stirling matrix. |
+| `normalize` | Logical | If `TRUE`, ensure PMF sums to 1. |
+
+**Returns:** Numeric vector of length $J+1$ containing $P(K_J = k | \alpha)$ 
+for $k = 0, 1, \ldots, J$. Note: $P(K_J = 0 | \alpha) = 0$ always.
+
+**Examples:**
+
+```{r pmf-conditional-examples}
+J <- 50
+alpha <- 2.0
+logS <- compute_log_stirling(J)
+
+# Compute conditional PMF
+pmf <- pmf_K_given_alpha(J, alpha, logS)
+
+# Find mode
+mode_k <- which.max(pmf) - 1
+cat("Mode of K|α=2:", mode_k, "\n")
+
+# Verify normalization
+cat("PMF sum:", sum(pmf), "\n")
+```
+
+
+#### `cdf_K_given_alpha()`
+**Conditional CDF**
+
+```r
+cdf_K_given_alpha(J, alpha, logS)
+```
+
+Returns the cumulative distribution function $F(k) = P(K_J \leq k | \alpha)$.
+
+
+#### `quantile_K_given_alpha()`
+**Conditional Quantile Function**
+
+```r
+quantile_K_given_alpha(p, J, alpha, logS)
+```
+
+Returns the smallest $k$ such that $P(K_J \leq k | \alpha) \geq p$.
+
+
+### 2.3 Conditional Moment Functions
+
+#### `mean_K_given_alpha()`
+**Conditional Mean via Digamma**
+
+Computes $\mathbb{E}[K_J | \alpha] = \alpha \{\psi(\alpha + J) - \psi(\alpha)\}$ 
+using the digamma function.
+
+```r
+mean_K_given_alpha(J, alpha)
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `J` | Integer | Sample size ($\geq 1$). |
+| `alpha` | Numeric | Concentration parameter (vectorized). |
+
+**Returns:** Numeric vector of conditional means.
+
+**Examples:**
+
+```{r mean-conditional-examples}
+J <- 50
+
+# Single alpha
+mean_K_given_alpha(J, 2.0)
+
+# Vectorized
+alpha_seq <- c(0.5, 1, 2, 5, 10)
+means <- mean_K_given_alpha(J, alpha_seq)
+data.frame(alpha = alpha_seq, E_K = round(means, 2))
+```
+
+
+#### `var_K_given_alpha()`
+**Conditional Variance via Trigamma**
+
+Computes $\text{Var}(K_J | \alpha) = \mu_J(\alpha) - \alpha^2 \{\psi_1(\alpha) - \psi_1(\alpha + J)\}$.
+
+```r
+var_K_given_alpha(J, alpha)
+```
+
+**Key Property:** Conditional underdispersion always holds:
+$$
+0 < \text{Var}(K_J | \alpha) < \mathbb{E}[K_J | \alpha]
+$$
+
+**Examples:**
+
+```{r var-conditional-examples}
+J <- 50
+alpha <- 2.0
+
+mu <- mean_K_given_alpha(J, alpha)
+sigma2 <- var_K_given_alpha(J, alpha)
+
+cat("E[K|α=2] =", round(mu, 4), "\n")
+cat("Var(K|α=2) =", round(sigma2, 4), "\n")
+cat("Underdispersion ratio:", round(sigma2/mu, 4), "< 1 ✓\n")
+```
+
+
+#### `moments_K_given_alpha()`
+**Both Moments in One Call**
+
+```r
+moments_K_given_alpha(J, alpha)
+```
+
+Returns a list with `mean` and `var`.
+
+
+### 2.4 Marginal Distribution Functions
+
+#### `exact_K_moments()`
+**Marginal Moments under Gamma Hyperprior**
+
+Computes $\mathbb{E}[K_J | a, b]$ and $\text{Var}(K_J | a, b)$ when 
+$\alpha \sim \text{Gamma}(a, b)$ using Gauss-Laguerre quadrature.
+
+```r
+exact_K_moments(J, a, b, M = 80L)
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `J` | Integer | Sample size. |
+| `a` | Numeric | Gamma shape parameter. |
+| `b` | Numeric | Gamma rate parameter. |
+| `M` | Integer | Number of quadrature nodes. |
+
+**Returns:** A list with components:
+
+| Component | Description |
+|-----------|-------------|
+| `mean` | Marginal mean $M_1(a,b)$ |
+| `var` | Marginal variance $V(a,b)$ |
+| `sd` | Standard deviation |
+| `cv` | Coefficient of variation |
+
+**Examples:**
+
+```{r exact-moments-examples}
+# Compute marginal moments
+result <- exact_K_moments(J = 50, a = 1.6, b = 1.22)
+cat("E[K_50] =", round(result$mean, 4), "\n")
+cat("Var(K_50) =", round(result$var, 4), "\n")
+cat("CV(K_50) =", round(result$cv, 4), "\n")
+```
+
+
+#### `pmf_K_marginal()`
+**Marginal PMF via Quadrature Mixture**
+
+```r
+pmf_K_marginal(J, a, b, logS, M = 80L)
+```
+
+Computes the marginal PMF by mixing conditional PMFs over $\alpha \sim \text{Gamma}(a,b)$:
+$$
+P(K_J = k | a, b) = \int_0^\infty P(K_J = k | \alpha) \cdot g_{a,b}(\alpha) \, d\alpha
+$$
+
+**Examples:**
+
+```{r pmf-marginal-examples}
+J <- 50
+logS <- compute_log_stirling(J)
+
+pmf_marginal <- pmf_K_marginal(J, a = 1.6, b = 1.22, logS)
+
+# Find mode
+mode_k <- which.max(pmf_marginal) - 1
+cat("Mode of marginal K:", mode_k, "\n")
+```
+
+
+#### `summary_K_marginal()`
+**Complete Marginal Distribution Summary**
+
+```r
+summary_K_marginal(J, a, b, logS, M = 80L, probs = c(0.05, 0.25, 0.5, 0.75, 0.95))
+```
+
+Returns mean, variance, mode, median, quantiles, PMF, and CDF.
+
+
+---
+
+
+## 3. Approximation Functions
+
+### 3.1 `DPprior_a1()`
+**A1 Closed-Form Approximation**
+
+Fast closed-form solution using the negative binomial approximation to the 
+marginal distribution of $K_J$.
+
+```r
+DPprior_a1(
+  J,                      # Sample size
+  mu_K,                   # Target mean
+  var_K,                  # Target variance
+  scaling = "log",        # "log", "harmonic", "digamma"
+  epsilon = 1e-6          # Feasibility projection buffer
+)
+```
+
+**Key Formulas:**
+$$
+a = \frac{(\mu_K - 1)^2}{\sigma^2_K - (\mu_K - 1)}, \quad
+b = \frac{(\mu_K - 1) \cdot c_J}{\sigma^2_K - (\mu_K - 1)}
+$$
+
+where $c_J$ is the scaling constant (default: $\log J$).
+
+**Feasibility Constraint:** Requires $\sigma^2_K > \mu_K - 1$.
+
+**Examples:**
+
+```{r a1-examples}
+# Basic A1 fit
+fit_a1 <- DPprior_a1(J = 50, mu_K = 5, var_K = 8)
+cat("A1 solution: Gamma(", round(fit_a1$parameters$a, 4), ", ",
+    round(fit_a1$parameters$b, 4), ")\n", sep = "")
+
+# Compare scaling methods
+for (s in c("log", "harmonic", "digamma")) {
+  fit <- DPprior_a1(50, 5, 8, scaling = s)
+  cat(sprintf("  %s: cJ = %.4f\n", s,
+              fit$computation$scaling$values$cJ))
+}
+```
+
+
+### 3.2 `DPprior_a2_newton()`
+**A2-MN Newton Solver for Exact Moment Matching**
+
+Finds $(a^*, b^*)$ such that the induced marginal moments exactly match targets.
+
+```r
+DPprior_a2_newton(
+  J,                      # Sample size
+  mu_K,                   # Target mean
+  var_K,                  # Target variance
+  a0 = NULL,              # Initial shape (from A1 if NULL)
+  b0 = NULL,              # Initial rate (from A1 if NULL)
+  tol_F = 1e-8,           # Residual tolerance
+  tol_step = 1e-10,       # Step size tolerance
+  max_iter = 20L,
+  damping = TRUE,         # Backtracking line search
+  use_fallback = TRUE,    # Nelder-Mead fallback
+  M = 80L,
+  verbose = FALSE
+)
+```
+
+**Algorithm:**
+
+1. Initialize from A1 closed-form
+2. Log-parameterize: $\eta = (\log a, \log b)$
+3. Newton iteration with score-based Jacobian
+4. Backtracking line search for global convergence
+
+**Convergence:** Typically achieves machine-precision accuracy in 3-8 iterations.
+
+**Examples:**
+
+```{r a2-newton-examples}
+# Exact moment matching
+fit <- DPprior_a2_newton(J = 50, mu_K = 5, var_K = 8, verbose = TRUE)
+
+# Verify exact matching
+achieved <- exact_K_moments(
+  50, fit$parameters$a, fit$parameters$b
+)
+cat("\nTarget vs Achieved:\n")
+cat("  E[K]:   5.000000 vs", sprintf("%.10f", achieved$mean), "\n")
+cat("  Var(K): 8.000000 vs", sprintf("%.10f", achieved$var), "\n")
+```
+
+
+### 3.3 `DPprior_a2_kl()`
+**A2-KL Distribution Matching via KL Divergence**
+
+Minimizes Kullback-Leibler divergence between a target PMF and the induced 
+marginal PMF of $K_J$.
+
+```r
+DPprior_a2_kl(
+  J,                      # Sample size
+  target,                 # Target PMF or list(mu_K, var_K)
+  method = c("pmf", "chisq"),  # Target type
+  max_iter = 100L,
+  tol = 1e-6,
+  M = 80L,
+  verbose = FALSE
+)
+```
+
+**Target Specification:**
+
+| `method` | `target` Input | Description |
+|----------|----------------|-------------|
+| `"pmf"` | Numeric vector of length $J$ or $J+1$ | Direct PMF on $\{1, \ldots, J\}$, or on $\{0, \ldots, J\}$ with the $K=0$ entry required to be zero and then dropped |
+| `"chisq"` | `list(mu_K = ..., var_K = ...)` | Discretized chi-square matching moments |
+
+**Examples:**
+
+```{r a2-kl-examples}
+# Method 1: Moment-based target using chi-square discretization
+fit_kl <- DPprior_a2_kl(J = 50, target = list(mu_K = 5, var_K = 8), 
+                         method = "chisq")
+cat("A2-KL solution: Gamma(", round(fit_kl$parameters$a, 4), ", ",
+    round(fit_kl$parameters$b, 4), ")\n", sep = "")
+cat("Final KL divergence:",
+    format(fit_kl$residuals$distribution$kl, scientific = TRUE), "\n")
+
+# Method 2: Direct PMF target
+target_pmf <- discretize_chisq(J = 50, df = 6.25, scale = 0.8)
+fit_kl2 <- DPprior_a2_kl(J = 50, target = target_pmf, method = "pmf")
+```
+
+
+---
+
+
+## 4. Weight Distribution Functions
+
+Functions for computing properties of the first size-biased stick $W_{SB}$
+and the co-clustering probability $\rho = \sum_h w_h^2$.
+
+### 4.1 First Size-Biased Weight $W_{SB}$ Functions
+
+The historical function names use `w1`; scientifically, their estimand is the
+first size-biased stick $W_{SB}$, not the largest realized weight $W_{\max}$.
+It follows a compound distribution:
+$$
+W_{SB} | \alpha \sim \text{Beta}(1, \alpha), \quad \alpha \sim \text{Gamma}(a, b)
+$$
+
+#### `mean_w1()`
+**Marginal Mean of $W_{SB}$**
+
+```r
+mean_w1(a, b, M = 80L)
+```
+
+Computes $\mathbb{E}[W_{SB} | a, b] = \mathbb{E}[1/(1+\alpha)]$ via quadrature.
+
+**Examples:**
+
+```{r mean-w1-example}
+mean_w1(a = 1.6, b = 1.22)
+```
+
+
+#### `var_w1()`
+**Marginal Variance of $W_{SB}$**
+
+```r
+var_w1(a, b, M = 80L)
+```
+
+
+#### `quantile_w1()`
+**Marginal Quantiles of $W_{SB}$**
+
+```r
+quantile_w1(p, a, b, n_grid = 1000, M = 80L)
+```
+
+Computes quantiles via numerical inversion of the CDF.
+
+**Examples:**
+
+```{r quantile-w1-example}
+# Median of the first size-biased weight
+median_w1 <- quantile_w1(0.5, a = 1.6, b = 1.22)
+cat("Median(W_SB) =", round(median_w1, 4), "\n")
+```
+
+
+#### `prob_wsb_exceeds()`
+**Tail Probability $P(W_{SB} > x)$**
+
+```r
+prob_wsb_exceeds(threshold, a, b)
+```
+
+This is a tail probability for a size-biased cluster. It must not be reported as
+the probability that the largest cluster exceeds the threshold. The historical
+name `prob_w1_exceeds()` remains an explicit alias for the same $W_{SB}$
+estimand. For $W_{\max}$, use `wmax_tail_bounds()` only when a certified bound
+answers the scientific question.
+
+**Examples:**
+
+```{r prob-wsb-example}
+# First-size-biased-weight tail probabilities
+a <- 1.6; b <- 1.22
+cat("P(W_SB > 0.5) =", round(prob_wsb_exceeds(0.5, a, b), 4), "\n")
+cat("P(W_SB > 0.7) =", round(prob_wsb_exceeds(0.7, a, b), 4), "\n")
+cat("P(W_SB > 0.9) =", round(prob_wsb_exceeds(0.9, a, b), 4), "\n")
+```
+
+
+#### `cdf_w1()` and `density_w1()`
+**CDF and Density of $w_1$**
+
+```r
+cdf_w1(x, a, b, M = 80L)
+density_w1(x, a, b, M = 80L)
+```
+
+
+### 4.2 Co-Clustering Probability $\rho$ Functions
+
+The co-clustering probability $\rho = \sum_{h=1}^\infty w_h^2$ represents the 
+probability that two randomly chosen observations belong to the same cluster.
+
+#### `mean_rho()` and `var_rho()`
+**Marginal Moments of $\rho$**
+
+```r
+mean_rho(a, b, M = 80L)
+var_rho(a, b, M = 80L)
+```
+
+**Key Identity:** $\mathbb{E}[\rho | \alpha] = \mathbb{E}[W_{SB} | \alpha] = 1/(1+\alpha)$,
+so $\mathbb{E}[\rho | a, b] = \mathbb{E}[W_{SB} | a, b]$. This equality of
+means does not make $\rho$ interchangeable with either $W_{SB}$ or $W_{\max}$.
+
+**Examples:**
+
+```{r rho-examples}
+a <- 1.6; b <- 1.22
+cat("E[rho] =", round(mean_rho(a, b), 4), "\n")
+cat("E[W_SB] =", round(mean_w1(a, b), 4), "(same mean as rho)\n")
+cat("Var(rho) =", round(var_rho(a, b), 4), "\n")
+cat("Var(W_SB) =", round(var_w1(a, b), 4), "(different!)\n")
+```
+
+
+#### `cv_rho()`
+**Coefficient of Variation of $\rho$**
+
+```r
+cv_rho(a, b, M = 80L)
+```
+
+
+### 4.3 Conditional Weight Functions
+
+#### `mean_rho_given_alpha()` and `var_rho_given_alpha()`
+
+```r
+mean_rho_given_alpha(alpha)   # Returns 1/(1 + alpha)
+var_rho_given_alpha(alpha)    # Returns 2*alpha / ((1+alpha)^2 * (2+alpha) * (3+alpha))
+```
+
+
+---
+
+
+## 5. Diagnostic Functions
+
+### 5.1 `DPprior_diagnostics()`
+**Comprehensive Prior Diagnostics**
+
+Computes a full diagnostic report implementing the "unintended prior" checks
+from Lee (2026, Section 4).
+
+```r
+DPprior_diagnostics(
+  fit, thresholds = c(0.5, 0.9), warning_policy = NULL,
+  M_verify = NULL, abs_tol = 1e-10, rel_tol = 1e-8,
+  allow_approximate = FALSE
+)
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `fit` | DPprior_fit | Canonical `dpprior.result/1` fit; flat or legacy lists must first be upgraded explicitly. |
+| `thresholds` | Numeric | Reserved summary-view thresholds; only `c(0.5, 0.9)` is accepted. Use `prob_wsb_exceeds()` for arbitrary $W_{SB}$ tails and `wmax_tail_bounds()` for certified $W_{max}$ bounds. |
+| `warning_policy` | List | Optional exact ordered fields `estimand`, `direction`, `weight_threshold`, and `action_threshold`. |
+| `M_verify` | Integer | Optional independent quadrature order. |
+| `allow_approximate` | Logical | Explicitly retain an approximate bundle for review if a requested method contract cannot be verified; it never upgrades status or verification. |
+
+**Returns:** A canonical `dpprior.result/1` object with exact class
+`c("DPprior_diagnostics", "dpprior_result", "list")`, the 18 common fields,
+and a `diagnostics` extension:
+
+| Component | Description |
+|-----------|-------------|
+| `diagnostics$alpha` | Verified $\alpha$ mean and CV |
+| `diagnostics$K` | Verified $K_J$ mean, variance, PMF, and quadrature order |
+| `diagnostics$weights` | Verified first-size-biased-weight mean $E[W_{SB}]$ |
+| `diagnostics$coclustering` | Verified $\rho$ mean and variance |
+| `diagnostics$policy_results` | Exact $W_{SB}$ policy evidence or an indeterminate/backend-unavailable $W_{max}$ record |
+| `diagnostics$warnings` | One warning per triggered named policy |
+
+No qualitative risk category is inferred. `W_SB` and `W_max` are distinct
+estimands. Canonical diagnostics make no direct $W_{max}$ point-tail claim;
+an unavailable $W_{max}$ policy remains visibly indeterminate. The separate
+`wmax_tail_upper` hard-dual route may use a certified upper bound.
+
+**Examples:**
+
+```{r diagnostics-example}
+target_K <- DPprior_target_K(J = 50, mu_K = 5, var_K = 8)
+fit <- DPprior_fit(
+  J = 50, target_K = target_K, check_diagnostics = FALSE
+)
+diag <- DPprior_diagnostics(fit)
+diag[c("status", "usable", "verified", "message")]
+print(diag)
+```
+
+
+### 5.2 S3 Methods for `DPprior_fit`
+
+#### `print.DPprior_fit()`
+
+```r
+print(fit)
+```
+
+Displays a concise summary of the elicitation result.
+
+
+#### `summary.DPprior_fit()`
+
+```r
+summary(fit, print_output = TRUE)
+```
+
+**Returns:** An object of class `summary.DPprior_fit` with detailed statistics.
+
+
+#### `plot.DPprior_fit()`
+
+```r
+plot(fit)
+```
+
+Creates a four-panel visualization dashboard:
+
+- Panel A: Gamma prior density for $\alpha$
+- Panel B: Marginal PMF of $K_J$
+- Panel C: PDF of the first size-biased weight $W_{SB}$
+- Panel D: Summary statistics table
+
+
+### 5.3 Individual Plot Functions
+
+```r
+plot_alpha_prior(fit)   # Alpha distribution only
+plot_K_prior(fit)       # K distribution only
+plot_w1_prior(fit)      # First-size-biased-weight distribution
+```
+
+
+### 5.4 Weight Diagnostics and Deprecated Compatibility
+
+#### `compute_weight_diagnostics()`
+
+```r
+weight_diag <- compute_weight_diagnostics(
+  a, b, thresholds = c(0.5, 0.9), M = 80L
+)
+weight_diag$size_biased
+weight_diag$maximum[c("status", "usable", "verified", "message")]
+```
+
+The `size_biased` component reports $W_{SB}$. The `maximum` component explicitly
+records that no canonical direct $W_{\max}$ point-tail backend is available and
+does not contain a substituted $W_{SB}$ value. Use `wmax_tail_bounds()` for the
+separately named certified-upper-bound path. Numeric compatibility aliases refer
+only to $W_{SB}$; no unqualified risk category is returned.
+
+#### Deprecated compatibility: `check_dominance_risk()`
+
+The ambiguous wrapper remains available for compatibility, emits a typed
+deprecation warning, and evaluates only
+$P(W_{SB}>\text{threshold})>\text{risk\_level}$. It does not evaluate
+$W_{\max}$ or assign a category. New code should express the estimand and action
+rule through `DPprior_diagnostics(warning_policy = ...)`.
+
+```{r deprecated-check-dominance, eval=FALSE}
+check_dominance_risk(a, b, threshold = 0.5, risk_level = 0.3)
+```
+
+
+---
+
+
+## 6. Utility Functions
+
+### 6.1 Variance Conversion Functions
+
+#### `vif_to_variance()`
+**Convert Variance Inflation Factor to Variance**
+
+```r
+vif_to_variance(mu_K, vif)
+```
+
+Computes $\sigma^2_K = \text{VIF} \times (\mu_K - 1)$, based on the marginal 
+overdispersion relationship.
+
+**Examples:**
+
+```{r vif-example}
+# VIF = 2 means variance is twice the Poisson-like baseline
+var_K <- vif_to_variance(mu_K = 5, vif = 2)
+cat("var_K =", var_K, "\n")
+```
+
+
+#### `confidence_to_vif()`
+**Map Confidence Level to VIF**
+  
+```r
+confidence_to_vif(confidence)
+```
+
+| Confidence | VIF | Interpretation |
+|------------|-----|----------------|
+| `"low"` | 5.0 | High uncertainty |
+| `"medium"` | 2.5 | Moderate uncertainty |
+| `"high"` | 1.5 | Low uncertainty |
+
+
+#### `cv_alpha_to_variance()`
+**Convert CV of $\alpha$ to Variance of $K$**
+
+```r
+cv_alpha_to_variance(mu_K, cv_alpha)
+```
+
+
+### 6.2 Scaling Functions
+
+#### `compute_scaling_constant()`
+
+```r
+compute_scaling_constant(J, scaling = "log", mu_K = NULL)
+```
+
+Computes the scaling constant $c_J$ used in the A1 approximation:
+
+| `scaling` | Formula |
+|-----------|---------|
+| `"log"` | $\log J$ |
+| `"harmonic"` | $\sum_{i=1}^{J} 1/i$ |
+| `"digamma"` | $\psi(J+1) + \gamma$ |
+
+
+### 6.3 Quadrature Functions
+
+#### `gauss_laguerre_nodes()`
+**Compute Gauss-Laguerre Quadrature Nodes and Weights**
+
+```r
+gauss_laguerre_nodes(M, alpha_param = 0)
+```
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `M` | Integer | Number of quadrature nodes. |
+| `alpha_param` | Numeric | Generalized Laguerre parameter (for Gamma(a,b), use $a-1$). |
+
+**Returns:** List with `nodes`, `weights`, and `weights_log`.
+
+
+#### `build_gamma_quadrature()`
+**Build Quadrature for Gamma Distribution**
+
+```r
+build_gamma_quadrature(a, b, M = 80L)
+```
+
+Transforms standard Laguerre quadrature to integrate against Gamma(a,b).
+
+**Returns:** List with `alpha_nodes` and `weights_normalized`.
+
+
+#### `integrate_gamma()`
+**Compute Expectation under Gamma Distribution**
+
+```r
+integrate_gamma(f, a, b, M = 80L)
+```
+
+Computes $\mathbb{E}_{\alpha \sim \text{Gamma}(a,b)}[f(\alpha)]$ using 
+Gauss-Laguerre quadrature.
+
+**Examples:**
+
+```{r integrate-gamma-example}
+# E[alpha] = a/b
+a <- 2; b <- 0.5
+E_alpha <- integrate_gamma(identity, a, b)
+cat("E[alpha] via quadrature:", round(E_alpha, 6), "\n")
+cat("E[alpha] exact (a/b):", a/b, "\n")
+```
+
+
+### 6.4 Log-Space Numerical Functions
+
+#### `logsumexp()`
+**Binary Log-Sum-Exp**
+
+```r
+logsumexp(a, b)
+```
+
+Computes $\log(\exp(a) + \exp(b))$ stably.
+
+
+#### `logsumexp_vec()`
+**Vectorized Log-Sum-Exp**
+
+```r
+logsumexp_vec(x)
+```
+
+Computes $\log(\sum_i \exp(x_i))$ for a vector.
+
+
+### 6.5 KL Divergence Functions
+
+#### `kl_divergence_pmf()`
+**KL Divergence Between PMFs**
+
+```r
+kl_divergence_pmf(p, q, eps = 1e-15)
+```
+
+
+#### `kl_divergence_K()`
+**KL Divergence for $K_J$ Distributions**
+
+```r
+kl_divergence_K(target_pmf, a, b, J, M = 80L)
+```
+
+
+#### `discretize_chisq()`
+**Create Target PMF from Chi-Square**
+
+```r
+discretize_chisq(J, df, scale = 1)
+```
+
+Discretizes a (scaled) chi-square distribution onto $\{1, \ldots, J\}$.
+
+
+---
+
+
+## 7. Verification Functions
+
+The package includes extensive verification functions for development and 
+testing. These are typically not needed by end users but are available for 
+those who wish to validate computations.
+
+### 7.1 Module Verification Functions
+
+| Function | Description |
+|----------|-------------|
+| `validate_stirling(logS)` | Verify Stirling numbers against known values |
+| `verify_stirling_row_sum(logS)` | Verify $\sum_k |s(J,k)| = J!$ |
+| `verify_underdispersion(J, alpha_values)` | Verify $\text{Var} < \text{Mean}$ |
+| `verify_pmf_moments(J, alpha, logS)` | Verify PMF matches closed-form moments |
+| `verify_marginal_moments(J, a, b)` | Verify marginal moment properties |
+| `verify_a1_roundtrip(fit)` | Verify A1 parameters recover targets |
+| `verify_a2_moment_matching(J, mu_K, var_K)` | Verify A2 achieves exact matching |
+
+**Examples:**
+
+```{r verification-examples}
+# Verify Stirling numbers
+logS <- compute_log_stirling(20)
+validate_stirling(logS, verbose = TRUE)
+
+# Verify underdispersion
+verify_underdispersion(50, alpha_values = c(0.5, 1, 2, 5))
+```
+
+
+---
+
+
+## 8. Function Quick Reference
+
+### By Task
+
+**"I want to elicit a prior based on expected clusters"**
+```r
+target_K <- DPprior_target_K(J = 50, mu_K = 5, confidence = "medium")
+fit <- DPprior_fit(J = 50, target_K = target_K, method = "A2-MN")
+```
+
+**"I need a verified hard inequality for $W_{SB}$"**
+```r
+fit <- DPprior_dual_hard(
+  fit,
+  constraint = list(
+    metric = "wsb_tail", threshold = 0.5,
+    relation = "<=", bound = 0.3
+  )
+)
+```
+
+**"I want an explicit K/weight trade-off"**
+```r
+fit <- DPprior_dual_soft(
+  fit,
+  target = list(
+    metric = "wsb_tail", threshold = 0.5,
+    relation = "target", value = 0.3
+  ),
+  lambda = 0.7
+)
+```
+
+**"I want to assess a named weight estimand"**
+```r
+prob_wsb_exceeds(0.5, fit$parameters$a, fit$parameters$b)
+diag <- DPprior_diagnostics(fit)
+diag[c("status", "usable", "verified", "message")]
+```
+
+**"I want to compute the exact PMF of K"**
+```r
+logS <- compute_log_stirling(J)
+pmf <- pmf_K_marginal(
+  J, fit$parameters$a, fit$parameters$b, logS
+)
+```
+
+**"I want to visualize my prior"**
+```r
+plot(fit)  # Full dashboard
+plot_K_prior(fit)  # K distribution only
+```
+
+
+### Alphabetical Index
+
+| Function | Category | Description |
+|----------|----------|-------------|
+| `build_gamma_quadrature()` | Utility | Quadrature for Gamma |
+| `cdf_K_given_alpha()` | Exact | Conditional CDF |
+| `cdf_w1()` | Weights | CDF of $w_1$ |
+| `check_dominance_risk()` | Deprecated compatibility | Ambiguous-name wrapper for an explicit $W_{SB}$ policy |
+| `compute_log_stirling()` | Exact | Stirling numbers |
+| `compute_scaling_constant()` | Utility | Scaling $c_J$ |
+| `confidence_to_vif()` | Utility | Confidence to VIF |
+| `cv_alpha_to_variance()` | Utility | CV to variance |
+| `cv_rho()` | Weights | CV of $\rho$ |
+| `discretize_chisq()` | Utility | Chi-square to PMF |
+| `DPprior_a1()` | Approximation | A1 closed-form |
+| `DPprior_a2_kl()` | Approximation | A2-KL solver |
+| `DPprior_a2_newton()` | Approximation | A2-MN Newton |
+| `DPprior_diagnostics()` | Diagnostics | Full diagnostics |
+| `DPprior_dual_hard()` | Core | Verified hard inequality |
+| `DPprior_dual_soft()` | Core | Fixed-scale soft trade-off |
+| `DPprior_fit()` | Core | Main entry point |
+| `DPprior_target_K()` | Core | Canonical K target constructor |
+| `exact_K_moments()` | Exact | Marginal moments |
+| `gauss_laguerre_nodes()` | Utility | Quadrature nodes |
+| `integrate_gamma()` | Utility | Expectation under Gamma |
+| `kl_divergence_K()` | Utility | KL for K |
+| `kl_divergence_pmf()` | Utility | KL between PMFs |
+| `logsumexp()` | Utility | Binary log-sum-exp |
+| `logsumexp_vec()` | Utility | Vector log-sum-exp |
+| `mean_K_given_alpha()` | Exact | Conditional mean |
+| `mean_rho()` | Weights | Marginal $\mathbb{E}[\rho]$ |
+| `mean_rho_given_alpha()` | Weights | Conditional $\mathbb{E}[\rho|\alpha]$ |
+| `mean_w1()` | Weights | Marginal $\mathbb{E}[w_1]$ |
+| `moments_K_given_alpha()` | Exact | Both conditional moments |
+| `density_w1()` | Weights | Density of $w_1$ |
+| `plot.DPprior_fit()` | Diagnostics | Dashboard plot |
+| `plot_alpha_prior()` | Diagnostics | Alpha plot |
+| `plot_K_prior()` | Diagnostics | K plot |
+| `plot_w1_prior()` | Diagnostics | $w_1$ plot |
+| `pmf_K_given_alpha()` | Exact | Conditional PMF |
+| `pmf_K_marginal()` | Exact | Marginal PMF |
+| `print.DPprior_fit()` | Diagnostics | Print method |
+| `prob_w1_exceeds()` | Weights | Historical alias for the $W_{SB}$ tail |
+| `prob_wsb_exceeds()` | Weights | Explicitly named $W_{SB}$ tail probability |
+| `quantile_K_given_alpha()` | Exact | Conditional quantile |
+| `quantile_w1()` | Weights | Quantiles of $w_1$ |
+| `summary.DPprior_fit()` | Diagnostics | Summary method |
+| `summary_K_marginal()` | Exact | Full K summary |
+| `var_K_given_alpha()` | Exact | Conditional variance |
+| `var_rho()` | Weights | Marginal $\text{Var}(\rho)$ |
+| `var_rho_given_alpha()` | Weights | Conditional $\text{Var}(\rho|\alpha)$ |
+| `var_w1()` | Weights | Marginal $\text{Var}(w_1)$ |
+| `vif_to_variance()` | Utility | VIF to variance |
+
+
+---
+
+
+## References
+
+Antoniak, C. E. (1974). Mixtures of Dirichlet processes with applications to 
+Bayesian nonparametric problems. *The Annals of Statistics*, 2(6), 1152-1174.
+
+Golub, G. H., & Welsch, J. H. (1969). Calculation of Gauss quadrature rules. 
+*Mathematics of Computation*, 23(106), 221-230.
+
+Lee, J. (2026). Design-conditional prior elicitation for Dirichlet process
+mixtures. *arXiv preprint* arXiv:2602.06301.
+
+Lee, J., Che, J., Rabe-Hesketh, S., Feller, A., & Miratrix, L. (2025). 
+Improving the estimation of site-specific effects and their distribution in 
+multisite trials. *Journal of Educational and Behavioral Statistics*, 50(5), 
+731-764.
+
+
+---
+
+
+*For additional documentation, see the [package vignettes](index.html) or 
+visit the [GitHub repository](https://github.com/joonho112/DPprior).*

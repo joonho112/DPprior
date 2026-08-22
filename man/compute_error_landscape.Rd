@@ -1,0 +1,41 @@
+% Please edit documentation in R/13_error_bounds.R
+\name{compute_error_landscape}
+\alias{compute_error_landscape}
+\title{Compute A1 Error Landscape}
+\usage{
+compute_error_landscape(J_seq, alpha_seq, cJ_fun = log)
+}
+\arguments{
+\item{J_seq}{Numeric vector; sequence of J values.}
+
+\item{alpha_seq}{Numeric vector; sequence of alpha values.}
+
+\item{cJ_fun}{Function; scaling constant function (default: log).}
+}
+\value{
+A data frame with columns: J, alpha, lambda_exact, lambda_approx,
+pois_raw, pois_bound, lin_bound, total_tv.
+}
+\description{
+Computes error metrics over a grid of (J, alpha) values for visualization.
+}
+\details{
+This function is useful for creating error landscape visualizations
+as shown in Lee (2026, Section 3.3).
+}
+\examples{
+# Create error landscape
+landscape <- compute_error_landscape(
+  J_seq = c(25, 50, 100),
+  alpha_seq = c(0.5, 1, 2, 5)
+)
+print(landscape)
+
+}
+\seealso{
+Other diagnostics:
+\code{\link[=DPprior_diagnostics]{DPprior_diagnostics()}},
+\code{\link[=DPprior_error_bounds]{DPprior_error_bounds()}},
+\code{\link[=compute_weight_diagnostics]{compute_weight_diagnostics()}}
+}
+\concept{diagnostics}

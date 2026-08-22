@@ -1,0 +1,23 @@
+% Please edit documentation in R/07_jacobian.R
+\name{verify_jacobian_all}
+\alias{verify_jacobian_all}
+\title{Run All Module 07 Verification Tests}
+\usage{
+verify_jacobian_all(verbose = TRUE)
+}
+\arguments{
+\item{verbose}{Logical; if TRUE, print detailed results.}
+}
+\value{
+Logical; TRUE if all tests pass.
+}
+\description{
+Comprehensive verification suite for the score-based Jacobian module.
+}
+\examples{
+\dontrun{
+verify_jacobian_all()
+
+}
+}
+\keyword{internal}

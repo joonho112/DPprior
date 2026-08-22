@@ -1,0 +1,41 @@
+% Please edit documentation in R/03_moments_conditional.R
+\name{moments_K_given_alpha}
+\alias{moments_K_given_alpha}
+\title{Conditional Mean and Variance of K_J Given Alpha}
+\usage{
+moments_K_given_alpha(J, alpha)
+}
+\arguments{
+\item{J}{Sample size (integer >= 1).}
+
+\item{alpha}{Concentration parameter (positive numeric, vectorized).}
+}
+\value{
+If \code{alpha} is scalar, a named numeric vector
+\code{c(mean = ..., var = ...)}. If \code{alpha} is a vector, a numeric
+matrix with two columns \code{mean} and \code{var} (one row per element of
+\code{alpha}).
+}
+\description{
+Convenience wrapper returning both conditional moments in one call.
+}
+\examples{
+moments_K_given_alpha(50, 2.0)
+moments_K_given_alpha(50, c(0.5, 1, 2, 5))
+
+}
+\seealso{
+\code{\link{mean_K_given_alpha}}, \code{\link{var_K_given_alpha}}
+
+Other conditional_K:
+\code{\link[=cdf_K_given_alpha]{cdf_K_given_alpha()}},
+\code{\link[=cv_K_given_alpha]{cv_K_given_alpha()}},
+\code{\link[=dispersion_K_given_alpha]{dispersion_K_given_alpha()}},
+\code{\link[=log_pmf_K_given_alpha]{log_pmf_K_given_alpha()}},
+\code{\link[=mean_K_given_alpha]{mean_K_given_alpha()}},
+\code{\link[=mode_K_given_alpha]{mode_K_given_alpha()}},
+\code{\link[=pmf_K_given_alpha]{pmf_K_given_alpha()}},
+\code{\link[=quantile_K_given_alpha]{quantile_K_given_alpha()}},
+\code{\link[=var_K_given_alpha]{var_K_given_alpha()}}
+}
+\concept{conditional_K}

@@ -1,0 +1,108 @@
+% Please edit documentation in R/06_pmf_marginal.R
+\name{summary_K_marginal}
+\alias{summary_K_marginal}
+\title{Summary Statistics for Marginal K Distribution}
+\usage{
+summary_K_marginal(
+  J,
+  a,
+  b,
+  logS,
+  M = .QUAD_NODES_DEFAULT,
+  probs = c(0.05, 0.25, 0.5, 0.75, 0.95),
+  M_verify = NULL,
+  abs_tol = 1e-10,
+  rel_tol = 1e-08,
+  strict = FALSE
+)
+}
+\arguments{
+\item{J}{Integer; sample size (positive integer >= 1).}
+
+\item{a}{Numeric; shape parameter of Gamma prior (> 0).}
+
+\item{b}{Numeric; rate parameter of Gamma prior (> 0).}
+
+\item{logS}{Matrix; pre-computed log-Stirling matrix.}
+
+\item{M}{Integer; number of quadrature nodes (default: 80).}
+
+\item{probs}{Numeric vector; probability levels for quantiles (default:
+\code{c(0.05, 0.25, 0.5, 0.75, 0.95)}).}
+
+\item{M_verify}{Optional independent order satisfying the package
+verification rule (at least \code{max(2*M, M+40)}).}
+
+\item{abs_tol, rel_tol}{Non-negative selected-versus-verification tolerances.}
+
+\item{strict}{Logical; require successful higher-order verification.}
+}
+\value{
+A list with components:
+\describe{
+\item{\code{J}}{Sample size}
+\item{\code{a}}{Gamma shape parameter}
+\item{\code{b}}{Gamma rate parameter}
+\item{\code{mean}}{Mean \eqn{E[K_J \mid a, b]}}
+\item{\code{var}}{Variance \eqn{Var(K_J \mid a, b)}}
+\item{\code{sd}}{Standard deviation}
+\item{\code{cv}}{Coefficient of variation (sd/mean)}
+\item{\code{mode}}{Mode (most likely value)}
+\item{\code{median}}{Median (50th percentile)}
+\item{\code{quantiles}}{Named integer vector of quantiles at \code{probs}}
+\item{\code{pmf}}{Full PMF vector}
+\item{\code{cdf}}{Full CDF vector}
+\item{\code{metadata}}{Support, normalization, no-truncation,
+quadrature-status, and achieved-quantile-mass metadata.}
+}
+}
+\description{
+Computes comprehensive summary statistics for the marginal distribution
+of \eqn{K_J} under a Gamma prior on \eqn{\alpha}.
+}
+\details{
+This function provides a complete summary of the marginal distribution,
+combining PMF-based and CDF-based statistics. The mean and variance
+computed from the PMF should match \code{exact_K_moments()} within
+numerical tolerance.
+With \code{M_verify}, reported quantiles, the median, and the mode are
+compared exactly across quadrature orders. Any changed discrete summary
+downgrades the returned metadata to \code{"approximate"}, or raises a typed
+convergence error in strict mode, while preserving all selected-order
+values.
+
+The \code{probs} argument allows customization of which quantiles to
+report, making it flexible for different reporting needs.
+}
+\examples{
+logS <- compute_log_stirling(50)
+summary <- summary_K_marginal(50, 1.5, 0.5, logS)
+
+# View main statistics
+summary$mean
+summary$var
+summary$mode
+summary$quantiles
+
+# Custom quantiles
+summary2 <- summary_K_marginal(50, 1.5, 0.5, logS,
+                               probs = c(0.025, 0.5, 0.975))
+summary2$quantiles
+
+# Compare with exact moments
+exact <- exact_K_moments(50, 1.5, 0.5)
+c(summary$mean - exact$mean, summary$var - exact$var)
+
+}
+\seealso{
+\code{\link{pmf_K_marginal}}, \code{\link{exact_K_moments}}
+
+Other marginal_K:
+\code{\link[=K_moments]{K_moments()}},
+\code{\link[=cdf_K_marginal]{cdf_K_marginal()}},
+\code{\link[=exact_K_moments]{exact_K_moments()}},
+\code{\link[=mode_K_marginal]{mode_K_marginal()}},
+\code{\link[=pmf_K_marginal]{pmf_K_marginal()}},
+\code{\link[=quantile_K_marginal]{quantile_K_marginal()}}
+}
+\concept{marginal_K}

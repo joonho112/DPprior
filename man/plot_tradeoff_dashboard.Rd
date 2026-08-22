@@ -1,0 +1,49 @@
+% Please edit documentation in R/18_visualization.R
+\name{plot_tradeoff_dashboard}
+\alias{plot_tradeoff_dashboard}
+\title{Plot Trade-off Multi-Panel}
+\usage{
+plot_tradeoff_dashboard(
+  tradeoff_data,
+  w1_target_prob = NULL,
+  engine = c("ggplot2", "base"),
+  base_size = 10,
+  title = NULL,
+  show = TRUE
+)
+}
+\arguments{
+\item{tradeoff_data}{Data frame from compute_tradeoff_curve().}
+
+\item{w1_target_prob}{Optional target probability for
+\eqn{P(W_{SB} > 0.5)}.}
+
+\item{engine}{"ggplot2" (default) or "base".}
+
+\item{base_size}{Base font size.}
+
+\item{title}{Optional title.}
+
+\item{show}{If TRUE, draw the plot.}
+}
+\value{
+A gtable grob or list of ggplot objects.
+}
+\description{
+Creates a multi-panel view of the trade-off curve showing multiple metrics.
+}
+\seealso{
+\code{\link{DPprior_fit}} for fitting, \code{\link{plot.DPprior_fit}} for S3 plot method
+
+Other visualization:
+\code{\link[=DPprior_colors]{DPprior_colors()}},
+\code{\link[=plot_K_prior]{plot_K_prior()}},
+\code{\link[=plot_alpha_prior]{plot_alpha_prior()}},
+\code{\link[=plot_dual_comparison]{plot_dual_comparison()}},
+\code{\link[=plot_dual_dashboard]{plot_dual_dashboard()}},
+\code{\link[=plot_prior_dashboard]{plot_prior_dashboard()}},
+\code{\link[=plot_tradeoff_curve]{plot_tradeoff_curve()}},
+\code{\link[=plot_w1_prior]{plot_w1_prior()}},
+\code{\link[=theme_DPprior]{theme_DPprior()}}
+}
+\concept{visualization}

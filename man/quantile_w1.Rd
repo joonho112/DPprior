@@ -1,0 +1,61 @@
+% Please edit documentation in R/08_weights_w1.R
+\name{quantile_w1}
+\alias{quantile_w1}
+\title{Quantile Function of the First Size-Biased DP Weight}
+\usage{
+quantile_w1(u, a, b)
+}
+\arguments{
+\item{u}{Numeric vector of probability levels in the unit interval.
+Values \eqn{u \le 0} return 0 and \eqn{u \ge 1} return 1.}
+
+\item{a}{Numeric; shape parameter of the Gamma prior on \eqn{\alpha}
+(a > 0).}
+
+\item{b}{Numeric; rate parameter of the Gamma prior on \eqn{\alpha}
+(b > 0).}
+}
+\value{
+Numeric vector of quantile values Q(u | a, b).
+}
+\description{
+Computes the inverse CDF: \eqn{Q(u \mid a, b) = F^{-1}(u)}.
+}
+\details{
+The quantile function has the closed form:
+\deqn{Q_{w_1}(u | a, b) = 1 - \exp\left(b \left[1 - (1-u)^{-1/a}\right]\right)}
+
+The implementation computes (1-u)^(-1/a) in log space for stability
+when u is close to 1.
+
+\strong{Numerical Note:} For small values of a (a < 1) and u close to 1,
+the quantile approaches 1 very rapidly and may round to 1.0 in double
+precision.
+}
+\examples{
+# Median of w1
+quantile_w1(0.5, a = 2, b = 1)  # ~0.339
+
+# 90th percentile
+quantile_w1(0.9, a = 2, b = 1)  # ~0.732
+
+}
+\references{
+Lee, J. (2026). Design-Conditional Prior Elicitation for Dirichlet Process Mixtures.
+\emph{arXiv preprint} arXiv:2602.06301.
+}
+\seealso{
+\code{\link{cdf_w1}}, \code{\link{summary_w1}}
+
+Other weights_w1:
+\code{\link[=cdf_w1]{cdf_w1()}},
+\code{\link[=density_w1]{density_w1()}},
+\code{\link[=mean_w1]{mean_w1()}},
+\code{\link[=prob_w1_exceeds]{prob_w1_exceeds()}},
+\code{\link[=prob_wmax_exceeds]{prob_wmax_exceeds()}},
+\code{\link[=prob_wsb_exceeds]{prob_wsb_exceeds()}},
+\code{\link[=summary_w1]{summary_w1()}},
+\code{\link[=var_w1]{var_w1()}},
+\code{\link[=wmax_tail_bounds]{wmax_tail_bounds()}}
+}
+\concept{weights_w1}

@@ -1,0 +1,75 @@
+% Please edit documentation in R/13_error_bounds.R
+\name{find_a1_threshold_J}
+\alias{find_a1_threshold_J}
+\title{Find Threshold J for A1 Adequacy}
+\usage{
+find_a1_threshold_J(
+  a,
+  b,
+  target_error = 0.05,
+  target_var_error = NULL,
+  J_min = 10,
+  J_max = 500,
+  step = 10,
+  M = .QUAD_NODES_DEFAULT,
+  M_verify = NULL,
+  abs_tol = 1e-10,
+  rel_tol = 1e-08,
+  strict = FALSE
+)
+}
+\arguments{
+\item{a, b}{Numeric; Gamma hyperparameters.}
+
+\item{target_error}{Numeric; target relative error for mean (default: 5\%).}
+
+\item{target_var_error}{Numeric; target relative error for variance
+(default: 2 * target_error).}
+
+\item{J_min, J_max}{Integer; search range for J.}
+
+\item{step}{Integer; step size for search.}
+
+\item{M}{Selected quadrature order for every exact-moment evaluation.}
+
+\item{M_verify}{Optional independent verification order.}
+
+\item{abs_tol, rel_tol}{Non-negative quadrature comparison tolerances.}
+
+\item{strict}{Logical; require every scanned exact-moment result to be
+verified.}
+}
+\value{
+Integer; minimum scanned J achieving target accuracy, or NA if not
+found. A \code{"threshold_metadata"} attribute records every scan point
+and whether the conclusion is verified or provisional.
+}
+\description{
+Determines the minimum sample size J for which the A1 approximation
+achieves target accuracy in moment matching.
+}
+\details{
+Searches over J values to find the smallest J where:
+\itemize{
+\item Mean relative error < target_error
+\item Variance relative error < target_var_error
+}
+
+Note: For many parameter combinations, especially with high \eqn{E[\alpha]},
+the A1 approximation may never achieve low errors within practical J ranges.
+In such cases, A2 refinement is recommended.
+}
+\examples{
+\dontrun{
+# Find threshold for 5\% mean error
+find_a1_threshold_J(a = 1, b = 2)
+
+# For higher E[alpha], threshold may not exist
+find_a1_threshold_J(a = 2, b = 1)  # Likely returns NA
+}
+
+}
+\seealso{
+\code{\link{a1_moment_error}}, \code{\link{DPprior_error_bounds}}
+}
+\keyword{internal}

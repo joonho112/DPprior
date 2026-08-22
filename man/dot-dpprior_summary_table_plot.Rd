@@ -1,0 +1,11 @@
+% Please edit documentation in R/18_visualization.R
+\name{.dpprior_summary_table_plot}
+\alias{.dpprior_summary_table_plot}
+\title{Summary Table Plot}
+\usage{
+.dpprior_summary_table_plot(fit, base_size = 11, ci_level = 0.95)
+}
+\description{
+Summary Table Plot
+}
+\keyword{internal}

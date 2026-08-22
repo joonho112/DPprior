@@ -1,0 +1,62 @@
+% Please edit documentation in R/04_pmf_conditional.R
+\name{quantile_K_given_alpha}
+\alias{quantile_K_given_alpha}
+\title{Quantile of K Given Alpha}
+\usage{
+quantile_K_given_alpha(p, J, alpha, logS)
+}
+\arguments{
+\item{p}{Numeric; probability level(s) in \eqn{[0, 1]}. Can be scalar or vector.}
+
+\item{J}{Integer; sample size.}
+
+\item{alpha}{Numeric; DP concentration parameter.}
+
+\item{logS}{Matrix; pre-computed log-Stirling matrix.}
+}
+\value{
+Integer (or integer vector); the \eqn{p}-th quantile(s) of
+\eqn{K_J \mid \alpha}.
+}
+\description{
+Computes the \eqn{p}-th quantile of \eqn{K_J \mid \alpha}, defined as
+the smallest \eqn{k} such that \eqn{P(K_J \leq k \mid \alpha) \geq p}.
+}
+\details{
+For \eqn{p = 0.5}, this gives the median. Note that for discrete
+distributions, the quantile is defined as the smallest value where
+the CDF meets or exceeds \eqn{p}.
+
+Edge cases:
+\itemize{
+\item \eqn{p = 0}: returns 1 (the lower endpoint of the support)
+\item \eqn{p = 1}: returns J (the maximum possible K)
+}
+}
+\examples{
+logS <- compute_log_stirling(50)
+
+# Single quantile (median)
+quantile_K_given_alpha(0.5, 50, 2.0, logS)
+
+# Multiple quantiles
+quantile_K_given_alpha(c(0.25, 0.5, 0.75), 50, 2.0, logS)
+
+# Edge cases
+quantile_K_given_alpha(0, 50, 2.0, logS)  # Returns 1
+quantile_K_given_alpha(1, 50, 2.0, logS)  # Returns 50
+
+}
+\seealso{
+Other conditional_K:
+\code{\link[=cdf_K_given_alpha]{cdf_K_given_alpha()}},
+\code{\link[=cv_K_given_alpha]{cv_K_given_alpha()}},
+\code{\link[=dispersion_K_given_alpha]{dispersion_K_given_alpha()}},
+\code{\link[=log_pmf_K_given_alpha]{log_pmf_K_given_alpha()}},
+\code{\link[=mean_K_given_alpha]{mean_K_given_alpha()}},
+\code{\link[=mode_K_given_alpha]{mode_K_given_alpha()}},
+\code{\link[=moments_K_given_alpha]{moments_K_given_alpha()}},
+\code{\link[=pmf_K_given_alpha]{pmf_K_given_alpha()}},
+\code{\link[=var_K_given_alpha]{var_K_given_alpha()}}
+}
+\concept{conditional_K}

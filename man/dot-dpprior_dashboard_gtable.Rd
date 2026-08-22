@@ -1,0 +1,11 @@
+% Please edit documentation in R/18_visualization.R
+\name{.dpprior_dashboard_gtable}
+\alias{.dpprior_dashboard_gtable}
+\title{Create Dashboard using gtable (no patchwork needed)}
+\usage{
+.dpprior_dashboard_gtable(p1, p2, p3, p4, title = NULL)
+}
+\description{
+Create Dashboard using gtable (no patchwork needed)
+}
+\keyword{internal}

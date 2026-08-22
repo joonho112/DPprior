@@ -1,0 +1,51 @@
+% Please edit documentation in R/05_moments_marginal.R
+\name{compare_to_negbin}
+\alias{compare_to_negbin}
+\title{Compare Exact Moments to NegBin Approximation}
+\usage{
+compare_to_negbin(J, a, b, M = .QUAD_NODES_DEFAULT)
+}
+\arguments{
+\item{J}{Integer; sample size.}
+
+\item{a}{Numeric; shape parameter of Gamma prior.}
+
+\item{b}{Numeric; rate parameter of Gamma prior.}
+
+\item{M}{Integer; number of quadrature nodes (default: 80).}
+}
+\value{
+A list with components:
+\describe{
+\item{\code{exact}}{List with exact mean and var}
+\item{\code{negbin}}{List with NegBin approximation mean and var}
+\item{\code{abs_error}}{Absolute errors (negbin - exact)}
+\item{\code{rel_error}}{Relative errors}
+}
+}
+\description{
+Compares exact marginal moments (via quadrature) to the Negative Binomial
+approximation from the A1 method for error analysis.
+}
+\details{
+The NegBin approximation (A1 method from Lee, 2026, Section 3.1) assumes:
+\deqn{K_J - 1 | \alpha \approx \text{Poisson}(\alpha \cdot c_J)}
+
+where \eqn{c_J = \log(J)}. With \eqn{\alpha \sim \text{Gamma}(a, b)}:
+\deqn{E[K_J] \approx 1 + (a/b) \cdot c_J}
+\deqn{Var(K_J) \approx m \cdot (1 + m/a), \quad m = (a/b) \cdot c_J}
+
+This comparison helps diagnose when the A1 approximation is insufficient
+and exact A2 moment matching is needed.
+}
+\examples{
+\dontrun{
+# Large approximation error for small J
+compare_to_negbin(50, 1.5, 0.5)
+
+# Error decreases with J
+compare_to_negbin(300, 1.5, 0.5)
+
+}
+}
+\keyword{internal}

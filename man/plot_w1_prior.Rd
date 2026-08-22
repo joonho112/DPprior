@@ -1,0 +1,63 @@
+% Please edit documentation in R/18_visualization.R
+\name{plot_w1_prior}
+\alias{plot_w1_prior}
+\title{Plot Prior Density of the First Size-Biased DP Weight}
+\usage{
+plot_w1_prior(
+  fit = NULL,
+  a = NULL,
+  b = NULL,
+  engine = c("ggplot2", "base"),
+  base_size = 11,
+  thresholds = c(0.5, 0.9),
+  n_grid = 500,
+  show = TRUE
+)
+}
+\arguments{
+\item{fit}{A DPprior_fit object, or NULL if a, b provided directly.}
+
+\item{a}{Numeric; shape parameter (used if fit is NULL).}
+
+\item{b}{Numeric; rate parameter (used if fit is NULL).}
+
+\item{engine}{"ggplot2" (default) or "base".}
+
+\item{base_size}{Base font size.}
+
+\item{thresholds}{Strictly increasing numeric vector of exactly two tail
+thresholds in \eqn{(0,1)} for the first size-biased DP weight
+(default: \code{c(0.5, 0.9)}).}
+
+\item{n_grid}{Number of grid points.}
+
+\item{show}{If TRUE, print the plot.}
+}
+\value{
+A ggplot object or invisible(NULL) for base.
+}
+\description{
+Plot Prior Density of the First Size-Biased DP Weight
+}
+\examples{
+fit <- DPprior_fit(J = 50, mu_K = 5, var_K = 8)
+plot_w1_prior(fit)
+
+plot_w1_prior(a = 1.6, b = 1.2)
+
+}
+\seealso{
+\code{\link{DPprior_fit}} for fitting, \code{\link{plot.DPprior_fit}} for S3 plot method
+
+Other visualization:
+\code{\link[=DPprior_colors]{DPprior_colors()}},
+\code{\link[=plot_K_prior]{plot_K_prior()}},
+\code{\link[=plot_alpha_prior]{plot_alpha_prior()}},
+\code{\link[=plot_dual_comparison]{plot_dual_comparison()}},
+\code{\link[=plot_dual_dashboard]{plot_dual_dashboard()}},
+\code{\link[=plot_prior_dashboard]{plot_prior_dashboard()}},
+\code{\link[=plot_tradeoff_curve]{plot_tradeoff_curve()}},
+\code{\link[=plot_tradeoff_dashboard]{plot_tradeoff_dashboard()}},
+\code{\link[=theme_DPprior]{theme_DPprior()}}
+}
+\concept{visualization}
