@@ -45,5 +45,9 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4.5.0
         with:
           clean: true
+          single-commit: true
           branch: gh-pages
           folder: docs
+          git-config-name: joonho112
+          git-config-email: jlee296@ua.edu
+          commit-message: Deploy pkgdown site for ${{ github.sha }}
